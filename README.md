@@ -159,6 +159,8 @@ Tag | Multiple occurrences? | Many lines? | First word/line header? | Descriptio
 
 ## To do
 
+**The work is not finished!**
+
 - [ ] Improve text display (handle \n and terminal size)
 - [ ] Handle script arguments:
   - [ ] Format (text/man)
@@ -167,3 +169,5 @@ Tag | Multiple occurrences? | Many lines? | First word/line header? | Descriptio
 - [ ] Handle specific numbers for occurrences / lines?
 - [ ] Be able to select which tags content to output?
 - [ ] Other output format (POD, ...)?
+
+Pull requests are welcomed!
