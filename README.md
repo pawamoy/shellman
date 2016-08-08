@@ -23,6 +23,38 @@ SHELLMAN_FORMAT=man ./shellman.py FILE
 
 *The script does not currently handle arguments, except for the file name.*
 
+In a script, for automatic help text:
+
+```bash
+#!/bin/bash
+
+## \brief Just a demo
+## \desc This script actually does nothing.
+
+main() {
+  case "$1" in
+    ## \option -h, --help
+    ## Print this help and exit.
+    -h|--help) shellman.py "$0"; exit 0 ;;
+  esac
+}
+
+## \usage demo [-h]
+main "$@"
+```
+
+Output when calling `./demo -h`:
+
+```
+Usage: demo [-h]
+
+This script actually does nothing.
+
+Options:
+  -h, --help
+    Print this help and exit.
+```
+
 ## Documentation syntax
 
 - Documentation lines always begin with `##`.
@@ -104,12 +136,12 @@ it would require to write a **real** parser. Indeed, think about a few cases:
 
   ## \fn and again...
   ```
-  
+
 - Some tags have a special behaviour for display. If their content have multiple
   lines, then the first line is considered a header. If they have just one line,
   then the first word is considered the header. It helps to create a better
   display (with indentation).
-  
+
   ```bash
   ## \option -o Optimize computation.
   ## \option -s, --slow
