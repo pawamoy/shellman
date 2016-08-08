@@ -32,16 +32,13 @@ TAGS = {
     'desc':      Tag(1, Tag.MANY),
     'env':       Tag(Tag.MANY, Tag.MANY),
     'error':     Tag(Tag.MANY, Tag.MANY),
-    'export':    Tag(Tag.MANY, 1),
     'example':   Tag(Tag.MANY, Tag.MANY),
     'exit':      Tag(Tag.MANY, Tag.MANY),
     'file':      Tag(Tag.MANY, Tag.MANY),
     'history':   Tag(1, Tag.MANY),
-    'host':      Tag(Tag.MANY, 1),
     'license':   Tag(1, Tag.MANY),
     'note':      Tag(Tag.MANY, Tag.MANY),
     'option':    Tag(Tag.MANY, Tag.MANY),
-    'require':   Tag(Tag.MANY, 1),
     'seealso':   Tag(Tag.MANY, 1),
     'stderr':    Tag(Tag.MANY, Tag.MANY),
     'stdin':     Tag(Tag.MANY, Tag.MANY),
@@ -318,9 +315,6 @@ class Man(Base):
     def render_environment_variables(self, title):
         self.render_multi_many(title, self.doc['env'])
 
-    def render_err(self, title):
-        pass
-
     def render_errors(self, title):
         self.render_multi_many_no_head(title, self.doc['error'])
 
@@ -430,12 +424,6 @@ class Man(Base):
     def render_history(self, title):
         self.render_single_many(title, self.doc['history'])
 
-    def render_host(self, title):
-        pass
-
-    def render_in(self, title):
-        pass
-
     def render_license(self, title):
         self.render_single_many(title, self.doc['license'])
 
@@ -458,22 +446,16 @@ class Man(Base):
                   .replace(',', '\\fR,\\fB'))
             sys.stdout.write(''.join(option[1:]))
 
-    def render_out(self, title):
-        pass
-
-    def render_param(self, title):
-        pass
-
-    def render_pre(self, title):
-        pass
-
-    def render_require(self, title):
-        pass
-
-    def render_return(self, title):
-        pass
-
     def render_see_also(self, title):
+        pass
+
+    def render_stderr(self, title):
+        pass
+
+    def render_stdin(self, title):
+        pass
+
+    def render_stdout(self, title):
         pass
 
     def render_usage(self, title):
@@ -536,9 +518,6 @@ class Text(Base):
 
     def render_environment_variables(self, title):
         self.render_multi_many('Environment variables:', self.doc['env'])
-
-    def render_err(self, title):
-        pass
 
     def render_errors(self, title):
         self.render_multi_many_no_head('Errors:', self.doc['error'])
@@ -637,12 +616,6 @@ class Text(Base):
     def render_history(self, title):
         self.render_single_many('History:', self.doc['history'])
 
-    def render_host(self, title):
-        pass
-
-    def render_in(self, title):
-        pass
-
     def render_license(self, title):
         self.render_single_many('License:', self.doc['license'])
 
@@ -655,22 +628,16 @@ class Text(Base):
     def render_options(self, title):
         self.render_multi_many('Options:', self.doc['option'])
 
-    def render_out(self, title):
-        pass
-
-    def render_param(self, title):
-        pass
-
-    def render_pre(self, title):
-        pass
-
-    def render_require(self, title):
-        pass
-
-    def render_return(self, title):
-        pass
-
     def render_see_also(self, title):
+        pass
+
+    def render_stderr(self, title):
+        pass
+
+    def render_stdin(self, title):
+        pass
+
+    def render_stdout(self, title):
         pass
 
     def render_usage(self, title):

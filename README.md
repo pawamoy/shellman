@@ -160,6 +160,7 @@ Tag | Multiple occurrences? | Many lines? | First word/line header? | Descriptio
 `date`     |   |   |   | The date of the first release of the script.
 `desc`     |   | ✓ |   | The multi-line description of the script.
 `env`      | ✓ | ✓ | ✓ | An environment variable used by the script.
+`error`    | ✓ | ✓ | ✓ | An explained error, like in Diagnostics section.
 `example`  | ✓ | ✓ | ✓ | An example of usage.
 `exit`     | ✓ | ✓ | ✓ | Information about the exit status code.
 `file`     | ✓ | ✓ | ✓ | A file used by the script.
@@ -193,6 +194,7 @@ Tag | Multiple occurrences? | Many lines? | First word/line header? | Descriptio
 
 **The work is not finished!**
 
+- [ ] Write missing render functions (text/man)
 - [ ] Improve text display (handle \n and terminal size)
 - [ ] Handle script arguments:
   - [ ] Format (text/man)
