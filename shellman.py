@@ -644,7 +644,7 @@ class Text(Base):
         if self.doc['usage']:
             print('Usage: %s' % ''.join(self.doc['usage'][0]))
             for v in self.doc['usage'][1:]:
-                print('       %s %s' % (self.doc['_file'], ''.join(v)))
+                print('       %s' % ''.join(v))
 
     def render_version(self, title):
         print('Version: %s' % self.doc['version'])
