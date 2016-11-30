@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
+
+# Copyright (c) 2015 Timothée Mazzucotelli
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 from shellman.cli import main
 
 
 def test_main():
-    assert main([]) == 0
+    assert main(['tests/fakescript.sh']) == 0

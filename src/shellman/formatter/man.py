@@ -249,7 +249,8 @@ class ManFormatter(BaseFormatter):
             syn = rep_reg_arg.sub(r'\\fI\1\\fR', syn)  # order is important!
             syn = rep_reg_opt.sub(r'\\fB\1\\fR', syn)
             print('.br')
-            sys.stdout.write('\\fB%s\\fR %s' % (self.doc['_file'], self.esc(syn)))
+            sys.stdout.write('\\fB%s\\fR %s' % (
+                self.doc['_file'], self.esc(syn)))
 
     def render_version(self, title):
         pass

@@ -26,8 +26,8 @@ Why does this file exist, and why not put this in __main__?
 import os
 import sys
 
-from .formatter import get_formatter
 from .doc import Doc
+from .formatter import get_formatter
 
 
 def main(argv=sys.argv):
@@ -41,7 +41,7 @@ def main(argv=sys.argv):
     Does stuff.
     """
 
-    f = sys.argv[1]
+    f = argv[0]
     doc = Doc(f).read()
     fmt = os.environ.get('SHELLMAN_FORMAT', 'text')
     get_formatter(fmt)(doc).write()

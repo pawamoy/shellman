@@ -57,7 +57,7 @@ License
 
 Software licensed under `MPL 2.0`_ license.
 
-.. _`MPL 2.0 : https://www.mozilla.org/en-US/MPL/2.0/
+.. _`MPL 2.0`: https://www.mozilla.org/en-US/MPL/2.0/
 
 Installation
 ============
@@ -111,6 +111,7 @@ In a script, for automatic help text:
 Output when calling ``./demo -h``:
 
 .. code::
+
     Usage: demo [-h]
 
     This script actually does nothing.

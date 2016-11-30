@@ -21,5 +21,6 @@ include .style.yapf
 include *.yml
 
 recursive-include requirements *.txt
+recursive-include tests *.sh
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib release.sh update.sh
