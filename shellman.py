@@ -675,7 +675,6 @@ class Markdown(Formatter):
 
     def write_init(self):
         self.render_date(None)
-        print()
 
     def render_single_many(self, title, value):
         if value:
@@ -686,7 +685,7 @@ class Markdown(Formatter):
         if value:
             print(title)
             for v in value:
-                print('- `%s`' % v[0].rstrip('\n'))
+                print('- `%s`:' % v[0].rstrip('\n'))
                 if len(v) > 1:
                     print('  %s' % ''.join(v[1:]))
 
@@ -712,7 +711,9 @@ class Markdown(Formatter):
         self.render_single_many('# Copyright', self.doc['copyright'])
 
     def render_date(self, title):
-        print('*Date: %s*' % self.doc['date'])
+        if self.doc['date']:
+            print('*Date: %s*' % self.doc['date'])
+            print()
 
     def render_description(self, title):
         if self.doc['desc']:
@@ -822,7 +823,7 @@ class Markdown(Formatter):
         self.render_single_many('# License', self.doc['license'])
 
     def render_name(self, title):
-        print('**%s** - %s' % (self.doc['_file'], self.doc['brief'][0]))
+        print('**%s** - %s' % (self.doc['_file'], self.doc['brief']))
 
     def render_notes(self, title):
         self.render_multi_many_no_head('# Notes', self.doc['note'])
@@ -844,9 +845,9 @@ class Markdown(Formatter):
 
     def render_usage(self, title):
         if self.doc['usage']:
-            print('# Usage\n%s' % ''.join(self.doc['usage'][0]))
-            for v in self.doc['usage'][1:]:
-                print('- %s' % ''.join(v))
+            print('# Usage')
+            for v in self.doc['usage']:
+                print('- ```\n%s```' % ''.join(v))
 
     def render_version(self, title):
         if self.doc['version']:
