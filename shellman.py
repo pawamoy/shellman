@@ -61,35 +61,6 @@ FN_TAGS = {
     'stdout':  Tag(Tag.MANY, Tag.MANY)
 }
 
-MAN_SECTIONS_ORDER = (
-    'NAME',
-    'SYNOPSIS',
-    'DESCRIPTION',
-    'OPTIONS',
-    'ENVIRONMENT VARIABLES',
-    'FILES',
-    'EXAMPLES',
-    'EXIT STATUS',
-    'FUNCTIONS',
-    'ERRORS',
-    'BUGS',
-    'CAVEATS',
-    'AUTHORS',
-    'COPYRIGHT',
-    'LICENSE',
-    'HISTORY',
-    'NOTES',
-    'SEE ALSO',
-)
-
-TEXT_SECTIONS_ORDER = (
-    'SYNOPSIS',
-    'DESCRIPTION',
-    'OPTIONS',
-    'EXAMPLES',
-    'FUNCTIONS'
-)
-
 FUNCTION_ORDER = (
     'fn',
     'brief',
@@ -208,10 +179,11 @@ class Doc(object):
         return self.doc
 
 
-class Base(object):
-    def __init__(self, doc, order):
+class Formatter(object):
+    SECTIONS_ORDER = ()
+
+    def __init__(self, doc):
         self.doc = doc
-        self.order = order
         self.render = {
             'AUTHORS': self.get_render('authors'),
             'BUGS': self.get_render('bugs'),
@@ -247,14 +219,35 @@ class Base(object):
 
     def write(self):
         self.write_init()
-        for section in self.order:
+        for section in self.SECTIONS_ORDER:
             self.render[section](section)
 
     def write_init(self):
         pass
 
 
-class Man(Base):
+class Man(Formatter):
+    SECTIONS_ORDER = (
+        'NAME',
+        'SYNOPSIS',
+        'DESCRIPTION',
+        'OPTIONS',
+        'ENVIRONMENT VARIABLES',
+        'FILES',
+        'EXAMPLES',
+        'EXIT STATUS',
+        'FUNCTIONS',
+        'ERRORS',
+        'BUGS',
+        'CAVEATS',
+        'AUTHORS',
+        'COPYRIGHT',
+        'LICENSE',
+        'HISTORY',
+        'NOTES',
+        'SEE ALSO',
+    )
+
     def esc(self, string):
         if string:
             return string.replace('-', '\\-').replace("'", "\\(cq")
@@ -333,7 +326,7 @@ class Man(Base):
     def _render_function_brief(self, fn):
         if fn['brief']:
             print('%s' % self.esc(fn['brief']))
-            print
+            print()
 
     def _render_function_desc(self, fn):
         if fn['desc']:
@@ -353,7 +346,7 @@ class Man(Base):
                     param, desc = param[0], param[1:]
                     print('  \\fB%s\\fR' % self.esc(param).rstrip('\n'))
                     print('    %s' % self.esc(''.join(desc)))
-            print
+            print()
 
     def _render_function_pre(self, fn):
         if fn['pre']:
@@ -361,7 +354,7 @@ class Man(Base):
             print('Preconditions:')
             for pre in fn['pre']:
                 print('  %s' % self.esc(''.join(pre)))
-            print
+            print()
 
     def _render_function_return(self, fn):
         if fn['return']:
@@ -369,7 +362,7 @@ class Man(Base):
             print('Return code:')
             for ret in fn['return']:
                 print('  %s' % self.esc(''.join(ret)))
-            print
+            print()
 
     def _render_function_seealso(self, fn):
         if fn['seealso']:
@@ -377,7 +370,7 @@ class Man(Base):
             print('See also:')
             for seealso in fn['seealso']:
                 print('  %s' % self.esc(''.join(seealso)))
-            print
+            print()
 
     def _render_function_stderr(self, fn):
         if fn['stderr']:
@@ -385,7 +378,7 @@ class Man(Base):
             print('Standard error:')
             for stderr in fn['stderr']:
                 print('  %s' % self.esc(''.join(stderr)))
-            print
+            print()
 
     def _render_function_stdin(self, fn):
         if fn['stdin']:
@@ -393,7 +386,7 @@ class Man(Base):
             print('Standard input:')
             for stdin in fn['stdin']:
                 print('  %s' % self.esc(''.join(stdin)))
-            print
+            print()
 
     def _render_function_stdout(self, fn):
         if fn['stdout']:
@@ -401,7 +394,7 @@ class Man(Base):
             print('Standard output:')
             for stdout in fn['stdout']:
                 print('  %s' % self.esc(''.join(stdout)))
-            print
+            print()
 
     def _render_function(self, fn):
         for order in FUNCTION_ORDER:
@@ -475,7 +468,15 @@ class Man(Base):
         pass
 
 
-class Text(Base):
+class Text(Formatter):
+    SECTIONS_ORDER = (
+        'SYNOPSIS',
+        'DESCRIPTION',
+        'OPTIONS',
+        'EXAMPLES',
+        'FUNCTIONS'
+    )
+
     def render_single_many(self, title, value):
         if value:
             print(title)
@@ -537,7 +538,7 @@ class Text(Base):
     def _render_function_brief(self, fn):
         if fn['brief']:
             print('    %s' % fn['brief'])
-            print
+            print()
 
     def _render_function_desc(self, fn):
         if fn['desc']:
@@ -556,43 +557,43 @@ class Text(Base):
                     param, desc = param[0], param[1:]
                     print('      %s' % param.rstrip('\n'))
                     print('        %s' % ''.join(desc))
-            print
+            print()
 
     def _render_function_pre(self, fn):
         if fn['pre']:
             print('    Preconditions:')
             print('      %s' % fn['pre'])
-            print
+            print()
 
     def _render_function_return(self, fn):
         if fn['return']:
             print('    Return code:')
             print('      %s' % fn['return'])
-            print
+            print()
 
     def _render_function_seealso(self, fn):
         if fn['seealso']:
             print('    See also:')
             print('      %s' % fn['seealso'])
-            print
+            print()
 
     def _render_function_stderr(self, fn):
         if fn['stderr']:
             print('    Standard error:')
             print('      %s' % fn['stderr'])
-            print
+            print()
 
     def _render_function_stdin(self, fn):
         if fn['stdin']:
             print('    Standard input:')
             print('      %s' % fn['stdin'])
-            print
+            print()
 
     def _render_function_stdout(self, fn):
         if fn['stdout']:
             print('    Standard output:')
             print('      %s' % fn['stdout'])
-            print
+            print()
 
     def _render_function(self, fn):
         for order in FUNCTION_ORDER:
@@ -603,12 +604,12 @@ class Text(Base):
             return
 
         print('Functions:')
-        print
+        print()
         # summary
         for fn in self.doc['_fn']:
             print('  %s' % fn['fn'])
-        print
-        print
+        print()
+        print()
         # all
         for fn in self.doc['_fn']:
             self._render_function(fn)
@@ -650,18 +651,224 @@ class Text(Base):
         print('Version: %s' % self.doc['version'])
 
 
-def main():
-    file = sys.argv[1]
-    doc = Doc(file).read()
-    fmt = os.environ.get('SHELLMAN_FORMAT', 'text')
+class Markdown(Formatter):
+    SECTIONS_ORDER = (
+        'NAME',
+        'SYNOPSIS',
+        'DESCRIPTION',
+        'OPTIONS',
+        'ENVIRONMENT VARIABLES',
+        'FILES',
+        'EXAMPLES',
+        'EXIT STATUS',
+        'FUNCTIONS',
+        'ERRORS',
+        'BUGS',
+        'CAVEATS',
+        'AUTHORS',
+        'COPYRIGHT',
+        'LICENSE',
+        'HISTORY',
+        'NOTES',
+        'SEE ALSO',
+    )
+
+    def write_init(self):
+        self.render_date(None)
+        print()
+
+    def render_single_many(self, title, value):
+        if value:
+            print(title)
+            print('%s' % ''.join(value))
+
+    def render_multi_many(self, title, value):
+        if value:
+            print(title)
+            for v in value:
+                print('- `%s`' % v[0].rstrip('\n'))
+                if len(v) > 1:
+                    print('  %s' % ''.join(v[1:]))
+
+    def render_multi_many_no_head(self, title, value):
+        if value:
+            print(title)
+            for v in value:
+                print('- %s' % v)
+
+    def render_authors(self, title):
+        print('# Authors')
+        for v in self.doc['author']:
+            print('- %s' % v)
+
+    def render_bugs(self, title):
+        self.render_multi_many_no_head('# Bugs', self.doc['bug'])
+
+    def render_caveats(self, title):
+        self.render_multi_many_no_head('# Caveat:', self.doc['caveat'])
+
+    def render_copyright(self, title):
+        self.render_single_many('# Copyright', self.doc['copyright'])
+
+    def render_date(self, title):
+        print('*Date: %s*' % self.doc['date'])
+
+    def render_description(self, title):
+        if self.doc['desc']:
+            print('%s' % ''.join(self.doc['desc']))
+
+    def render_environment_variables(self, title):
+        self.render_multi_many('# Environment variables', self.doc['env'])
+
+    def render_errors(self, title):
+        self.render_multi_many_no_head('# Errors', self.doc['error'])
+
+    def render_examples(self, title):
+        self.render_multi_many('# Examples', self.doc['example'])
+
+    def render_exit_status(self, title):
+        self.render_multi_many('# Exit status', self.doc['exit'])
+
+    def render_files(self, title):
+        self.render_multi_many('# Files', self.doc['file'])
+
+    def _render_function_fn(self, fn):
+        print('## %s' % fn['fn'])
+
+    def _render_function_brief(self, fn):
+        if fn['brief']:
+            print('%s' % fn['brief'])
+            print()
+
+    def _render_function_desc(self, fn):
+        if fn['desc']:
+            print('%s' % fn['desc'])
+
+    def _render_function_param(self, fn):
+        if fn['param']:
+            print('### Parameters')
+            for param in fn['param']:
+                if len(param) == 1:
+                    s = param[0].split(' ')
+                    param, desc = s[0], s[1:]
+                    print('- `%s`: %s' % (
+                        param, ' '.join(desc).rstrip('\n')))
+                else:
+                    param, desc = param[0], param[1:]
+                    print('- `%s`:' % param.rstrip('\n'))
+                    print('  %s' % ''.join(desc))
+            print()
+
+    def _render_function_pre(self, fn):
+        if fn['pre']:
+            print('### Preconditions')
+            print('%s' % fn['pre'])
+            print()
+
+    def _render_function_return(self, fn):
+        if fn['return']:
+            print('### Return code')
+            print('%s' % fn['return'])
+            print()
+
+    def _render_function_seealso(self, fn):
+        if fn['seealso']:
+            print('### See also')
+            print('%s' % fn['seealso'])
+            print()
+
+    def _render_function_stderr(self, fn):
+        if fn['stderr']:
+            print('### Standard error')
+            print('%s' % fn['stderr'])
+            print()
+
+    def _render_function_stdin(self, fn):
+        if fn['stdin']:
+            print('### Standard input')
+            print('%s' % fn['stdin'])
+            print()
+
+    def _render_function_stdout(self, fn):
+        if fn['stdout']:
+            print('### Standard output')
+            print('%s' % fn['stdout'])
+            print()
+
+    def _render_function(self, fn):
+        for order in FUNCTION_ORDER:
+            getattr(self, '_render_function_%s' % order)(fn)
+
+    def render_functions(self, title):
+        if not self.doc['_fn']:
+            return
+
+        print('# Functions')
+        print()
+        # summary
+        for fn in self.doc['_fn']:
+            print('- %s' % fn['fn'])
+        print()
+        print()
+        # all
+        for fn in self.doc['_fn']:
+            self._render_function(fn)
+
+    def render_history(self, title):
+        self.render_single_many('# History', self.doc['history'])
+
+    def render_license(self, title):
+        self.render_single_many('# License', self.doc['license'])
+
+    def render_name(self, title):
+        print('**%s** - %s' % (self.doc['_file'], self.doc['brief'][0]))
+
+    def render_notes(self, title):
+        self.render_multi_many_no_head('# Notes', self.doc['note'])
+
+    def render_options(self, title):
+        self.render_multi_many('# Options', self.doc['option'])
+
+    def render_see_also(self, title):
+        pass
+
+    def render_stderr(self, title):
+        pass
+
+    def render_stdin(self, title):
+        pass
+
+    def render_stdout(self, title):
+        pass
+
+    def render_usage(self, title):
+        if self.doc['usage']:
+            print('# Usage\n%s' % ''.join(self.doc['usage'][0]))
+            for v in self.doc['usage'][1:]:
+                print('- %s' % ''.join(v))
+
+    def render_version(self, title):
+        if self.doc['version']:
+            print('# Version\n%s' % self.doc['version'])
+
+
+def get_formatter(fmt):
     if fmt == 'text':
-        out = Text(doc, TEXT_SECTIONS_ORDER)
+        return Text
     elif fmt == 'man':
-        out = Man(doc, MAN_SECTIONS_ORDER)
+        return Man
+    elif fmt in ('md', 'markdown'):
+        return Markdown
     else:
         raise ValueError('Env var SHELLMAN_FORMAT incorrect')
-    out.write()
 
 
-if __name__ == "__main__":
+def main():
+    f = sys.argv[1]
+    doc = Doc(f).read()
+    fmt = os.environ.get('SHELLMAN_FORMAT', 'text')
+    get_formatter(fmt)(doc).write()
+
+
+if __name__ == '__main__':
     sys.exit(main())
