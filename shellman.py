@@ -697,9 +697,10 @@ class Markdown(Formatter):
                 print('- %s' % v)
 
     def render_authors(self, title):
-        print('# Authors')
-        for v in self.doc['author']:
-            print('- %s' % v)
+        if self.doc['author']:
+            print('# Authors')
+            for v in self.doc['author']:
+                print('- %s' % v)
 
     def render_bugs(self, title):
         self.render_multi_many_no_head('# Bugs', self.doc['bug'])
