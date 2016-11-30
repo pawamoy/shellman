@@ -81,8 +81,12 @@ Usage
 
 .. code:: bash
 
-    ./shellman.py FILE
-    SHELLMAN_FORMAT=man ./shellman.py FILE
+    shellman FILE
+    # equivalent to...
+    SHELLMAN_FORMAT=text shellman FILE
+    # also available:
+    SHELLMAN_FORMAT=man shellman FILE
+    SHELLMAN_FORMAT=markdown shellman FILE
 
 
 *The script does not currently handle arguments, except for the file name.*
