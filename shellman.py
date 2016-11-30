@@ -326,7 +326,7 @@ class Man(Formatter):
     def _render_function_brief(self, fn):
         if fn['brief']:
             print('%s' % self.esc(fn['brief']))
-            print()
+            print('')
 
     def _render_function_desc(self, fn):
         if fn['desc']:
@@ -346,7 +346,7 @@ class Man(Formatter):
                     param, desc = param[0], param[1:]
                     print('  \\fB%s\\fR' % self.esc(param).rstrip('\n'))
                     print('    %s' % self.esc(''.join(desc)))
-            print()
+            print('')
 
     def _render_function_pre(self, fn):
         if fn['pre']:
@@ -354,7 +354,7 @@ class Man(Formatter):
             print('Preconditions:')
             for pre in fn['pre']:
                 print('  %s' % self.esc(''.join(pre)))
-            print()
+            print('')
 
     def _render_function_return(self, fn):
         if fn['return']:
@@ -362,7 +362,7 @@ class Man(Formatter):
             print('Return code:')
             for ret in fn['return']:
                 print('  %s' % self.esc(''.join(ret)))
-            print()
+            print('')
 
     def _render_function_seealso(self, fn):
         if fn['seealso']:
@@ -370,7 +370,7 @@ class Man(Formatter):
             print('See also:')
             for seealso in fn['seealso']:
                 print('  %s' % self.esc(''.join(seealso)))
-            print()
+            print('')
 
     def _render_function_stderr(self, fn):
         if fn['stderr']:
@@ -378,7 +378,7 @@ class Man(Formatter):
             print('Standard error:')
             for stderr in fn['stderr']:
                 print('  %s' % self.esc(''.join(stderr)))
-            print()
+            print('')
 
     def _render_function_stdin(self, fn):
         if fn['stdin']:
@@ -386,7 +386,7 @@ class Man(Formatter):
             print('Standard input:')
             for stdin in fn['stdin']:
                 print('  %s' % self.esc(''.join(stdin)))
-            print()
+            print('')
 
     def _render_function_stdout(self, fn):
         if fn['stdout']:
@@ -394,7 +394,7 @@ class Man(Formatter):
             print('Standard output:')
             for stdout in fn['stdout']:
                 print('  %s' % self.esc(''.join(stdout)))
-            print()
+            print('')
 
     def _render_function(self, fn):
         for order in FUNCTION_ORDER:
@@ -538,7 +538,7 @@ class Text(Formatter):
     def _render_function_brief(self, fn):
         if fn['brief']:
             print('    %s' % fn['brief'])
-            print()
+            print('')
 
     def _render_function_desc(self, fn):
         if fn['desc']:
@@ -557,43 +557,43 @@ class Text(Formatter):
                     param, desc = param[0], param[1:]
                     print('      %s' % param.rstrip('\n'))
                     print('        %s' % ''.join(desc))
-            print()
+            print('')
 
     def _render_function_pre(self, fn):
         if fn['pre']:
             print('    Preconditions:')
             print('      %s' % fn['pre'])
-            print()
+            print('')
 
     def _render_function_return(self, fn):
         if fn['return']:
             print('    Return code:')
             print('      %s' % fn['return'])
-            print()
+            print('')
 
     def _render_function_seealso(self, fn):
         if fn['seealso']:
             print('    See also:')
             print('      %s' % fn['seealso'])
-            print()
+            print('')
 
     def _render_function_stderr(self, fn):
         if fn['stderr']:
             print('    Standard error:')
             print('      %s' % fn['stderr'])
-            print()
+            print('')
 
     def _render_function_stdin(self, fn):
         if fn['stdin']:
             print('    Standard input:')
             print('      %s' % fn['stdin'])
-            print()
+            print('')
 
     def _render_function_stdout(self, fn):
         if fn['stdout']:
             print('    Standard output:')
             print('      %s' % fn['stdout'])
-            print()
+            print('')
 
     def _render_function(self, fn):
         for order in FUNCTION_ORDER:
@@ -604,12 +604,12 @@ class Text(Formatter):
             return
 
         print('Functions:')
-        print()
+        print('')
         # summary
         for fn in self.doc['_fn']:
             print('  %s' % fn['fn'])
-        print()
-        print()
+        print('')
+        print('')
         # all
         for fn in self.doc['_fn']:
             self._render_function(fn)
@@ -680,6 +680,7 @@ class Markdown(Formatter):
         if value:
             print(title)
             print('%s' % ''.join(value))
+            print('')
 
     def render_multi_many(self, title, value):
         if value:
@@ -687,13 +688,15 @@ class Markdown(Formatter):
             for v in value:
                 print('- `%s`:' % v[0].rstrip('\n'))
                 if len(v) > 1:
-                    print('  %s' % ''.join(v[1:]))
+                    print('  %s' % ''.join(v[1:]).rstrip('\n'))
+            print('')
 
     def render_multi_many_no_head(self, title, value):
         if value:
             print(title)
             for v in value:
                 print('- %s' % v)
+            print('')
 
     def render_authors(self, title):
         if self.doc['author']:
@@ -713,7 +716,7 @@ class Markdown(Formatter):
     def render_date(self, title):
         if self.doc['date']:
             print('*Date: %s*' % self.doc['date'])
-            print()
+            print('')
 
     def render_description(self, title):
         if self.doc['desc']:
@@ -740,7 +743,7 @@ class Markdown(Formatter):
     def _render_function_brief(self, fn):
         if fn['brief']:
             print('%s' % fn['brief'])
-            print()
+            print('')
 
     def _render_function_desc(self, fn):
         if fn['desc']:
@@ -759,43 +762,43 @@ class Markdown(Formatter):
                     param, desc = param[0], param[1:]
                     print('- `%s`:' % param.rstrip('\n'))
                     print('  %s' % ''.join(desc))
-            print()
+            print('')
 
     def _render_function_pre(self, fn):
         if fn['pre']:
             print('### Preconditions')
             print('%s' % fn['pre'])
-            print()
+            print('')
 
     def _render_function_return(self, fn):
         if fn['return']:
             print('### Return code')
             print('%s' % fn['return'])
-            print()
+            print('')
 
     def _render_function_seealso(self, fn):
         if fn['seealso']:
             print('### See also')
             print('%s' % fn['seealso'])
-            print()
+            print('')
 
     def _render_function_stderr(self, fn):
         if fn['stderr']:
             print('### Standard error')
             print('%s' % fn['stderr'])
-            print()
+            print('')
 
     def _render_function_stdin(self, fn):
         if fn['stdin']:
             print('### Standard input')
             print('%s' % fn['stdin'])
-            print()
+            print('')
 
     def _render_function_stdout(self, fn):
         if fn['stdout']:
             print('### Standard output')
             print('%s' % fn['stdout'])
-            print()
+            print('')
 
     def _render_function(self, fn):
         for order in FUNCTION_ORDER:
@@ -806,12 +809,12 @@ class Markdown(Formatter):
             return
 
         print('# Functions')
-        print()
+        print('')
         # summary
         for fn in self.doc['_fn']:
             print('- %s' % fn['fn'])
-        print()
-        print()
+        print('')
+        print('')
         # all
         for fn in self.doc['_fn']:
             self._render_function(fn)
@@ -847,7 +850,12 @@ class Markdown(Formatter):
         if self.doc['usage']:
             print('# Usage')
             for v in self.doc['usage']:
-                print('- ```\n%s```' % ''.join(v))
+                if len(v) == 1:
+                    print('`%s`  ' % v[0].rstrip('\n'))
+                else:
+                    print('```\n%s```' % ''.join(
+                        _v[7:] if _v[:7] == '       ' else _v for _v in v))
+            print('')
 
     def render_version(self, title):
         if self.doc['version']:
