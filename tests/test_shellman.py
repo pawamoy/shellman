@@ -10,4 +10,4 @@ from shellman.cli import main
 
 
 def test_main():
-    assert main(['tests/fakescript.sh']) == 0
+    assert main(['tests/fakescripts/minimal.sh']) == 0

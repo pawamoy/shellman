@@ -42,6 +42,8 @@ def main(argv=sys.argv):
     """
 
     f = argv[0]
+    if f == sys.argv[0]:
+        f = argv[1]
     doc = Doc(f).read()
     fmt = os.environ.get('SHELLMAN_FORMAT', 'text')
     get_formatter(fmt)(doc).write()
