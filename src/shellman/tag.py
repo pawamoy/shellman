@@ -6,11 +6,41 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+"""
+Tag module.
+
+This module contains the Tag class.
+
+It also contains constants:
+
+- the TAGS dictionary which represents the available tags that
+  shellman will recognize.
+- the FN_TAG string which is the tag that start a function documentation
+  paragraph.
+- the FN_TAGS dictionary which represents the available function tags that
+  shellman will recognize.
+- and the FUNCTION_ORDER list which represents the order in which the
+  different function documentation tags will be written to stdout.
+"""
+
 
 class Tag(object):
+    """
+    Tag class.
+
+    A tag is a simple object with two attributes: occurrences and lines.
+    """
+
     MANY = '+'
 
     def __init__(self, occurrences, lines):
+        """
+        Init method.
+
+        Args:
+            occurrences (const/int): can be Tag.MANY or 1.
+            lines (const/int): can be Tag.MANY or 1.
+        """
         self.occurrences = occurrences
         self.lines = lines
 

@@ -32,15 +32,19 @@ from .formatter import get_formatter
 
 def main(argv=sys.argv):
     """
+    Main function.
+
     Args:
-        argv (list): List of arguments
+        argv (list): expected path of file to read
 
     Returns:
-        int: A return code
+        int: 0, unless exception
 
-    Does stuff.
+    Get the file to parse, construct a Doc object, get file's doc,
+    get the wanted format from environment variable SHELLMAN_FORMAT
+    (default to text), get the according formatter class, instantiate it
+    with acquired doc and write on stdout.
     """
-
     f = argv[0]
     if f == sys.argv[0]:
         f = argv[1]

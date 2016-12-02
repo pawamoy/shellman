@@ -6,11 +6,23 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+"""
+Text formatter module.
+
+This module contains the TextFormatter class.
+"""
+
 from ..tag import FUNCTION_ORDER
 from .base import BaseFormatter
 
 
 class TextFormatter(BaseFormatter):
+    """
+    Text formatter class.
+
+    This formatter will output documentation as simple text.
+    """
+
     SECTIONS_ORDER = (
         'SYNOPSIS',
         'DESCRIPTION',
@@ -74,19 +86,19 @@ class TextFormatter(BaseFormatter):
     def render_files(self, title):
         self.render_multi_many('Files:', self.doc['file'])
 
-    def _render_function_fn(self, fn):
+    def render_function_fn(self, fn):
         print('  %s' % fn['fn'])
 
-    def _render_function_brief(self, fn):
+    def render_function_brief(self, fn):
         if fn['brief']:
             print('    %s' % fn['brief'])
             print('')
 
-    def _render_function_desc(self, fn):
+    def render_function_desc(self, fn):
         if fn['desc']:
             print('    %s' % fn['desc'])
 
-    def _render_function_param(self, fn):
+    def render_function_param(self, fn):
         if fn['param']:
             print('    Parameters:')
             for param in fn['param']:
@@ -101,45 +113,45 @@ class TextFormatter(BaseFormatter):
                     print('        %s' % ''.join(desc))
             print('')
 
-    def _render_function_pre(self, fn):
+    def render_function_pre(self, fn):
         if fn['pre']:
             print('    Preconditions:')
             print('      %s' % fn['pre'])
             print('')
 
-    def _render_function_return(self, fn):
+    def render_function_return(self, fn):
         if fn['return']:
             print('    Return code:')
             print('      %s' % fn['return'])
             print('')
 
-    def _render_function_seealso(self, fn):
+    def render_function_seealso(self, fn):
         if fn['seealso']:
             print('    See also:')
             print('      %s' % fn['seealso'])
             print('')
 
-    def _render_function_stderr(self, fn):
+    def render_function_stderr(self, fn):
         if fn['stderr']:
             print('    Standard error:')
             print('      %s' % fn['stderr'])
             print('')
 
-    def _render_function_stdin(self, fn):
+    def render_function_stdin(self, fn):
         if fn['stdin']:
             print('    Standard input:')
             print('      %s' % fn['stdin'])
             print('')
 
-    def _render_function_stdout(self, fn):
+    def render_function_stdout(self, fn):
         if fn['stdout']:
             print('    Standard output:')
             print('      %s' % fn['stdout'])
             print('')
 
-    def _render_function(self, fn):
+    def render_function(self, fn):
         for order in FUNCTION_ORDER:
-            getattr(self, '_render_function_%s' % order)(fn)
+            getattr(self, 'render_function_%s' % order)(fn)
 
     def render_functions(self, title):
         if not self.doc['_fn']:
@@ -154,7 +166,7 @@ class TextFormatter(BaseFormatter):
         print('')
         # all
         for fn in self.doc['_fn']:
-            self._render_function(fn)
+            self.render_function(fn)
 
     def render_history(self, title):
         self.render_single_many('History:', self.doc['history'])

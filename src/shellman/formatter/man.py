@@ -6,6 +6,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+"""
+Man formatter module.
+
+This module contains the ManFormatter class.
+"""
+
 import re
 import sys
 
@@ -15,6 +21,12 @@ from .base import BaseFormatter
 
 
 class ManFormatter(BaseFormatter):
+    """
+    Man page formatter class.
+
+    This formatter will output documentation as a man page.
+    """
+
     SECTIONS_ORDER = (
         'NAME',
         'SYNOPSIS',
@@ -107,19 +119,19 @@ class ManFormatter(BaseFormatter):
     def render_files(self, title):
         self.render_multi_many(title, self.doc['file'])
 
-    def _render_function_fn(self, fn):
+    def render_function_fn(self, fn):
         print('.IP "\\fB%s\\fR" 4' % self.esc(fn['fn']))
 
-    def _render_function_brief(self, fn):
+    def render_function_brief(self, fn):
         if fn['brief']:
             print('%s' % self.esc(fn['brief']))
             print('')
 
-    def _render_function_desc(self, fn):
+    def render_function_desc(self, fn):
         if fn['desc']:
             print('%s' % self.esc(''.join(fn['desc'])))
 
-    def _render_function_param(self, fn):
+    def render_function_param(self, fn):
         if fn['param']:
             print('.ul')
             print('Parameters:')
@@ -135,7 +147,7 @@ class ManFormatter(BaseFormatter):
                     print('    %s' % self.esc(''.join(desc)))
             print('')
 
-    def _render_function_pre(self, fn):
+    def render_function_pre(self, fn):
         if fn['pre']:
             print('.ul')
             print('Preconditions:')
@@ -143,7 +155,7 @@ class ManFormatter(BaseFormatter):
                 print('  %s' % self.esc(''.join(pre)))
             print('')
 
-    def _render_function_return(self, fn):
+    def render_function_return(self, fn):
         if fn['return']:
             print('.ul')
             print('Return code:')
@@ -151,7 +163,7 @@ class ManFormatter(BaseFormatter):
                 print('  %s' % self.esc(''.join(ret)))
             print('')
 
-    def _render_function_seealso(self, fn):
+    def render_function_seealso(self, fn):
         if fn['seealso']:
             print('.ul')
             print('See also:')
@@ -159,7 +171,7 @@ class ManFormatter(BaseFormatter):
                 print('  %s' % self.esc(''.join(seealso)))
             print('')
 
-    def _render_function_stderr(self, fn):
+    def render_function_stderr(self, fn):
         if fn['stderr']:
             print('.ul')
             print('Standard error:')
@@ -167,7 +179,7 @@ class ManFormatter(BaseFormatter):
                 print('  %s' % self.esc(''.join(stderr)))
             print('')
 
-    def _render_function_stdin(self, fn):
+    def render_function_stdin(self, fn):
         if fn['stdin']:
             print('.ul')
             print('Standard input:')
@@ -175,7 +187,7 @@ class ManFormatter(BaseFormatter):
                 print('  %s' % self.esc(''.join(stdin)))
             print('')
 
-    def _render_function_stdout(self, fn):
+    def render_function_stdout(self, fn):
         if fn['stdout']:
             print('.ul')
             print('Standard output:')
@@ -183,9 +195,9 @@ class ManFormatter(BaseFormatter):
                 print('  %s' % self.esc(''.join(stdout)))
             print('')
 
-    def _render_function(self, fn):
+    def render_function(self, fn):
         for order in FUNCTION_ORDER:
-            getattr(self, '_render_function_%s' % order)(fn)
+            getattr(self, 'render_function_%s' % order)(fn)
 
     def render_functions(self, title):
         if not self.doc['_fn']:
@@ -199,7 +211,7 @@ class ManFormatter(BaseFormatter):
 
         # all
         for fn in self.doc['_fn']:
-            self._render_function(fn)
+            self.render_function(fn)
 
     def render_history(self, title):
         self.render_single_many(title, self.doc['history'])
