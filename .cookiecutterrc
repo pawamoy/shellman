@@ -36,7 +36,7 @@ default_context:
     project_name:                    'Shellman'
     project_short_description:       'Write doc in your shell scripts.'
     pyup:                            'yes'
-    release_date:                    'today'
+    release_date:                    '2016-11-30'
     repo_name:                       'shellman'
     requiresio:                      'no'
     scrutinizer:                     'no'
@@ -45,4 +45,3 @@ default_context:
     travis:                          'yes'
     version:                         '0.1.0'
     website:                         'http://pawamoy.github.io/'
-    year:                            'now'
