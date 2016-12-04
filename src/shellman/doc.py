@@ -166,8 +166,10 @@ class Doc(object):
                                     current_tag, value, end=True)
                             elif tag in TAGS.keys():
                                 in_function = False
-                                in_tag = self._update_value(
-                                    current_tag, value, end=True)
+                                if (TAGS[tag].occurrences == Tag.MANY or
+                                        self.doc[tag] is None or in_tag):
+                                    in_tag = self._update_value(
+                                        current_tag, value, end=True)
                             else:
                                 continue  # ignore invalid tags
                     else:
