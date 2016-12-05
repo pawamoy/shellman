@@ -38,4 +38,4 @@ def get_formatter(fmt):
     elif fmt in ('md', 'markdown'):
         return MarkdownFormatter
     else:
-        raise ValueError('Env var SHELLMAN_FORMAT incorrect')
+        raise ValueError('Env var SHELLMAN_FORMAT incorrect: %s' % fmt)

@@ -3,69 +3,69 @@
 ## \fn first occurrence
 ## testing multi line
 
-## \fn first occurrence
+## \fn second occurrence
 ## testing multi line
 
 
 ## \brief first occurrence
 ## testing multi line
 
-## \brief first occurrence
+## \brief second occurrence
 ## testing multi line
 
 
 ## \desc first occurrence
 ## testing multi line
 
-## \desc first occurrence
+## \desc second occurrence
 ## testing multi line
 
 
 ## \param first occurrence
 ## testing multi line
 
-## \param first occurrence
+## \param second occurrence
 ## testing multi line
 
 
 ## \pre first occurrence
 ## testing multi line
 
-## \pre first occurrence
+## \pre second occurrence
 ## testing multi line
 
 
 ## \return first occurrence
 ## testing multi line
 
-## \return first occurrence
+## \return second occurrence
 ## testing multi line
 
 
 ## \seealso first occurrence
 ## testing multi line
 
-## \seealso first occurrence
+## \seealso second occurrence
 ## testing multi line
 
 
 ## \stderr first occurrence
 ## testing multi line
 
-## \stderr first occurrence
+## \stderr second occurrence
 ## testing multi line
 
 
 ## \stdin first occurrence
 ## testing multi line
 
-## \stdin first occurrence
+## \stdin second occurrence
 ## testing multi line
 
 
 ## \stdout first occurrence
 ## testing multi line
 
-## \stdout first occurrence
+## \stdout second occurrence
 ## testing multi line
 

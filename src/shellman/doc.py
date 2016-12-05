@@ -12,10 +12,18 @@ Doc module.
 This module contains the class Doc.
 """
 
+from __future__ import print_function
+
 import os
 import re
 
+import sys
+
 from .tag import FN_TAG, FN_TAGS, TAGS, Tag
+
+
+def err(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 
 def _tag_value(line):
@@ -131,7 +139,7 @@ class Doc(object):
         self.doc['_fn'][-1][tag] = value.rstrip('\n')
         return False
 
-    def read(self):
+    def _read(self, warn=False, nice=True, failfast=False):
         """
         Read the file, build the documentation as dict of nested lists.
 
@@ -144,8 +152,9 @@ class Doc(object):
         current_tag = None
         in_tag = False
         in_function = False
+        warnings = []
         with open(self.file) as f:
-            for line in f:
+            for i, line in enumerate(f):
                 line = line.lstrip(' \t')
                 if line == '\n':
                     current_tag = None
@@ -167,11 +176,17 @@ class Doc(object):
                             elif tag in TAGS.keys():
                                 in_function = False
                                 if (TAGS[tag].occurrences == Tag.MANY or
-                                        self.doc[tag] is None or in_tag):
+                                        self.doc[tag] is None):
                                     in_tag = self._update_value(
                                         current_tag, value, end=True)
+                                else:
+                                    warnings.append('Line %d NON UNIQUE' % (i+1))
+                                    if not nice and failfast:
+                                        break
                             else:
-                                continue  # ignore invalid tags
+                                warnings.append('Line %d INVALID TAG' % (i+1))
+                                if not nice and failfast:
+                                    break
                     else:
                         if in_tag:
                             if in_function:
@@ -180,5 +195,26 @@ class Doc(object):
                             else:
                                 in_tag = self._update_value(current_tag, value)
                         else:
-                            pass  # doc without tag, ignored
-        return self.doc
+                            warnings.append('Line %d IGNORED' % (i+1))
+                            if not nice and failfast:
+                                break
+
+                else:
+                    current_tag = None
+                    in_tag = False
+
+        if warn and warnings:
+            for warning in warnings:
+                err(warning)
+
+        ok = nice or not warnings
+
+        return self.doc, ok
+
+    def read(self):
+        doc, ok = self._read(warn=False, nice=True, failfast=False)
+        return doc
+
+    def check(self, warn=True, nice=True, failfast=False):
+        doc, ok = self._read(warn=warn, nice=nice, failfast=failfast)
+        return ok

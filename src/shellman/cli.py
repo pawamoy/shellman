@@ -50,8 +50,10 @@ def main(argv=None):
         argv = sys.argv[1:]
 
     f = argv[0]
-    doc = Doc(f).read()
-    fmt = os.environ.get('SHELLMAN_FORMAT', 'text')
-    get_formatter(fmt)(doc).write()
+    doc = Doc(f)
+    ok = doc.check()
+    # doc = doc.read()
+    # fmt = os.environ.get('SHELLMAN_FORMAT', 'text')
+    # get_formatter(fmt)(doc).write()
 
     return 0
