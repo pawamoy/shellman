@@ -62,7 +62,7 @@ Installation
 
 ::
 
-    pip install [--user] shellman
+    [sudo] pip install shellman
 
 Documentation
 =============
