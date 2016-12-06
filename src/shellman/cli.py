@@ -23,11 +23,12 @@ Why does this file exist, and why not put this in __main__?
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
 
-import os
+import argparse
 import sys
 
 from .doc import Doc
 from .formatter import get_formatter
+from .tag import Tag
 
 
 def main(argv=None):
@@ -35,25 +36,66 @@ def main(argv=None):
     Main function.
 
     Args:
-        argv (list): expected path of file to read
+        argv (list): options and path to file to read
 
     Returns:
         int: 0, unless exception
 
     Get the file to parse, construct a Doc object, get file's doc,
-    get the wanted format from environment variable SHELLMAN_FORMAT
-    (default to text), get the according formatter class, instantiate it
-    with acquired doc and write on stdout.
+    get the according formatter class, instantiate it
+    with acquired doc and write on specified file (stdout by default).
     """
 
-    if argv is None:
-        argv = sys.argv[1:]
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-0', '-n', '--nice', action='store_true', dest='nice',
+        help='be nice: return 0 even if warnings (true)')
+    parser.add_argument(
+        '-1', '--failfast', action='store_true', dest='failfast',
+        help='exit 1 at first warning encountered '
+             '(only useful when not nice) (true)')
+    parser.add_argument(
+        '-c', '--check', action='store_true', dest='check',
+        help='check if the documentation is correct (false)')
+    parser.add_argument(
+        '-f', '--format', dest='format', default='text',
+        choices=['text', 'man', 'markdown'],
+        help='format to write to (text)')
+    parser.add_argument(
+        '-i', '--whitelist', '--ignore', action='store', dest='whitelist',
+        help='whitelisted tags: "customtag:1+,customtag2"')
+    parser.add_argument(
+        '-o', '--output', action='store', dest='output', nargs=1,
+        default=sys.stdout,
+        help='file to write to (stdout by default)')
+    parser.add_argument(
+        '-w', '--warn',  action='store_true', dest='warn',
+        help='actually display the warnings (true)')
+    parser.add_argument('FILE', help='path to the file to read')
 
-    f = argv[0]
-    doc = Doc(f)
-    ok = doc.check()
-    # doc = doc.read()
-    # fmt = os.environ.get('SHELLMAN_FORMAT', 'text')
-    # get_formatter(fmt)(doc).write()
+    args = parser.parse_args(argv)
+
+    if args.whitelist:
+        new_whitelist = {}
+        for tag in args.whitelist.split(','):
+            if ':' in tag:
+                tag, spec = tag.split(':')
+                occ, lines = spec
+                new_whitelist[tag] = Tag(occurrences=occ, lines=lines)
+            else:
+                new_whitelist[tag] = Tag()
+
+        args.whitelist = new_whitelist
+
+    doc = Doc(args.FILE, whitelist=args.whitelist)
+
+    if args.check:
+        ok = doc.check(args.warn, args.nice, args.failfast)
+        return 0 if ok else 1
+    else:
+        doc_read = doc.read()
+        fmt = args.format
+        formatter = get_formatter(fmt)
+        formatter(doc_read, output=args.output).write()
 
     return 0

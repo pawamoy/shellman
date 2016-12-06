@@ -11,8 +11,8 @@ import pytest
 
 from shellman.cli import main
 from shellman.doc import Doc
-from shellman.tag import TAGS, Tag
 from shellman.formatter import get_formatter
+from shellman.tag import TAGS, Tag
 
 
 class TestMain(object):
@@ -28,6 +28,17 @@ class TestMain(object):
     def test_wrong_doc_check_fails(self):
         assert not Doc('tests/fakescripts/wrong.sh').check(
             nice=False, failfast=False)
+
+    def test_correctly_ignore_whitelisted_tag(self, capsys):
+        doc = Doc('tests/fakescripts/invalid.sh', whitelist={'customx': Tag()})
+        assert doc.check(nice=True, warn=True, failfast=False)
+        out, err = capsys.readouterr()
+        assert 'customx' not in err
+        assert not doc.check(nice=False, warn=True, failfast=True)
+        out, err = capsys.readouterr()
+        assert 'customy' in err
+        assert not doc.check(nice=False, warn=True, failfast=False)
+        assert doc.check(nice=True, warn=True, failfast=True)
 
     def test_wrong_doc_check_fails_fast(self):
         assert not Doc('tests/fakescripts/wrong.sh').check(
@@ -157,7 +168,7 @@ class TestFormatter(object):
     def test_get_formatter(self):
         with pytest.raises(ValueError) as ve:
             get_formatter('unknown')
-        assert all(x in str(ve.value) for x in ('SHELLMAN_FORMAT', 'unknown'))
+        assert all(x in str(ve.value) for x in ('incorrect format', 'unknown'))
 
     def test_text_formatter(self):
         formatter = get_formatter('text')
@@ -174,3 +185,11 @@ class TestFormatter(object):
         for doc in self.docs:
             formatter(doc).write()
 
+
+class TestCommandLine(object):
+    def test_whitelist_option(self, capsys):
+        assert main(['tests/fakescripts/invalid.sh',
+                     '-cwi', 'customx:1+,customy']) == 0
+        out, err = capsys.readouterr()
+        assert 'invalid' not in err
+        assert 'ignored' not in err

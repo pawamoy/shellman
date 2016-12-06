@@ -13,3 +13,13 @@ echo "break"
 
 ## \brief accepts only one line
 ## not many
+
+## \some_tag
+
+## \some_other_tag
+##
+
+##\custom
+
+##\custom
+##many lines

@@ -35,7 +35,7 @@ def get_formatter(fmt):
         return TextFormatter
     elif fmt == 'man':
         return ManFormatter
-    elif fmt in ('md', 'markdown'):
+    elif fmt == 'markdown':
         return MarkdownFormatter
     else:
-        raise ValueError('Env var SHELLMAN_FORMAT incorrect: %s' % fmt)
+        raise ValueError('shellman: error: incorrect format %s' % fmt)

@@ -57,17 +57,22 @@ class Doc(object):
     want to read the file and get its documentation as dict of nested lists.
     """
 
-    def __init__(self, file):
+    def __init__(self, file, whitelist=None):
         """
         Init method.
 
         Args:
             file (str): path to the file to read.
+            whitelist (dict): dict of tags to not check.
         """
         self.file = file
         self.doc = {k: None for k in TAGS.keys()}
         self.doc['_file'] = os.path.basename(self.file)
         self.doc['_fn'] = []
+        if whitelist is None:
+            self.whitelist = {}
+        else:
+            self.whitelist = whitelist
 
     def _update_value(self, tag, value, end=False):
         """
@@ -154,58 +159,69 @@ class Doc(object):
         in_function = False
         warnings = []
         with open(self.file) as f:
+
             for i, line in enumerate(f):
                 line = line.lstrip(' \t')
+
                 if line == '\n':
                     current_tag = None
                     in_tag = False
-                elif re.search(r'^##', line):
-                    tag, value = _tag_value(line)
-                    if tag is not None:
-                        current_tag = tag
-                        if tag == FN_TAG:
-                            in_function = True
-                            self.doc['_fn'].append(
-                                {k: None for k in FN_TAGS.keys()})
-                            in_tag = self._update_fn_value(
-                                current_tag, value, end=True)
-                        else:
-                            if in_function and tag in FN_TAGS.keys():
-                                in_tag = self._update_fn_value(
-                                    current_tag, value, end=True)
-                            elif tag in TAGS.keys():
-                                in_function = False
-                                if (TAGS[tag].occurrences == Tag.MANY or
-                                        self.doc[tag] is None):
-                                    in_tag = self._update_value(
-                                        current_tag, value, end=True)
-                                else:
-                                    warnings.append('Line %d NON UNIQUE' % (i+1))
-                                    if not nice and failfast:
-                                        break
-                            else:
-                                warnings.append('Line %d INVALID TAG' % (i+1))
-                                if not nice and failfast:
-                                    break
-                    else:
-                        if in_tag:
-                            if in_function:
-                                in_tag = self._update_fn_value(
-                                    current_tag, value)
-                            else:
-                                in_tag = self._update_value(current_tag, value)
-                        else:
-                            warnings.append('Line %d IGNORED' % (i+1))
-                            if not nice and failfast:
-                                break
+                    continue
 
-                else:
+                if not re.search(r'^##', line):
                     current_tag = None
                     in_tag = False
+                    continue
+
+                tag, value = _tag_value(line)
+
+                if tag is None:
+                    if not in_tag:
+                        if current_tag not in self.whitelist.keys():
+                            warnings.append('%d: line ignored' % (i + 1))
+                            if not nice and failfast:
+                                break
+                        continue
+
+                    if in_function:
+                        in_tag = self._update_fn_value(current_tag, value)
+                    else:
+                        in_tag = self._update_value(current_tag, value)
+
+                    continue
+
+                current_tag = tag
+
+                if tag == FN_TAG:
+                    in_function = True
+                    self.doc['_fn'].append({k: None for k in FN_TAGS.keys()})
+                    in_tag = self._update_fn_value(current_tag, value,
+                                                   end=True)
+
+                else:
+                    if in_function and tag in FN_TAGS.keys():
+                        in_tag = self._update_fn_value(current_tag, value,
+                                                       end=True)
+                    elif tag in TAGS.keys():
+                        in_function = False
+                        if (TAGS[tag].occurrences == Tag.MANY or
+                                self.doc[tag] is None):
+                            in_tag = self._update_value(current_tag, value,
+                                                        end=True)
+                        else:
+                            warnings.append('%d: tag "%s" should be unique' % (
+                                i + 1, current_tag))
+                            if not nice and failfast:
+                                break
+                    elif tag not in self.whitelist.keys():
+                        warnings.append('%d: invalid tag "%s"' % (
+                            i + 1, current_tag))
+                        if not nice and failfast:
+                            break
 
         if warn and warnings:
             for warning in warnings:
-                err(warning)
+                err('%s:%s' % (self.file, warning))
 
         ok = nice or not warnings
 

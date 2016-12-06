@@ -33,7 +33,7 @@ class Tag(object):
 
     MANY = '+'
 
-    def __init__(self, occurrences, lines):
+    def __init__(self, occurrences=1, lines=1):
         """
         Init method.
 
