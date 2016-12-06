@@ -26,7 +26,6 @@ Shellman
     :target: https://landscape.io/github/Pawamoy/shellman/
     :alt: Code Quality Status
 
-
 .. |pyup| image:: https://pyup.io/repos/github/pawamoy/shellman/shield.svg
     :target: https://pyup.io/repos/github/pawamoy/shellman/
     :alt: Updates
@@ -48,9 +47,8 @@ Shellman
 
 Write doc in your shell scripts.
 
-Shellman is a Python script that read files, search for special comment lines
-(documentation) and output formatted documentation
-as text, markdown or man page.
+Shellman is a Python package that read files, search for special comment lines
+(documentation) and output formatted documentation as text, markdown or man page.
 
 License
 =======
@@ -64,7 +62,7 @@ Installation
 
 ::
 
-    pip install shellman
+    pip install [--user] shellman
 
 Documentation
 =============
@@ -79,17 +77,26 @@ To run all the tests: ``tox``
 Usage
 =====
 
+To render the doc on stdout:
+
 .. code:: bash
 
     shellman FILE
     # equivalent to...
-    SHELLMAN_FORMAT=text shellman FILE
-    # also available:
-    SHELLMAN_FORMAT=man shellman FILE
-    SHELLMAN_FORMAT=markdown shellman FILE
+    shellman --format=text FILE
+    # other available formats:
+    shellman --format=man FILE
+    shellman --format=markdown FILE
 
+You can pass the ``-o``, ``--output`` option to specify a file to write to, instead of stdout.
 
-*The script does not currently handle arguments, except for the file name.*
+To check if the documentation within a script is correct:
+
+.. code:: bash
+
+    shellman --check --warn FILE         # CI test
+    shellman --check --failfast FILE     # quick CI test with no output
+    shellman --check --warn --nice FILE  # always passing test with output
 
 In a script, for automatic help text:
 
@@ -104,7 +111,7 @@ In a script, for automatic help text:
       case "$1" in
         ## \option -h, --help
         ## Print this help and exit.
-        -h|--help) shellman.py "$0"; exit 0 ;;
+        -h|--help) shellman "$0"; exit 0 ;;
       esac
     }
 

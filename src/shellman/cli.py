@@ -49,11 +49,11 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-0', '-n', '--nice', action='store_true', dest='nice',
-        help='be nice: return 0 even if warnings (true)')
+        help='be nice: return 0 even if warnings (false)')
     parser.add_argument(
         '-1', '--failfast', action='store_true', dest='failfast',
         help='exit 1 at first warning encountered '
-             '(only useful when not nice) (true)')
+             '(only useful when not nice) (false)')
     parser.add_argument(
         '-c', '--check', action='store_true', dest='check',
         help='check if the documentation is correct (false)')
@@ -70,7 +70,7 @@ def main(argv=None):
         help='file to write to (stdout by default)')
     parser.add_argument(
         '-w', '--warn',  action='store_true', dest='warn',
-        help='actually display the warnings (true)')
+        help='actually display the warnings (false)')
     parser.add_argument('FILE', help='path to the file to read')
 
     args = parser.parse_args(argv)
