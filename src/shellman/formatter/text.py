@@ -33,27 +33,27 @@ class TextFormatter(BaseFormatter):
 
     def render_single_many(self, title, value):
         if value:
-            print(title)
-            print('  %s' % ''.join(value))
+            self.out(title)
+            self.out('  %s' % ''.join(value))
 
     def render_multi_many(self, title, value):
         if value:
-            print(title)
+            self.out(title)
             for v in value:
-                print('  %s' % v[0].rstrip('\n'))
+                self.out('  %s' % v[0].rstrip('\n'))
                 if len(v) > 1:
-                    print('    %s' % ''.join(v[1:]))
+                    self.out('    %s' % ''.join(v[1:]))
 
     def render_multi_many_no_head(self, title, value):
         if value:
-            print(title)
+            self.out(title)
             for v in value:
-                print('  %s' % v)
+                self.out('  %s' % v)
 
     def render_authors(self, title):
-        print('Authors:')
+        self.out('Authors:')
         for v in self.doc['author']:
-            print('  %s' % v)
+            self.out('  %s' % v)
 
     def render_bugs(self, title):
         self.render_multi_many_no_head('Bugs:', self.doc['bug'])
@@ -65,11 +65,11 @@ class TextFormatter(BaseFormatter):
         self.render_single_many('Copyright:', self.doc['copyright'])
 
     def render_date(self, title):
-        print('Date: %s' % self.doc['date'])
+        self.out('Date: %s' % self.doc['date'])
 
     def render_description(self, title):
         if self.doc['desc']:
-            print('%s' % ''.join(self.doc['desc']))
+            self.out('%s' % ''.join(self.doc['desc']))
 
     def render_environment_variables(self, title):
         self.render_multi_many('Environment variables:', self.doc['env'])
@@ -87,67 +87,67 @@ class TextFormatter(BaseFormatter):
         self.render_multi_many('Files:', self.doc['file'])
 
     def render_function_fn(self, fn):
-        print('  %s' % fn['fn'])
+        self.out('  %s' % fn['fn'])
 
     def render_function_brief(self, fn):
         if fn['brief']:
-            print('    %s' % fn['brief'])
-            print('')
+            self.out('    %s' % fn['brief'])
+            self.out('')
 
     def render_function_desc(self, fn):
         if fn['desc']:
-            print('    %s' % fn['desc'])
+            self.out('    %s' % fn['desc'])
 
     def render_function_param(self, fn):
         if fn['param']:
-            print('    Parameters:')
+            self.out('    Parameters:')
             for param in fn['param']:
                 if len(param) == 1:
                     s = param[0].split(' ')
                     param, desc = s[0], s[1:]
-                    print('      %-12s %s' % (
+                    self.out('      %-12s %s' % (
                         param, ' '.join(desc).rstrip('\n')))
                 else:
                     param, desc = param[0], param[1:]
-                    print('      %s' % param.rstrip('\n'))
-                    print('        %s' % ''.join(desc))
-            print('')
+                    self.out('      %s' % param.rstrip('\n'))
+                    self.out('        %s' % ''.join(desc))
+            self.out('')
 
     def render_function_pre(self, fn):
         if fn['pre']:
-            print('    Preconditions:')
-            print('      %s' % fn['pre'])
-            print('')
+            self.out('    Preconditions:')
+            self.out('      %s' % fn['pre'])
+            self.out('')
 
     def render_function_return(self, fn):
         if fn['return']:
-            print('    Return code:')
-            print('      %s' % fn['return'])
-            print('')
+            self.out('    Return code:')
+            self.out('      %s' % fn['return'])
+            self.out('')
 
     def render_function_seealso(self, fn):
         if fn['seealso']:
-            print('    See also:')
-            print('      %s' % fn['seealso'])
-            print('')
+            self.out('    See also:')
+            self.out('      %s' % fn['seealso'])
+            self.out('')
 
     def render_function_stderr(self, fn):
         if fn['stderr']:
-            print('    Standard error:')
-            print('      %s' % fn['stderr'])
-            print('')
+            self.out('    Standard error:')
+            self.out('      %s' % fn['stderr'])
+            self.out('')
 
     def render_function_stdin(self, fn):
         if fn['stdin']:
-            print('    Standard input:')
-            print('      %s' % fn['stdin'])
-            print('')
+            self.out('    Standard input:')
+            self.out('      %s' % fn['stdin'])
+            self.out('')
 
     def render_function_stdout(self, fn):
         if fn['stdout']:
-            print('    Standard output:')
-            print('      %s' % fn['stdout'])
-            print('')
+            self.out('    Standard output:')
+            self.out('      %s' % fn['stdout'])
+            self.out('')
 
     def render_function(self, fn):
         for order in FUNCTION_ORDER:
@@ -157,13 +157,13 @@ class TextFormatter(BaseFormatter):
         if not self.doc['_fn']:
             return
 
-        print('Functions:')
-        print('')
+        self.out('Functions:')
+        self.out('')
         # summary
         for fn in self.doc['_fn']:
-            print('  %s' % fn['fn'])
-        print('')
-        print('')
+            self.out('  %s' % fn['fn'])
+        self.out('')
+        self.out('')
         # all
         for fn in self.doc['_fn']:
             self.render_function(fn)
@@ -175,7 +175,7 @@ class TextFormatter(BaseFormatter):
         self.render_single_many('License:', self.doc['license'])
 
     def render_name(self, title):
-        print('%s - %s' % (self.doc['_file'], self.doc['brief'][0]))
+        self.out('%s - %s' % (self.doc['_file'], self.doc['brief'][0]))
 
     def render_notes(self, title):
         self.render_multi_many_no_head('Notes:', self.doc['note'])
@@ -197,9 +197,9 @@ class TextFormatter(BaseFormatter):
 
     def render_usage(self, title):
         if self.doc['usage']:
-            print('Usage: %s' % ''.join(self.doc['usage'][0]))
+            self.out('Usage: %s' % ''.join(self.doc['usage'][0]))
             for v in self.doc['usage'][1:]:
-                print('       %s' % ''.join(v))
+                self.out('       %s' % ''.join(v))
 
     def render_version(self, title):
-        print('Version: %s' % self.doc['version'])
+        self.out('Version: %s' % self.doc['version'])

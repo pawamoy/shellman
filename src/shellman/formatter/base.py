@@ -93,7 +93,6 @@ class BaseFormatter(object):
         self.write_init()
         for section in self.SECTIONS_ORDER:
             self.render[section](section)
-        # self.output.close()
 
     def write_init(self):
         """Write some header on stdout (useful for man pages)."""

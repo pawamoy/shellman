@@ -49,31 +49,31 @@ class MarkdownFormatter(BaseFormatter):
 
     def render_single_many(self, title, value):
         if value:
-            print(title)
-            print('%s' % ''.join(value))
-            print('')
+            self.out(title)
+            self.out('%s' % ''.join(value))
+            self.out('')
 
     def render_multi_many(self, title, value):
         if value:
-            print(title)
+            self.out(title)
             for v in value:
-                print('- `%s`:' % v[0].rstrip('\n'))
+                self.out('- `%s`:' % v[0].rstrip('\n'))
                 if len(v) > 1:
-                    print('  %s' % ''.join(v[1:]).rstrip('\n'))
-            print('')
+                    self.out('  %s' % ''.join(v[1:]).rstrip('\n'))
+            self.out('')
 
     def render_multi_many_no_head(self, title, value):
         if value:
-            print(title)
+            self.out(title)
             for v in value:
-                print('- %s' % v)
-            print('')
+                self.out('- %s' % v)
+            self.out('')
 
     def render_authors(self, title):
         if self.doc['author']:
-            print('# Authors')
+            self.out('# Authors')
             for v in self.doc['author']:
-                print('- %s' % v)
+                self.out('- %s' % v)
 
     def render_bugs(self, title):
         self.render_multi_many_no_head('# Bugs', self.doc['bug'])
@@ -86,12 +86,12 @@ class MarkdownFormatter(BaseFormatter):
 
     def render_date(self, title):
         if self.doc['date']:
-            print('*Date: %s*' % self.doc['date'])
-            print('')
+            self.out('*Date: %s*' % self.doc['date'])
+            self.out('')
 
     def render_description(self, title):
         if self.doc['desc']:
-            print('%s' % ''.join(self.doc['desc']))
+            self.out('%s' % ''.join(self.doc['desc']))
 
     def render_environment_variables(self, title):
         self.render_multi_many('# Environment variables', self.doc['env'])
@@ -109,67 +109,67 @@ class MarkdownFormatter(BaseFormatter):
         self.render_multi_many('# Files', self.doc['file'])
 
     def render_function_fn(self, fn):
-        print('## %s' % fn['fn'])
+        self.out('## %s' % fn['fn'])
 
     def render_function_brief(self, fn):
         if fn['brief']:
-            print('%s' % fn['brief'])
-            print('')
+            self.out('%s' % fn['brief'])
+            self.out('')
 
     def render_function_desc(self, fn):
         if fn['desc']:
-            print('%s' % fn['desc'])
+            self.out('%s' % fn['desc'])
 
     def render_function_param(self, fn):
         if fn['param']:
-            print('### Parameters')
+            self.out('### Parameters')
             for param in fn['param']:
                 if len(param) == 1:
                     s = param[0].split(' ')
                     param, desc = s[0], s[1:]
-                    print('- `%s`: %s' % (
+                    self.out('- `%s`: %s' % (
                         param, ' '.join(desc).rstrip('\n')))
                 else:
                     param, desc = param[0], param[1:]
-                    print('- `%s`:' % param.rstrip('\n'))
-                    print('  %s' % ''.join(desc))
-            print('')
+                    self.out('- `%s`:' % param.rstrip('\n'))
+                    self.out('  %s' % ''.join(desc))
+            self.out('')
 
     def render_function_pre(self, fn):
         if fn['pre']:
-            print('### Preconditions')
-            print('%s' % fn['pre'])
-            print('')
+            self.out('### Preconditions')
+            self.out('%s' % fn['pre'])
+            self.out('')
 
     def render_function_return(self, fn):
         if fn['return']:
-            print('### Return code')
-            print('%s' % fn['return'])
-            print('')
+            self.out('### Return code')
+            self.out('%s' % fn['return'])
+            self.out('')
 
     def render_function_seealso(self, fn):
         if fn['seealso']:
-            print('### See also')
-            print('%s' % fn['seealso'])
-            print('')
+            self.out('### See also')
+            self.out('%s' % fn['seealso'])
+            self.out('')
 
     def render_function_stderr(self, fn):
         if fn['stderr']:
-            print('### Standard error')
-            print('%s' % fn['stderr'])
-            print('')
+            self.out('### Standard error')
+            self.out('%s' % fn['stderr'])
+            self.out('')
 
     def render_function_stdin(self, fn):
         if fn['stdin']:
-            print('### Standard input')
-            print('%s' % fn['stdin'])
-            print('')
+            self.out('### Standard input')
+            self.out('%s' % fn['stdin'])
+            self.out('')
 
     def render_function_stdout(self, fn):
         if fn['stdout']:
-            print('### Standard output')
-            print('%s' % fn['stdout'])
-            print('')
+            self.out('### Standard output')
+            self.out('%s' % fn['stdout'])
+            self.out('')
 
     def render_function(self, fn):
         for order in FUNCTION_ORDER:
@@ -179,13 +179,13 @@ class MarkdownFormatter(BaseFormatter):
         if not self.doc['_fn']:
             return
 
-        print('# Functions')
-        print('')
+        self.out('# Functions')
+        self.out('')
         # summary
         for fn in self.doc['_fn']:
-            print('- %s' % fn['fn'])
-        print('')
-        print('')
+            self.out('- %s' % fn['fn'])
+        self.out('')
+        self.out('')
         # all
         for fn in self.doc['_fn']:
             self.render_function(fn)
@@ -197,7 +197,7 @@ class MarkdownFormatter(BaseFormatter):
         self.render_single_many('# License', self.doc['license'])
 
     def render_name(self, title):
-        print('**%s** - %s' % (self.doc['_file'], self.doc['brief']))
+        self.out('**%s** - %s' % (self.doc['_file'], self.doc['brief']))
 
     def render_notes(self, title):
         self.render_multi_many_no_head('# Notes', self.doc['note'])
@@ -219,15 +219,15 @@ class MarkdownFormatter(BaseFormatter):
 
     def render_usage(self, title):
         if self.doc['usage']:
-            print('# Usage')
+            self.out('# Usage')
             for v in self.doc['usage']:
                 if len(v) == 1:
-                    print('`%s`  ' % v[0].rstrip('\n'))
+                    self.out('`%s`  ' % v[0].rstrip('\n'))
                 else:
-                    print('```\n%s```' % ''.join(
+                    self.out('```\n%s```' % ''.join(
                         _v[7:] if _v[:7] == '       ' else _v for _v in v))
-            print('')
+            self.out('')
 
     def render_version(self, title):
         if self.doc['version']:
-            print('# Version\n%s' % self.doc['version'])
+            self.out('# Version\n%s' % self.doc['version'])

@@ -24,6 +24,7 @@ Why does this file exist, and why not put this in __main__?
 """
 
 import argparse
+import os
 import sys
 
 from .doc import Doc
@@ -65,13 +66,26 @@ def main(argv=None):
         '-i', '--whitelist', '--ignore', action='store', dest='whitelist',
         help='whitelisted tags: "customtag:1+,customtag2"')
     parser.add_argument(
-        '-o', '--output', action='store', dest='output', nargs=1,
+        '-o', '--output', action='store', dest='output',
         default=sys.stdout,
         help='file to write to (stdout by default)')
     parser.add_argument(
         '-w', '--warn',  action='store_true', dest='warn',
         help='actually display the warnings (false)')
-    parser.add_argument('FILE', help='path to the file to read')
+
+    def valid_file(value):
+        if not value:
+            raise argparse.ArgumentTypeError("'' is not a valid file path")
+        elif not os.path.exists(value):
+            raise argparse.ArgumentTypeError("%s is not a valid file path" %
+                                             value)
+        elif os.path.isdir(value):
+            raise argparse.ArgumentTypeError("%s is a directory, "
+                                             "not a regular file" % value)
+        return value
+
+    parser.add_argument('FILE', type=valid_file,
+                        help='path to the file to read')
 
     args = parser.parse_args(argv)
 

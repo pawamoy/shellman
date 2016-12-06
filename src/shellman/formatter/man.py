@@ -54,40 +54,40 @@ class ManFormatter(BaseFormatter):
         return string
 
     def write_init(self):
-        print('.if n.ad l')
-        print('.nh')
-        print('.TH %s 1 "%s" "Shellman %s" "User Commands"' % (
+        self.out('.if n.ad l')
+        self.out('.nh')
+        self.out('.TH %s 1 "%s" "Shellman %s" "User Commands"' % (
             self.doc['_file'], self.esc(self.doc['date']) or '', __version__))
 
     def render_single_many(self, title, value):
         if value:
-            print('.SH "%s"' % title)
-            print('%s' % self.esc(''.join(value)))
+            self.out('.SH "%s"' % title)
+            self.out('%s' % self.esc(''.join(value)))
 
     def render_multi_many(self, title, value):
         if value:
-            print('.SH "%s"' % title)
+            self.out('.SH "%s"' % title)
             for v in value:
                 if len(v) == 1:
                     s = v[0].split(' ')
                     h, b = s[0], ' '.join(s[1:]).rstrip('\n')
                 else:
                     h, b = v[0].rstrip('\n'), ''.join(v[1:]).rstrip('\n')
-                print('.IP "\\fB%s\\fR" 4' % h)
-                print(self.esc(b))
+                self.out('.IP "\\fB%s\\fR" 4' % h)
+                self.out(self.esc(b))
 
     def render_multi_many_no_head(self, title, value):
         if value:
-            print('.SH "%s"' % title)
+            self.out('.SH "%s"' % title)
             for v in value:
-                print('%s' % self.esc(''.join(v)))
+                self.out('%s' % self.esc(''.join(v)))
 
     def render_authors(self, title):
         if self.doc['author']:
-            print('.SH "%s"' % title)
+            self.out('.SH "%s"' % title)
             for author in self.doc['author']:
-                print('.br')
-                print(author)
+                self.out('.br')
+                self.out(author)
 
     def render_bugs(self, title):
         self.render_multi_many_no_head(title, self.doc['bug'])
@@ -120,80 +120,80 @@ class ManFormatter(BaseFormatter):
         self.render_multi_many(title, self.doc['file'])
 
     def render_function_fn(self, fn):
-        print('.IP "\\fB%s\\fR" 4' % self.esc(fn['fn']))
+        self.out('.IP "\\fB%s\\fR" 4' % self.esc(fn['fn']))
 
     def render_function_brief(self, fn):
         if fn['brief']:
-            print('%s' % self.esc(fn['brief']))
-            print('')
+            self.out('%s' % self.esc(fn['brief']))
+            self.out('')
 
     def render_function_desc(self, fn):
         if fn['desc']:
-            print('%s' % self.esc(''.join(fn['desc'])))
+            self.out('%s' % self.esc(''.join(fn['desc'])))
 
     def render_function_param(self, fn):
         if fn['param']:
-            print('.ul')
-            print('Parameters:')
+            self.out('.ul')
+            self.out('Parameters:')
             for param in fn['param']:
                 if len(param) == 1:
                     s = param[0].split(' ')
                     param, desc = s[0], s[1:]
-                    print('  \\fB%-12s\\fR %s' % (
+                    self.out('  \\fB%-12s\\fR %s' % (
                         param, self.esc(' '.join(desc)).rstrip('\n')))
                 else:
                     param, desc = param[0], param[1:]
-                    print('  \\fB%s\\fR' % self.esc(param).rstrip('\n'))
-                    print('    %s' % self.esc(''.join(desc)))
-            print('')
+                    self.out('  \\fB%s\\fR' % self.esc(param).rstrip('\n'))
+                    self.out('    %s' % self.esc(''.join(desc)))
+            self.out('')
 
     def render_function_pre(self, fn):
         if fn['pre']:
-            print('.ul')
-            print('Preconditions:')
+            self.out('.ul')
+            self.out('Preconditions:')
             for pre in fn['pre']:
-                print('  %s' % self.esc(''.join(pre)))
-            print('')
+                self.out('  %s' % self.esc(''.join(pre)))
+            self.out('')
 
     def render_function_return(self, fn):
         if fn['return']:
-            print('.ul')
-            print('Return code:')
+            self.out('.ul')
+            self.out('Return code:')
             for ret in fn['return']:
-                print('  %s' % self.esc(''.join(ret)))
-            print('')
+                self.out('  %s' % self.esc(''.join(ret)))
+            self.out('')
 
     def render_function_seealso(self, fn):
         if fn['seealso']:
-            print('.ul')
-            print('See also:')
+            self.out('.ul')
+            self.out('See also:')
             for seealso in fn['seealso']:
-                print('  %s' % self.esc(''.join(seealso)))
-            print('')
+                self.out('  %s' % self.esc(''.join(seealso)))
+            self.out('')
 
     def render_function_stderr(self, fn):
         if fn['stderr']:
-            print('.ul')
-            print('Standard error:')
+            self.out('.ul')
+            self.out('Standard error:')
             for stderr in fn['stderr']:
-                print('  %s' % self.esc(''.join(stderr)))
-            print('')
+                self.out('  %s' % self.esc(''.join(stderr)))
+            self.out('')
 
     def render_function_stdin(self, fn):
         if fn['stdin']:
-            print('.ul')
-            print('Standard input:')
+            self.out('.ul')
+            self.out('Standard input:')
             for stdin in fn['stdin']:
-                print('  %s' % self.esc(''.join(stdin)))
-            print('')
+                self.out('  %s' % self.esc(''.join(stdin)))
+            self.out('')
 
     def render_function_stdout(self, fn):
         if fn['stdout']:
-            print('.ul')
-            print('Standard output:')
+            self.out('.ul')
+            self.out('Standard output:')
             for stdout in fn['stdout']:
-                print('  %s' % self.esc(''.join(stdout)))
-            print('')
+                self.out('  %s' % self.esc(''.join(stdout)))
+            self.out('')
 
     def render_function(self, fn):
         for order in FUNCTION_ORDER:
@@ -203,11 +203,11 @@ class ManFormatter(BaseFormatter):
         if not self.doc['_fn']:
             return
 
-        print('.SH "%s"' % title)
+        self.out('.SH "%s"' % title)
         # summary
         for fn in self.doc['_fn']:
-            print('%s' % self.esc(fn['fn']))
-            print('.br')
+            self.out('%s' % self.esc(fn['fn']))
+            self.out('.br')
 
         # all
         for fn in self.doc['_fn']:
@@ -221,9 +221,9 @@ class ManFormatter(BaseFormatter):
 
     def render_name(self, title):
         if self.doc['brief']:
-            print('.SH "%s"' % title)
-            print('%s \- %s' % (self.doc['_file'],
-                                self.esc(self.doc['brief'])))
+            self.out('.SH "%s"' % title)
+            self.out('%s \- %s' % (self.doc['_file'],
+                                   self.esc(self.doc['brief'])))
 
     def render_notes(self, title):
         self.render_multi_many_no_head(title, self.doc['note'])
@@ -231,11 +231,11 @@ class ManFormatter(BaseFormatter):
     def render_options(self, title):
         if not self.doc['option']:
             return
-        print('.SH "%s"' % title)
+        self.out('.SH "%s"' % title)
         for option in self.doc['option']:
-            print('.IP "\\fB%s\\fR" 4' % option[0]
-                  .rstrip('\n')
-                  .replace(',', '\\fR,\\fB'))
+            self.out('.IP "\\fB%s\\fR" 4' % option[0]
+                     .rstrip('\n')
+                     .replace(',', '\\fR,\\fB'))
             sys.stdout.write(''.join(option[1:]))
 
     def render_see_also(self, title):
@@ -253,14 +253,14 @@ class ManFormatter(BaseFormatter):
     def render_usage(self, title):
         if not self.doc['usage']:
             return
-        print('.SH "%s"' % title)
+        self.out('.SH "%s"' % title)
         rep_reg_opt = re.compile(r'(--?[a-z0-9-]+=?)')
         rep_reg_arg = re.compile(r'([A-Z]+)')
         for usage in self.doc['usage']:
             syn = ''.join(usage)
             syn = rep_reg_arg.sub(r'\\fI\1\\fR', syn)  # order is important!
             syn = rep_reg_opt.sub(r'\\fB\1\\fR', syn)
-            print('.br')
+            self.out('.br')
             sys.stdout.write('\\fB%s\\fR %s' % (
                 self.doc['_file'], self.esc(syn)))
 
