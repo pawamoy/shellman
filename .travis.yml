@@ -24,6 +24,7 @@ before_install:
   - lsb_release -a
   - pip install codecov
   
+  
 install:
   - pip install tox
   - pip install -r requirements/ci.txt
@@ -47,3 +48,4 @@ notifications:
     on_failure: always
 after_success:
   - codecov
+  

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Module that contains the command line app.
 
@@ -19,6 +21,8 @@ import sys
 
 def main(argv=sys.argv):
     """
+    Main function.
+
     Args:
         argv (list): List of arguments
 
