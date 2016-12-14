@@ -8,5 +8,4 @@ from shellman.cli import main
 
 def test_main():
     """Main test method."""
-
     assert main([]) == 0

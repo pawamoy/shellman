@@ -16,21 +16,9 @@ Why does this file exist, and why not put this in __main__?
 
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
-import sys
 
 
-def main(argv=sys.argv):
-    """
-    Main function.
-
-    Args:
-        argv (list): List of arguments
-
-    Returns:
-        int: A return code
-
-    Does stuff.
-    """
-
-    print(argv)
+def main(args=None):
+    """Main function."""
+    print(args)
     return 0
