@@ -258,11 +258,12 @@ class ManFormatter(BaseFormatter):
         rep_reg_arg = re.compile(r'([A-Z]+)')
         for usage in self.doc['usage']:
             syn = ''.join(usage)
+            name, syn = syn.split(' ', 1)
             syn = rep_reg_arg.sub(r'\\fI\1\\fR', syn)  # order is important!
             syn = rep_reg_opt.sub(r'\\fB\1\\fR', syn)
             self.out('.br')
             sys.stdout.write('\\fB%s\\fR %s' % (
-                self.doc['_file'], self.esc(syn)))
+                name, self.esc(syn)))
 
     def render_version(self, title):
         pass
