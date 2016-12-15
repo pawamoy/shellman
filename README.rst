@@ -77,7 +77,7 @@ To run all the tests: ``tox``
 Usage
 =====
 
-To render the doc on stdout:
+To render the doc on standard output:
 
 .. code:: bash
 
@@ -88,7 +88,8 @@ To render the doc on stdout:
     shellman --format=man FILE
     shellman --format=markdown FILE
 
-You can pass the ``-o``, ``--output`` option to specify a file to write to, instead of stdout.
+You can pass the ``-o``, ``--output`` option to specify a file to write to,
+instead of standard output.
 
 To check if the documentation within a script is correct:
 
