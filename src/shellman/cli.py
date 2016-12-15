@@ -111,5 +111,3 @@ def main(argv=None):
         fmt = args.format
         formatter = get_formatter(fmt)
         formatter(doc_read, output=args.output).write()
-
-    return 0
