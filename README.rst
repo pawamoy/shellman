@@ -19,11 +19,11 @@ Shellman
     :target: https://travis-ci.org/Pawamoy/shellman/
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/REPLACE_WITH_PROJECT_ID
-    :target: https://www.codacy.com/app/Pawamoy/shellman/
+    :target: https://www.codacy.com/app/Pawamoy/shellman/dashboard
     :alt: Codacy Code Quality Status
 
-.. |pyup| image:: https://pyup.io/account/repos/github/pawamoy/shellman/shield.svg
-    :target: https://pyup.io/account/repos/github/pawamoy/shellman/
+.. |pyup| image:: https://pyup.io/repos/github/Pawamoy/shellman/shield.svg
+    :target: https://pyup.io/repos/github/Pawamoy/shellman/
     :alt: Updates
 
 .. |gitter| image:: https://badges.gitter.im/Pawamoy/shellman.svg
