@@ -8,7 +8,6 @@ Shellman
 
 |travis|
 |codacy|
-|landscape|
 |version|
 |wheel|
 |pyup|
@@ -18,10 +17,6 @@ Shellman
 .. |travis| image:: https://travis-ci.org/Pawamoy/shellman.svg?branch=master
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/Pawamoy/shellman/
-
-.. |landscape| image:: https://landscape.io/github/Pawamoy/shellman/master/landscape.svg?style=flat
-    :target: https://landscape.io/github/Pawamoy/shellman/
-    :alt: Code Quality Status
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/REPLACE_WITH_PROJECT_ID
     :target: https://www.codacy.com/app/Pawamoy/shellman/
