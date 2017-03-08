@@ -7,7 +7,7 @@ Shellman
 
 
 |travis|
-|codecov|
+|codacy|
 |landscape|
 |version|
 |wheel|
@@ -19,16 +19,16 @@ Shellman
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/Pawamoy/shellman/
 
-.. |codecov| image:: https://codecov.io/github/Pawamoy/shellman/coverage.svg?branch=master
-    :alt: Coverage Status
-    :target: https://codecov.io/github/Pawamoy/shellman/
-
 .. |landscape| image:: https://landscape.io/github/Pawamoy/shellman/master/landscape.svg?style=flat
     :target: https://landscape.io/github/Pawamoy/shellman/
     :alt: Code Quality Status
 
-.. |pyup| image:: https://pyup.io/repos/github/pawamoy/shellman/shield.svg
-    :target: https://pyup.io/repos/github/pawamoy/shellman/
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/REPLACE_WITH_PROJECT_ID
+    :target: https://www.codacy.com/app/Pawamoy/shellman/
+    :alt: Codacy Code Quality Status
+
+.. |pyup| image:: https://pyup.io/account/repos/github/pawamoy/shellman/shield.svg
+    :target: https://pyup.io/account/repos/github/pawamoy/shellman/
     :alt: Updates
 
 .. |gitter| image:: https://badges.gitter.im/Pawamoy/shellman.svg
@@ -53,7 +53,7 @@ License
 
 Software licensed under `ISC`_ license.
 
-.. _ISC : https://www.isc.org/downloads/software-support-policy/isc-license/
+.. _ISC: https://www.isc.org/downloads/software-support-policy/isc-license/
 
 Installation
 ============
