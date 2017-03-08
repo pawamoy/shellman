@@ -67,7 +67,8 @@ Installation
 Documentation
 =============
 
-https://github.com/Pawamoy/shellman/wiki
+http://shellman.readthedocs.io/en/latest/
+
 
 Development
 ===========
