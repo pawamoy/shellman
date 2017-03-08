@@ -27,7 +27,6 @@ Shellman
     :target: https://landscape.io/github/Pawamoy/shellman/
     :alt: Code Quality Status
 
-
 .. |pyup| image:: https://pyup.io/repos/github/pawamoy/shellman/shield.svg
     :target: https://pyup.io/repos/github/pawamoy/shellman/
     :alt: Updates
@@ -66,7 +65,8 @@ Installation
 Documentation
 =============
 
-https://github.com/Pawamoy/shellman/wiki
+http://shellman.readthedocs.io/en/latest/
+
 
 Development
 ===========
