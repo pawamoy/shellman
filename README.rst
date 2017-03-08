@@ -17,8 +17,8 @@ Shellman
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/Pawamoy/shellman/
 
-.. |codacy| image:: https://api.codacy.com/project/badge/Grade/REPLACE_WITH_PROJECT_ID
-    :target: https://www.codacy.com/app/Pawamoy/shellman/
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/85e410da099c46d0bcf3700c563bbc2a
+    :target: https://www.codacy.com/app/Pawamoy/shellman/dashboard
     :alt: Codacy Code Quality Status
 
 .. |pyup| image:: https://pyup.io/account/repos/github/pawamoy/shellman/shield.svg
