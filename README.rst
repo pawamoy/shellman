@@ -6,7 +6,8 @@ Shellman
 
 
 |travis|
-|codacy|
+|codacygrade|
+|codacycoverage|
 |version|
 |wheel|
 |pyup|
@@ -14,28 +15,32 @@ Shellman
 
 
 .. |travis| image:: https://travis-ci.org/Pawamoy/shellman.svg?branch=master
-    :alt: Travis-CI Build Status
     :target: https://travis-ci.org/Pawamoy/shellman/
+    :alt: Travis-CI Build Status
 
-.. |codacy| image:: https://api.codacy.com/project/badge/Grade/85e410da099c46d0bcf3700c563bbc2a
+.. |codacygrade| image:: https://api.codacy.com/project/badge/Grade/85e410da099c46d0bcf3700c563bbc2a
     :target: https://www.codacy.com/app/Pawamoy/shellman/dashboard
     :alt: Codacy Code Quality Status
+
+.. |codacycoverage| image:: https://api.codacy.com/project/badge/Coverage/85e410da099c46d0bcf3700c563bbc2a
+    :target: https://www.codacy.com/app/Pawamoy/shellman/dashboard
+    :alt: Codacy Code Coverage
 
 .. |pyup| image:: https://pyup.io/repos/github/Pawamoy/shellman/shield.svg
     :target: https://pyup.io/repos/github/Pawamoy/shellman/
     :alt: Updates
 
 .. |gitter| image:: https://badges.gitter.im/Pawamoy/shellman.svg
+    :target: https://gitter.im/Pawamoy/shellman
     :alt: Join the chat at https://gitter.im/Pawamoy/shellman
-    :target: https://gitter.im/Pawamoy/shellman?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 .. |version| image:: https://img.shields.io/pypi/v/shellman.svg?style=flat
-    :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/shellman/
+    :alt: PyPI Package latest release
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/shellman.svg?style=flat
-    :alt: PyPI Wheel
     :target: https://pypi.python.org/pypi/shellman/
+    :alt: PyPI Wheel
 
 
 .. end-badges
