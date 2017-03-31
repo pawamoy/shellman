@@ -30,10 +30,6 @@ Shellman
     :target: https://pyup.io/repos/github/Pawamoy/shellman/
     :alt: Updates
 
-.. |gitter| image:: https://badges.gitter.im/Pawamoy/shellman.svg
-    :target: https://gitter.im/Pawamoy/shellman
-    :alt: Join the chat at https://gitter.im/Pawamoy/shellman
-
 .. |version| image:: https://img.shields.io/pypi/v/shellman.svg?style=flat
     :target: https://pypi.python.org/pypi/shellman/
     :alt: PyPI Package latest release
@@ -41,6 +37,11 @@ Shellman
 .. |wheel| image:: https://img.shields.io/pypi/wheel/shellman.svg?style=flat
     :target: https://pypi.python.org/pypi/shellman/
     :alt: PyPI Wheel
+
+.. |gitter| image:: https://badges.gitter.im/Pawamoy/shellman.svg
+    :target: https://gitter.im/Pawamoy/shellman
+    :alt: Join the chat at https://gitter.im/Pawamoy/shellman
+
 
 
 .. end-badges
@@ -67,8 +68,9 @@ Installation
 Documentation
 =============
 
-http://shellman.readthedocs.io/en/latest/
+`On ReadTheDocs`_
 
+.. _`On ReadTheDocs`: http://shellman.readthedocs.io/
 
 Development
 ===========
@@ -132,3 +134,4 @@ Output when calling ``./demo -h``:
     Options:
       -h, --help
         Print this help and exit.
+
