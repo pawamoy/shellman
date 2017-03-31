@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 
-r"""Shellman package."""
+u"""Shellman package."""
 
 __version__ = '0.1.0'
