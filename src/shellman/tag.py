@@ -48,7 +48,7 @@ class Tag(object):
 TAGS = {
     'author':    Tag(Tag.MANY, 1),
     'bug':       Tag(Tag.MANY, Tag.MANY),
-    'brief':     Tag(1,  1),
+    'brief':     Tag(1, 1),
     'caveat':    Tag(Tag.MANY, Tag.MANY),
     'copyright': Tag(1, Tag.MANY),
     'date':      Tag(1, 1),

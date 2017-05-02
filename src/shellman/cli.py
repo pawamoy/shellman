@@ -70,10 +70,22 @@ def main(argv=None):
         default=sys.stdout,
         help='file to write to (stdout by default)')
     parser.add_argument(
-        '-w', '--warn',  action='store_true', dest='warn',
+        '-w', '--warn', action='store_true', dest='warn',
         help='actually display the warnings (false)')
 
     def valid_file(value):
+        """
+        Check if given file exists and is a regular file.
+
+        Args:
+            value (str): path to the file.
+
+        Raises:
+            argparse.ArgumentTypeError: if not valid.
+
+        Returns:
+            str: original value argument.
+        """
         if not value:
             raise argparse.ArgumentTypeError("'' is not a valid file path")
         elif not os.path.exists(value):

@@ -23,6 +23,7 @@ from .tag import FN_TAG, FN_TAGS, TAGS, Tag
 
 
 def err(*args, **kwargs):
+    """Wrapper around print function to output on stderr."""
     print(*args, file=sys.stderr, **kwargs)
 
 
@@ -66,7 +67,7 @@ class Doc(object):
             whitelist (dict): dict of tags to not check.
         """
         self.file = file
-        self.doc = {k: None for k in TAGS.keys()}
+        self.doc = {k: None for k in TAGS}
         self.doc['_file'] = os.path.basename(self.file)
         self.doc['_fn'] = []
         if whitelist is None:
@@ -144,6 +145,7 @@ class Doc(object):
         self.doc['_fn'][-1][tag] = value.rstrip('\n')
         return False
 
+    # pylama:ignore=R701,C901,R0912
     def _read(self, warn=False, nice=True, failfast=False):
         """
         Read the file, build the documentation as dict of nested lists.
@@ -194,7 +196,7 @@ class Doc(object):
 
                 if tag == FN_TAG:
                     in_function = True
-                    self.doc['_fn'].append({k: None for k in FN_TAGS.keys()})
+                    self.doc['_fn'].append({k: None for k in FN_TAGS})
                     in_tag = self._update_fn_value(current_tag, value,
                                                    end=True)
 
@@ -228,9 +230,11 @@ class Doc(object):
         return self.doc, ok
 
     def read(self):
-        doc, ok = self._read(warn=False, nice=True, failfast=False)
+        """Wrapper around self._read (no warn, nice, no failfast)."""
+        doc, _ = self._read(warn=False, nice=True, failfast=False)
         return doc
 
     def check(self, warn=True, nice=True, failfast=False):
-        doc, ok = self._read(warn=warn, nice=nice, failfast=failfast)
+        """Wrapper around self._read to check documentation."""
+        _, ok = self._read(warn=warn, nice=nice, failfast=failfast)
         return ok

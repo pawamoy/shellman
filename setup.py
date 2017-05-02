@@ -33,10 +33,10 @@ setup(
     description='Write doc in your shell scripts.',
     long_description='%s\n%s' % (
         re.compile('^.. start-badges.*^.. end-badges', re.M | re.S)
-            .sub('', read('README.rst')),
+        .sub('', read('README.rst')),
         re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))
     ),
-    author='Timothee Mazzucotelli',
+    author=u'Timothee Mazzucotelli',
     author_email='timothee.mazzucotelli@gmail.com',
     url='https://github.com/Pawamoy/shellman',
     packages=find_packages('src'),
@@ -50,8 +50,6 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: ISC License (ISCL)',
         'Operating System :: Unix',
-        'Operating System :: POSIX',
-        'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',

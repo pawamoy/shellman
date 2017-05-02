@@ -71,6 +71,7 @@ class BaseFormatter(object):
             self.output = open(output, 'w')
 
     def out(self, *args, **kwargs):
+        """Wrapper around print to write into self.output."""
         print(*args, file=self.output, **kwargs)
 
     def get_render(self, section):

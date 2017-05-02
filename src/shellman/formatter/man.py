@@ -222,6 +222,7 @@ class ManFormatter(BaseFormatter):
     def render_name(self, title):
         if self.doc['brief']:
             self.out('.SH "%s"' % title)
+            # pylama:ignore=W1401
             self.out('%s \- %s' % (self.doc['_file'],
                                    self.esc(self.doc['brief'])))
 
