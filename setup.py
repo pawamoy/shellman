@@ -28,7 +28,7 @@ def read(*names, **kwargs):
 
 setup(
     name='shellman',
-    version='0.2.1',
+    version='0.2.2',
     license='ISC',
     description='Write doc in your shell scripts.',
     long_description='%s\n%s' % (
