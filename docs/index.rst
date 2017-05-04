@@ -6,9 +6,12 @@ Contents
    :maxdepth: 2
 
    readme
+   usage
+   syntax
    contributing
    authors
    changelog
+   todo
 
 Indices and tables
 ==================

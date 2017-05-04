@@ -8,6 +8,7 @@ args
 kwargs
 callstack
 Changelog
+changelog
 Indices
 docstrings
 shellman
@@ -17,4 +18,6 @@ Pawamoy
 shellman
 Timothee
 Mazzucotelli
-
+multi
+formatters
+reStructuredText
