@@ -1,29 +1,28 @@
 sudo: false
 language: python
 branches:
-  only: [master]
-cache:
-  directories: [$HOME/.cache/pip]
+  except: [cookiecutter]
+cache: pip
 matrix:
   include:
-  - {python: '3.5', env: TOX_ENV=docs}
-  - {python: '3.5', env: TOX_ENV=checksetup}
-  - {python: '3.5', env: TOX_ENV=checksafety}
-  - {python: '3.5', env: TOX_ENV=checkstyle}
-  - {python: '3.5', env: TOX_ENV=checkspell}
-  - {python: '3.5', env: TOX_ENV=checklink}
-  - {python: '2.7', env: 'TOX_ENV=py27,codacy'}
-  - {python: '3.4', env: 'TOX_ENV=py34,codacy'}
-  - {python: '3.5', env: 'TOX_ENV=py35,codacy'}
-  - {python: '3.6', env: 'TOX_ENV=py36,codacy'}
-  - {python: 3.7-dev, env: 'TOX_ENV=py37-dev,codacy'}
-  - {python: pypy, env: 'TOX_ENV=pypy,codacy'}
+  - {stage: check, python: '3.5', env: TOX_ENV=setup}
+  - {stage: check, python: '3.5', env: TOX_ENV=safety}
+  - {stage: check, python: '3.5', env: TOX_ENV=style}
+  - {stage: check, python: '3.5', env: TOX_ENV=docs}
+  - {stage: check, python: '3.5', env: TOX_ENV=spell}
+  - {stage: check, python: '3.5', env: TOX_ENV=link}
+  - {stage: test, after_success: 'tox -ecodacy,', python: '2.7', env: TOX_ENV=py27}
+  - {stage: test, after_success: 'tox -ecodacy,', python: '3.4', env: TOX_ENV=py34}
+  - {stage: test, after_success: 'tox -ecodacy,', python: '3.5', env: TOX_ENV=py35}
+  - {stage: test, after_success: 'tox -ecodacy,', python: '3.6', env: TOX_ENV=py36}
+  - {stage: test, after_success: 'tox -ecodacy,', python: 3.7-dev, env: TOX_ENV=py37-dev}
+  - {stage: test, after_success: 'tox -ecodacy,', python: pypy, env: TOX_ENV=pypy}
   fast_finish: true
   allow_failures:
-  - {python: '3.5', env: TOX_ENV=checkstyle}
-  - {python: '3.5', env: TOX_ENV=checkspell}
-  - {python: '3.5', env: TOX_ENV=checklink}
-  - {python: 3.7-dev}
+  - {stage: check, python: '3.5', env: TOX_ENV=style}
+  - {stage: check, python: '3.5', env: TOX_ENV=spell}
+  - {stage: check, python: '3.5', env: TOX_ENV=link}
+  - {stage: test, python: 3.7-dev}
 addons:
   apt:
     packages: [libenchant-dev]
