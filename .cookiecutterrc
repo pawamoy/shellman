@@ -34,6 +34,8 @@ default_context:
     package_name:                    'shellman'
     project_name:                    'Shellman'
     project_short_description:       'Write doc in your shell scripts.'
+    prospector:                      'yes'
+    pylama:                          'no'
     python_versions:                 '2.7,3.4,3.5,3.6,3.7-dev,pypy'
     pyup:                            'yes'
     release_date:                    '2016-11-30'
