@@ -13,7 +13,7 @@ import re
 
 import sys
 
-from .tag import FN_TAG, FN_TAGS, TAGS, Tag
+from .tag import FN_TAG, FN_TAGS, SCRIPT_TAGS
 
 
 def err(*args, **kwargs):
@@ -61,7 +61,7 @@ class Doc(object):
             whitelist (dict): dict of tags to not check.
         """
         self.file = file
-        self.doc = {k: None for k in TAGS}
+        self.doc = {k: None for k in SCRIPT_TAGS}
         self.doc['_file'] = os.path.basename(self.file)
         self.doc['_fn'] = []
         if whitelist is None:
@@ -84,8 +84,8 @@ class Doc(object):
         Returns:
             bool: True if tag has ended, False otherwise
         """
-        if TAGS[tag].occurrences == Tag.MANY:
-            if TAGS[tag].lines == Tag.MANY:
+        if SCRIPT_TAGS[tag].occurrences == '+':
+            if SCRIPT_TAGS[tag].lines == '+':
                 if self.doc[tag] is None:
                     self.doc[tag] = [[]]
                 elif end:
@@ -96,7 +96,7 @@ class Doc(object):
                 self.doc[tag] = []
             self.doc[tag].append(value.rstrip('\n'))
             return False
-        if TAGS[tag].lines == Tag.MANY:
+        if SCRIPT_TAGS[tag].lines == '+':
             if self.doc[tag] is None:
                 self.doc[tag] = []
             self.doc[tag].append(value)
@@ -119,8 +119,8 @@ class Doc(object):
         Returns:
             bool: True if tag has ended, False otherwise
         """
-        if FN_TAGS[tag].occurrences == Tag.MANY:
-            if FN_TAGS[tag].lines == Tag.MANY:
+        if FN_TAGS[tag].occurrences == '+':
+            if FN_TAGS[tag].lines == '+':
                 if self.doc['_fn'][-1][tag] is None:
                     self.doc['_fn'][-1][tag] = [[]]
                 elif end:
@@ -131,7 +131,7 @@ class Doc(object):
                 self.doc['_fn'][-1][tag] = []
             self.doc['_fn'][-1][tag].append(value.rstrip('\n'))
             return False
-        if FN_TAGS[tag].lines == Tag.MANY:
+        if FN_TAGS[tag].lines == '+':
             if self.doc['_fn'][-1][tag] is None:
                 self.doc['_fn'][-1][tag] = []
             self.doc['_fn'][-1][tag].append(value)
@@ -198,9 +198,9 @@ class Doc(object):
                     if in_function and tag in FN_TAGS.keys():
                         in_tag = self._update_fn_value(current_tag, value,
                                                        end=True)
-                    elif tag in TAGS.keys():
+                    elif tag in SCRIPT_TAGS.keys():
                         in_function = False
-                        if (TAGS[tag].occurrences == Tag.MANY or
+                        if (SCRIPT_TAGS[tag].occurrences == '+' or
                                 self.doc[tag] is None):
                             in_tag = self._update_value(current_tag, value,
                                                         end=True)

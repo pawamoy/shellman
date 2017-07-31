@@ -17,6 +17,9 @@ It also contains constants:
   different function documentation tags will be written to stdout.
 """
 
+import argparse
+import yaml
+
 
 class Tag(object):
     """
@@ -25,68 +28,164 @@ class Tag(object):
     A tag is a simple object with two attributes: occurrences and lines.
     """
 
-    MANY = '+'
-
-    def __init__(self, occurrences=1, lines=1):
+    def __init__(self,
+                 name,
+                 section_name,
+                 occurrences=1,
+                 lines=1,
+                 header=False,
+                 type='script'):
         """
         Init method.
 
         Args:
-            occurrences (const/int): can be Tag.MANY or 1.
-            lines (const/int): can be Tag.MANY or 1.
+            occurrences (const/int): can be '+' or 1.
+            lines (const/int): can be '+' or 1.
         """
+        self.name = name
+        self.section_name = section_name
         self.occurrences = occurrences
         self.lines = lines
+        self.header = header
+        self.type = type
 
 
-TAGS = {
-    'author':    Tag(Tag.MANY, 1),
-    'bug':       Tag(Tag.MANY, Tag.MANY),
-    'brief':     Tag(1, 1),
-    'caveat':    Tag(Tag.MANY, Tag.MANY),
-    'copyright': Tag(1, Tag.MANY),
-    'date':      Tag(1, 1),
-    'desc':      Tag(1, Tag.MANY),
-    'env':       Tag(Tag.MANY, Tag.MANY),
-    'error':     Tag(Tag.MANY, Tag.MANY),
-    'example':   Tag(Tag.MANY, Tag.MANY),
-    'exit':      Tag(Tag.MANY, Tag.MANY),
-    'file':      Tag(Tag.MANY, Tag.MANY),
-    'history':   Tag(1, Tag.MANY),
-    'license':   Tag(1, Tag.MANY),
-    'note':      Tag(Tag.MANY, Tag.MANY),
-    'option':    Tag(Tag.MANY, Tag.MANY),
-    'seealso':   Tag(Tag.MANY, 1),
-    'stderr':    Tag(Tag.MANY, Tag.MANY),
-    'stdin':     Tag(Tag.MANY, Tag.MANY),
-    'stdout':    Tag(Tag.MANY, Tag.MANY),
-    'usage':     Tag(Tag.MANY, Tag.MANY),
-    'version':   Tag(1, 1)
+SCRIPT_TAGS = {}
+DEFAULT_SCRIPT_TAGS = {
+    'author': Tag('author', 'Authors', '+', 1),
+    'bug': Tag('bug', 'Bugs', '+', '+'),
+    'brief': Tag('brief', 'Brief', 1, 1),
+    'caveat': Tag('caveat', 'Caveats', '+', '+'),
+    'copyright': Tag('copyright', 'Copyright', 1, '+'),
+    'date': Tag('date', 'Date', 1, 1),
+    'desc': Tag('desc', 'Description', 1, '+'),
+    'env': Tag('env', 'Environment variables', '+', '+', True),
+    'error': Tag('error', 'Errors', '+', '+', True),
+    'example': Tag('example', 'Examples', '+', '+', True),
+    'exit': Tag('exit', 'Exit status', '+', '+', True),
+    'file': Tag('file', 'Files', '+', '+', True),
+    'history': Tag('history', 'History', 1, '+'),
+    'license': Tag('license', 'License', 1, '+'),
+    'note': Tag('note', 'Notes', '+', '+'),
+    'option': Tag('option', 'Options', '+', '+', True),
+    'seealso': Tag('seealso', 'See also', '+', 1),
+    'stderr': Tag('stderr', 'Stderr', '+', '+'),
+    'stdin': Tag('stdin', 'Stdin', '+', '+'),
+    'stdout': Tag('stdout', 'Stdout', '+', '+'),
+    'usage': Tag('usage', 'Usage', '+', '+'),
+    'version': Tag('version', 'Version', 1, 1)
 }
 
 FN_TAG = 'fn'
-FN_TAGS = {
-    'fn':      Tag(1, 1),
-    'brief':   Tag(1, 1),
-    'desc':    Tag(1, Tag.MANY),
-    'param':   Tag(Tag.MANY, Tag.MANY),
-    'pre':     Tag(Tag.MANY, Tag.MANY),
-    'return':  Tag(Tag.MANY, Tag.MANY),
-    'seealso': Tag(Tag.MANY, 1),
-    'stderr':  Tag(Tag.MANY, Tag.MANY),
-    'stdin':   Tag(Tag.MANY, Tag.MANY),
-    'stdout':  Tag(Tag.MANY, Tag.MANY)
+FN_TAGS = {}
+DEFAULT_FN_TAGS = {
+    'fn': Tag('fn', 'Function', 1, 1),
+    'brief': Tag('brief', 'Brief', 1, 1),
+    'desc': Tag('desc', 'Description', 1, '+'),
+    'param': Tag('param', 'Parameters', '+', '+', True),
+    'pre': Tag('pre', 'Pre-conditions', '+', '+'),
+    'return': Tag('return', 'Return code', '+', '+', True),
+    'seealso': Tag('seealso', 'See also', '+', 1),
+    'stderr': Tag('stderr', 'Standard error', '+', '+'),
+    'stdin': Tag('stdin', 'Standard input', '+', '+'),
+    'stdout': Tag('stdout', 'Standard output', '+', '+')
 }
 
-FUNCTION_ORDER = (
-    'fn',
-    'brief',
-    'desc',
-    'param',
-    'stdin',
-    'stdout',
-    'stderr',
-    'return',
-    'pre',
-    'seealso',
-)
+
+def dispatch_tags(tags):
+    for tag in tags:
+        if tag.type == 'script':
+            SCRIPT_TAGS[tag.name] = tag
+        elif tag.type == 'function':
+            FN_TAGS[tag.name] = tag
+        elif tag.type == 'both':
+            SCRIPT_TAGS[tag.name] = tag
+            FN_TAGS[tag.name] = tag
+
+
+def use_default_tags():
+    SCRIPT_TAGS.update(DEFAULT_SCRIPT_TAGS)
+    FN_TAGS.update(DEFAULT_FN_TAGS)
+
+
+def add_default_script_tags():
+    SCRIPT_TAGS.update(DEFAULT_SCRIPT_TAGS)
+
+
+def add_default_function_tags():
+    FN_TAGS.update(DEFAULT_FN_TAGS)
+
+
+def add_default_tags():
+    add_default_script_tags()
+    add_default_function_tags()
+
+
+def transform_tags_values(tag, section, params):
+    if not tag or not section:
+        raise argparse.ArgumentTypeError('ERROR')
+    if params[0] == '1':
+        params[0] = 1
+    elif params[0] not in (1, '+'):
+        raise argparse.ArgumentTypeError('ERROR')
+    if params[1] == '1':
+        params[1] = 1
+    elif params[1] not in (1, '+'):
+        raise argparse.ArgumentTypeError('ERROR')
+    if params[2] in ('y', 'yes', 1, '1', 'true', 'True'):
+        params[2] = True
+    elif params[2] in ('n', 'no', 0, '0', 'false', 'False'):
+        params[2] = False
+    elif params[2] not in (False, True):
+        raise argparse.ArgumentTypeError('ERROR')
+    if params[3] == 's':
+        params[3] = 'script'
+    elif params[3] == 'f':
+        params[3] = 'function'
+    elif params[3] == 'b':
+        params[3] = 'both'
+    elif params[3] not in ('script', 'function', 'both'):
+        raise argparse.ArgumentTypeError('ERROR')
+    return tag, section, params
+
+
+def parse_yaml_tags(path):
+    import yaml
+    with open(path) as stream:
+        data = yaml.load(stream)
+    for tag_name, tag_values in data.items():
+        print(tag_name, tag_values)
+
+
+def parse_string_tags(arg):
+    tags = []
+    for tag in arg.split('|'):
+        params = tag.split(',')
+        if len(params) < 2:
+            raise argparse.ArgumentTypeError('ERROR')
+        tag_name, section_name = params[0], params[1]
+        params_values = [1, 1, False, 's']
+        if len(params) > 2:
+            kw = False
+            for i, param in enumerate(params[2:]):
+                if '=' in param:
+                    kw = True
+                    kw_key, kw_value = param.split('=', 1)
+                    if kw_key in ('o=', 'occurrences='):
+                        params_values[0] = kw_value
+                    elif kw_key in ('l=', 'lines='):
+                        params_values[1] = kw_value
+                    elif kw_key in ('h=', 'header='):
+                        params_values[2] = kw_value
+                    elif kw_key in ('t=', 'type='):
+                        params_values[3] = kw_value
+                    else:
+                        raise argparse.ArgumentTypeError('ERROR')
+                elif kw:
+                    raise argparse.ArgumentTypeError('ERROR')
+                else:
+                    params_values[i] = param
+        tag_name, section_name, params = transform_tags_values(
+            tag_name, section_name, params_values)
+        tags.append(Tag(tag_name, section_name, *params_values))
+    return tags

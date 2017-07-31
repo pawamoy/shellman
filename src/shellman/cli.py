@@ -23,24 +23,37 @@ import sys
 
 from .doc import Doc
 from .formatter import get_formatter
-from .tag import Tag
+from .tag import (
+    Tag, add_default_function_tags, add_default_script_tags, add_default_tags,
+    dispatch_tags, parse_string_tags, parse_yaml_tags, use_default_tags)
 
 
-def main(argv=None):
+def valid_file(value):
     """
-    Main function.
+    Check if given file exists and is a regular file.
 
     Args:
-        argv (list): options and path to file to read
+        value (str): path to the file.
+
+    Raises:
+        argparse.ArgumentTypeError: if not valid.
 
     Returns:
-        int: 0, unless exception
-
-    Get the file to parse, construct a Doc object, get file's doc,
-    get the according formatter class, instantiate it
-    with acquired doc and write on specified file (stdout by default).
+        str: original value argument.
     """
+    if not value:
+        raise argparse.ArgumentTypeError("'' is not a valid file path")
+    elif not os.path.exists(value):
+        raise argparse.ArgumentTypeError("%s is not a valid file path" %
+                                         value)
+    elif os.path.isdir(value):
+        raise argparse.ArgumentTypeError("%s is a directory, "
+                                         "not a regular file" % value)
+    return value
 
+
+def get_parser():
+    """Return a parser for the command line arguments."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-0', '-n', '--nice', action='store_true', dest='nice',
@@ -64,36 +77,76 @@ def main(argv=None):
         default=sys.stdout,
         help='file to write to (stdout by default)')
     parser.add_argument(
+        '-t', '--tags', action='store', dest='tags', type=parse_tags,
+        help='tags to parse. Specify tags to parse with the path to a YAML '
+             'file or a string in the following format: '
+             '"NAME,SECTION,OCCURRENCES,LINES,HEADER,TYPE[|...]". '
+             'where NAME is the tag name (like env), SECTION is the related '
+             'section name (like Environment variables), OCCURRENCES and '
+             'LINES are 1 or +, HEADER is 0, 1, y[es], n[o], true or false, '
+             'and TYPE is "script" (s), "function" (f). or "both" (b), '
+             'OCCURRENCES, LINES, HEADER and TYPE are optional, defaults are '
+             '1, 1, no, script. '
+             'Prefix them with o=, l=, h=, t= to provide only some of them, '
+             'unordered, like kwargs in Python. '
+             'Example: "the_tag,The tag,1,+,y,t=f". '
+             'Separate tags with | (pipe) character.')
+    parser.add_argument(
+        '-T', '--add-default-tags', action='store_true',
+        dest='add_default_tags', help='Add all the default tags to be parsed.')
+    parser.add_argument(
+        '-F', '--add-default-function-tags', action='store_true',
+        dest='add_default_function_tags',
+        help='Add the default function tags to be parsed.')
+    parser.add_argument(
+        '-S', '--add-default-script-tags', action='store_true',
+        dest='add_default_script_tags',
+        help='Add the default script tags to be parsed.')
+    parser.add_argument(
         '-w', '--warn', action='store_true', dest='warn',
         help='actually display the warnings (false)')
-
-    def valid_file(value):
-        """
-        Check if given file exists and is a regular file.
-
-        Args:
-            value (str): path to the file.
-
-        Raises:
-            argparse.ArgumentTypeError: if not valid.
-
-        Returns:
-            str: original value argument.
-        """
-        if not value:
-            raise argparse.ArgumentTypeError("'' is not a valid file path")
-        elif not os.path.exists(value):
-            raise argparse.ArgumentTypeError("%s is not a valid file path" %
-                                             value)
-        elif os.path.isdir(value):
-            raise argparse.ArgumentTypeError("%s is a directory, "
-                                             "not a regular file" % value)
-        return value
-
     parser.add_argument('FILE', type=valid_file,
                         help='path to the file to read')
+    return parser
 
+
+def parse_tags(arg):
+    try:
+        if valid_file(arg):
+            return parse_yaml_tags(arg)
+    except argparse.ArgumentTypeError:
+        return parse_string_tags(arg)
+
+
+def main(argv=None):
+    """
+    Main function.
+
+    Args:
+        argv (list): options and path to file to read
+
+    Returns:
+        int: 0, unless exception
+
+    Get the file to parse, construct a Doc object, get file's doc,
+    get the according formatter class, instantiate it
+    with acquired doc and write on specified file (stdout by default).
+    """
+    parser = get_parser()
     args = parser.parse_args(argv)
+
+    if args.tags:
+        dispatch_tags(args.tags)
+    else:
+        use_default_tags()
+
+    if args.add_default_tags:
+        add_default_tags()
+    else:
+        if args.add_default_script_tags:
+            add_default_script_tags()
+        if args.add_default_function_tags:
+            add_default_function_tags()
 
     if args.whitelist:
         new_whitelist = {}

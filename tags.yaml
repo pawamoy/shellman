@@ -1,0 +1,160 @@
+author:
+  section: Authors
+  occurrences: +
+  lines: 1
+  header: false
+  type: script
+bug:
+  section: Bugs
+  occurrences: +
+  lines: +
+  header: false
+  type: script
+brief:
+  section:
+    default: Brief
+    man: Name
+  occurrences: 1
+  lines: 1
+  header: false
+  type: both
+caveat:
+  section: Caveats
+  occurrences: +
+  lines: +
+  header: false
+  type: script
+copyright:
+  section: Copyright
+  occurrences: 1
+  lines: +
+  header: false
+  type: script
+date:
+  section: Date
+  occurrences: 1
+  lines: 1
+  header: false
+  type: script
+desc:
+  section: Description
+  occurrences: 1
+  lines: +
+  header: false
+  type: both
+env:
+  section: Environment variables
+  occurrences: +
+  lines: +
+  header: true
+  type: script
+error:
+  section: Errors
+  occurrences: +
+  lines: +
+  header: true
+example:
+  section: Examples
+  occurrences: +
+  lines: +
+  header: true
+  type: script
+exit:
+  section: Exit status
+  occurrences: +
+  lines: +
+  header: true
+  type: script
+file:
+  section: Files
+  occurrences: +
+  lines: +
+  header: true
+  type: script
+fn:
+  section: Function
+  occurrences: 1
+  lines: 1
+  header: false
+  type: function
+history:
+  section: History
+  occurrences: 1
+  lines: +
+  header: false
+  type: script
+license:
+  section: License
+  occurrences: 1
+  lines: +
+  header: false
+  type: script
+note:
+  section: Notes
+  occurrences: +
+  lines: +
+  header: false
+  type: script
+option:
+  section: Options
+  occurrences: +
+  lines: +
+  header: true
+  type: script
+param:
+  section: Parameters
+  occurrences: +
+  lines: +
+  header: true
+  type: function
+pre:
+  section: Pre-conditions
+  occurrences: +
+  lines: +
+  header: false
+  type: function
+return:
+  section: Return code
+  occurrences: +
+  lines: +
+  header: true
+  type: function
+seealso:
+  section: See also
+  occurrences: +
+  lines: 1
+  header: false
+  type: both
+stderr:
+  section: Standard error
+  occurrences: +
+  lines: +
+  header: false
+  type: both
+stdin:
+  section: Standard input
+  occurrences: +
+  lines: +
+  header: false
+  type: both
+stdout:
+  section: Standard output
+  occurrences: +
+  lines: +
+  header: false
+  type: both
+usage:
+  section:
+    default: Usage
+    man: Synopsis
+  occurrences: +
+  lines: +
+  header: false
+  type: script
+version:
+  section: Version
+  occurrences: 1
+  lines: 1
+  header: false
+  type: script
+
