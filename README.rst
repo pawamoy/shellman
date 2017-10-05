@@ -31,11 +31,11 @@ Shellman
     :alt: Updates
 
 .. |version| image:: https://img.shields.io/pypi/v/shellman.svg?style=flat
-    :target: https://pypi.python.org/pypi/shellman/
+    :target: https://pypi.org/project/shellman/
     :alt: PyPI Package latest release
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/shellman.svg?style=flat
-    :target: https://pypi.python.org/pypi/shellman/
+    :target: https://pypi.org/project/shellman/
     :alt: PyPI Wheel
 
 .. |gitter| image:: https://badges.gitter.im/Pawamoy/shellman.svg
