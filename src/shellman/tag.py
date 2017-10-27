@@ -32,8 +32,7 @@ class Tag(object):
                  section_name,
                  occurrences=1,
                  lines=1,
-                 header=False,
-                 type='script'):
+                 header=False):
         """
         Init method.
 
@@ -46,7 +45,6 @@ class Tag(object):
         self.occurrences = occurrences
         self.lines = lines
         self.header = header
-        self.type = type
 
 
 # TODO: do checks on tags and grouped tags (a grouped tag cannot be a tag)

@@ -89,6 +89,10 @@ class DocBlock(object):
         return self.lines[0]
 
     @property
+    def lines_number(self):
+        return len(self.lines)
+
+    @property
     def path(self):
         return self.first_line.path
 
@@ -125,25 +129,24 @@ class DocMixin(object):
 
 class DocGroup(DocMixin):
     def __init__(self, blocks=None):
-        super().__init__()
+        super(DocGroup, self).__init__()
         if blocks is not None:
             self.blocks = blocks
 
 
 class DocStream(DocMixin):
     def __init__(self, stream):
-        super().__init__()
+        super(DocStream, self).__init__()
         self.blocks = list(preprocess_blocks(preprocess_stream(stream)))
 
 
 class DocFile(DocMixin):
     def __init__(self, path):
-        super().__init__()
+        super(DocFile, self).__init__()
         with open(path) as stream:
             try:
-                self.blocks = list(
-                    preprocess_blocks(
-                        preprocess_stream(stream)))
+                self.blocks = list(preprocess_blocks(
+                    preprocess_stream(stream)))
             except UnicodeDecodeError:
                 print('Cannot read file %s' % path)
                 self.blocks = []
@@ -197,7 +200,5 @@ def preprocess_blocks(blocks):
                         path, lineno, None, line, False))
         if current_block:
             sub_blocks.append(current_block)
-        if len(sub_blocks) == 1:
-            yield sub_blocks[0]
-        else:
+        if sub_blocks:
             yield DocGroup(sub_blocks)

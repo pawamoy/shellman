@@ -1,7 +1,7 @@
 sudo: false
 language: python
 branches:
-  except: [cookiecutter]
+  except: [cookiecutter, refactor]
 cache: pip
 jobs:
   include:

@@ -23,8 +23,8 @@ import sys
 
 # from .formatter import get_formatter
 from .checker import Checker
-from .tag import add_default_tags, add_default_group_tags
 from .reader import DocFile, DocStream
+from .tag import add_default_group_tags, add_default_tags
 
 
 def valid_file(value):
@@ -150,8 +150,12 @@ def main(argv=None):
         except KeyboardInterrupt:
             cleaned_docs = []
 
-    for cleaned_doc in cleaned_docs:
-        for warning in cleaned_doc.warnings:
-            print(warning)
+    if args.warn:
+        for cleaned_doc in cleaned_docs:
+            cleaned_doc.warn()
 
-    return 0
+    if args.nice:
+        return 0
+    if all(cleaned_docs):
+        return 0
+    return 1

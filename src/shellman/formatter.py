@@ -12,7 +12,7 @@ from __future__ import print_function
 import sys
 
 from . import __version__
-from .tag import SCRIPT_TAGS, FN_TAG, FN_TAGS
+from .tag import FN_TAG, FN_TAGS, SCRIPT_TAGS
 
 
 def get_formatter(fmt):
