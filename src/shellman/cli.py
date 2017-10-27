@@ -21,11 +21,10 @@ import argparse
 import os
 import sys
 
-from .doc import Doc
-from .formatter import get_formatter
-from .tag import (
-    Tag, add_default_function_tags, add_default_script_tags, add_default_tags,
-    dispatch_tags, parse_string_tags, parse_yaml_tags, use_default_tags)
+# from .formatter import get_formatter
+from .checker import Checker
+from .tag import add_default_tags, add_default_group_tags
+from .reader import DocFile, DocStream
 
 
 def valid_file(value):
@@ -59,10 +58,6 @@ def get_parser():
         '-0', '-n', '--nice', action='store_true', dest='nice',
         help='be nice: return 0 even if warnings (false)')
     parser.add_argument(
-        '-1', '--failfast', action='store_true', dest='failfast',
-        help='exit 1 at first warning encountered '
-             '(only useful when not nice) (false)')
-    parser.add_argument(
         '-c', '--check', action='store_true', dest='check',
         help='check if the documentation is correct (false)')
     parser.add_argument(
@@ -70,52 +65,49 @@ def get_parser():
         choices=['text', 'man', 'markdown'],
         help='format to write to (text)')
     parser.add_argument(
-        '-i', '--whitelist', '--ignore', action='store', dest='whitelist',
-        help='whitelisted tags: "customtag:1+,customtag2"')
-    parser.add_argument(
         '-o', '--output', action='store', dest='output',
         default=sys.stdout,
         help='file to write to (stdout by default)')
-    parser.add_argument(
-        '-t', '--tags', action='store', dest='tags', type=parse_tags,
-        help='tags to parse. Specify tags to parse with the path to a YAML '
-             'file or a string in the following format: '
-             '"NAME,SECTION,OCCURRENCES,LINES,HEADER,TYPE[|...]". '
-             'where NAME is the tag name (like env), SECTION is the related '
-             'section name (like Environment variables), OCCURRENCES and '
-             'LINES are 1 or +, HEADER is 0, 1, y[es], n[o], true or false, '
-             'and TYPE is "script" (s), "function" (f). or "both" (b), '
-             'OCCURRENCES, LINES, HEADER and TYPE are optional, defaults are '
-             '1, 1, no, script. '
-             'Prefix them with o=, l=, h=, t= to provide only some of them, '
-             'unordered, like kwargs in Python. '
-             'Example: "the_tag,The tag,1,+,y,t=f". '
-             'Separate tags with | (pipe) character.')
-    parser.add_argument(
-        '-T', '--add-default-tags', action='store_true',
-        dest='add_default_tags', help='Add all the default tags to be parsed.')
-    parser.add_argument(
-        '-F', '--add-default-function-tags', action='store_true',
-        dest='add_default_function_tags',
-        help='Add the default function tags to be parsed.')
-    parser.add_argument(
-        '-S', '--add-default-script-tags', action='store_true',
-        dest='add_default_script_tags',
-        help='Add the default script tags to be parsed.')
+    # parser.add_argument(
+    #     '-t', '--tags', action='store', dest='tags', type=parse_tags,
+    #     help='tags to parse. Specify tags to parse with the path to a YAML '
+    #          'file or a string in the following format: '
+    #          '"NAME,SECTION,OCCURRENCES,LINES,HEADER,TYPE[|...]". '
+    #          'where NAME is the tag name (like env), SECTION is the related '
+    #          'section name (like Environment variables), OCCURRENCES and '
+    #          'LINES are 1 or +, HEADER is 0, 1, y[es], n[o], true or false, '
+    #          'and TYPE is "script" (s), "function" (f). or "both" (b), '
+    #          'OCCURRENCES, LINES, HEADER and TYPE are optional, defaults are '
+    #          '1, 1, no, script. '
+    #          'Prefix them with o=, l=, h=, t= to provide only some of them, '
+    #          'unordered, like kwargs in Python. '
+    #          'Example: "the_tag,The tag,1,+,y,t=f". '
+    #          'Separate tags with | (pipe) character.')
+    # parser.add_argument(
+    #     '-T', '--add-default-tags', action='store_true',
+    #     dest='add_default_tags', help='Add all the default tags to be parsed.')
+    # parser.add_argument(
+    #     '-F', '--add-default-function-tags', action='store_true',
+    #     dest='add_default_function_tags',
+    #     help='Add the default function tags to be parsed.')
+    # parser.add_argument(
+    #     '-S', '--add-default-script-tags', action='store_true',
+    #     dest='add_default_script_tags',
+    #     help='Add the default script tags to be parsed.')
     parser.add_argument(
         '-w', '--warn', action='store_true', dest='warn',
         help='actually display the warnings (false)')
-    parser.add_argument('FILE', type=valid_file,
-                        help='path to the file to read')
+    parser.add_argument('FILE', type=valid_file, nargs='*',
+                        help='path to the file(s) to read')
     return parser
 
 
-def parse_tags(arg):
-    try:
-        if valid_file(arg):
-            return parse_yaml_tags(arg)
-    except argparse.ArgumentTypeError:
-        return parse_string_tags(arg)
+# def parse_tags(arg):
+#     try:
+#         valid_file(arg)
+#         return parse_yaml_tags(arg)
+#     except argparse.ArgumentTypeError:
+#         return parse_string_tags(arg)
 
 
 def main(argv=None):
@@ -135,40 +127,31 @@ def main(argv=None):
     parser = get_parser()
     args = parser.parse_args(argv)
 
-    if args.tags:
-        dispatch_tags(args.tags)
+    # if args.tags:
+    #     dispatch_tags(args.tags)
+    #     if args.add_default_tags:
+    #         add_default_tags()
+    #     else:
+    #         if args.add_default_script_tags:
+    #             add_default_script_tags()
+    #         if args.add_default_function_tags:
+    #             add_default_function_tags()
+    # else:
+    #     add_default_tags()
+
+    add_default_tags()
+    add_default_group_tags()
+
+    if args.FILE:
+        cleaned_docs = [Checker(DocFile(file)) for file in args.FILE]
     else:
-        use_default_tags()
+        try:
+            cleaned_docs = [Checker(DocStream(sys.stdin))]
+        except KeyboardInterrupt:
+            cleaned_docs = []
 
-    if args.add_default_tags:
-        add_default_tags()
-    else:
-        if args.add_default_script_tags:
-            add_default_script_tags()
-        if args.add_default_function_tags:
-            add_default_function_tags()
-
-    if args.whitelist:
-        new_whitelist = {}
-        for tag in args.whitelist.split(','):
-            if ':' in tag:
-                tag, spec = tag.split(':')
-                occ, lines = spec
-                new_whitelist[tag] = Tag(occurrences=occ, lines=lines)
-            else:
-                new_whitelist[tag] = Tag()
-
-        args.whitelist = new_whitelist
-
-    doc = Doc(args.FILE, whitelist=args.whitelist)
-
-    if args.check:
-        ok = doc.check(args.warn, args.nice, args.failfast)
-        return 0 if ok else 1
-    else:
-        doc_read = doc.read()
-        fmt = args.format
-        formatter = get_formatter(fmt)
-        formatter(doc_read, output=args.output).write()
+    for cleaned_doc in cleaned_docs:
+        for warning in cleaned_doc.warnings:
+            print(warning)
 
     return 0

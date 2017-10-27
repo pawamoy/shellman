@@ -5,7 +5,6 @@
 import pytest
 
 from shellman.cli import main
-from shellman.doc import Doc
 from shellman.formatter import get_formatter
 from shellman.tag import TAGS, Tag
 
