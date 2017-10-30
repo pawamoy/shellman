@@ -22,7 +22,8 @@ import os
 import sys
 
 # from .formatter import get_formatter
-from .checker import Checker
+from .cleaner import Cleaner
+from .formatter import Formatter, TextFormatter
 from .reader import DocFile, DocStream
 from .tag import add_default_group_tags, add_default_tags
 
@@ -142,20 +143,47 @@ def main(argv=None):
     add_default_tags()
     add_default_group_tags()
 
+    success = True
+
     if args.FILE:
-        cleaned_docs = [Checker(DocFile(file)) for file in args.FILE]
+        for file in args.FILE:
+            cleaned_doc = Cleaner(DocFile(file))
+            if args.warn:
+                cleaned_doc.warn()
+            success &= bool(cleaned_doc)
     else:
         try:
-            cleaned_docs = [Checker(DocStream(sys.stdin))]
+            cleaned_doc = Cleaner(DocStream(sys.stdin))
+            if args.warn:
+                cleaned_doc.warn()
+            success &= bool(cleaned_doc)
         except KeyboardInterrupt:
-            cleaned_docs = []
+            pass
 
-    if args.warn:
-        for cleaned_doc in cleaned_docs:
-            cleaned_doc.warn()
+    formatter = TextFormatter(sections=[
+        'author',
+        'bug',
+        'brief',
+        'caveat',
+        'copyright',
+        'date',
+        'desc',
+        'env',
+        'error',
+        'example',
+        'exit',
+        'file',
+        'history',
+        'license',
+        'note',
+        'option',
+        'seealso',
+        'stderr',
+        'stdin',
+        'stdout',
+        'usage'
+    ])
 
-    if args.nice:
-        return 0
-    if all(cleaned_docs):
-        return 0
-    return 1
+    formatter.format(cleaned_doc)
+
+    return 0 if args.nice or success else 1

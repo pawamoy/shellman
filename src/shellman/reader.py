@@ -113,9 +113,11 @@ class DocBlock(object):
         return [line.value for line in self.lines]
 
 
-class DocMixin(object):
-    def __init__(self):
-        self.blocks = []
+class DocGroup(object):
+    def __init__(self, blocks=None):
+        if blocks is None:
+            blocks = []
+        self.blocks = blocks
 
     def __bool__(self):
         return bool(self.blocks)
@@ -127,20 +129,13 @@ class DocMixin(object):
         self.blocks.append(block)
 
 
-class DocGroup(DocMixin):
-    def __init__(self, blocks=None):
-        super(DocGroup, self).__init__()
-        if blocks is not None:
-            self.blocks = blocks
-
-
-class DocStream(DocMixin):
+class DocStream(DocGroup):
     def __init__(self, stream):
         super(DocStream, self).__init__()
         self.blocks = list(preprocess_blocks(preprocess_stream(stream)))
 
 
-class DocFile(DocMixin):
+class DocFile(DocGroup):
     def __init__(self, path):
         super(DocFile, self).__init__()
         with open(path) as stream:

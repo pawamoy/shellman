@@ -7,6 +7,9 @@
 ## \copyright first occurrence
 ## \date first occurrence
 ## \desc first occurrence
+## Here are some other lines
+## just to test the rendering functions.
+## I'm so afraid Charles...
 ## \env first occurrence
 ## \error first occurrence
 ## \example first occurrence
