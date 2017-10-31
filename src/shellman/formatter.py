@@ -35,82 +35,19 @@ def get_formatter(fmt):
         raise ValueError('shellman: error: incorrect format %s' % fmt)
 
 
-class Section(object):
-    def __init__(self, name, contents=None):
-        self.name = name
-        self.contents = contents
-
-
 class Formatter(object):
     def __init__(self,
                  sections=None,
-                 group_sections=None,
-                 remove_leading_spaces=1,
-                 remove_trailing_spaces=True,
-                 concatenate_lines=True,
-                 concatenation_string=' ',
-                 keep_empty_lines=True,
-                 keep_newline_when_post_indent_multiple_of=2):
-        self.sections = sections
-        self.group_sections = group_sections
-        self.remove_leading_spaces = remove_leading_spaces
-        self.remove_trailing_spaces = remove_trailing_spaces
-        self.concatenate_lines = concatenate_lines
-        self.concatenation_string = concatenation_string
-        self.keep_empty_lines = keep_empty_lines
-        self.keep_newline_when_post_indent_multiple_of = keep_newline_when_post_indent_multiple_of
-
-    def format(self, cleaned_docs):
-        minified = cleaned_docs.minified()
-        sections = []
-        for section in self.sections:
-            if section in minified.blocks:
-                print(self.format_section(TAGS[section].section_name,
-                                          minified.blocks[section]))
-            elif section in minified.groups:
-                for group in minified.groups:
-                    for group_section in self.group_sections:
-                        pass  # output group section
-
-    # TODO: write a format function that follows the original file docs order
-    def format_follow(self, cleaned_docs):
+                 group_sections=None):
+        # never remove leading spaces
+        # always remove trailing spaces
+        # always concatenate lines
+        # enforce first space on each line
+        # code blocks start at indent of 2
+        # reduce code blocks indent as follow:
+        # cbi = cbi - (cbi % 2)
+        # so 2 stays 2, 3 becomes 2, 4 stays 4, 5 becomes 4, etc.
         pass
-
-    def format_section(self, name, contents):
-        return '%s\n%s' % (name, ''.join(self.format_lines(l) for l in contents))
-
-    def format_lines(self, values):
-        return ' '.join(values)
-
-
-class TextFormatter(Formatter):
-    def format_lines(self, values):
-        line = ''
-        for value in values:
-            if not value:
-                if self.keep_empty_lines:
-                    line += '\n\n'
-                continue
-            if self.remove_leading_spaces:
-                count = self.remove_leading_spaces
-                while value[0] == ' ' and count > 0:
-                    value = value[1:]
-                    count -= 1
-            if self.remove_trailing_spaces:
-                value = value.rstrip(' ')
-            if not self.concatenate_lines:
-                line += value + '\n'
-                continue
-            if self.keep_newline_when_post_indent_multiple_of == 0:
-                value += '\n'
-            elif (self.keep_newline_when_post_indent_multiple_of and
-                      (len(value) - len(value.lstrip(' ')) %
-                          self.keep_newline_when_post_indent_multiple_of)) == 0:
-                    value += '\n'
-            else:
-                value += ' '
-            line += value
-        return line + '\n'
 
 #
 # class BaseFormatter(object):

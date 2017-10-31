@@ -144,6 +144,7 @@ def main(argv=None):
     add_default_group_tags()
 
     success = True
+    cleaned_doc = None
 
     if args.FILE:
         for file in args.FILE:
@@ -160,29 +161,35 @@ def main(argv=None):
         except KeyboardInterrupt:
             pass
 
-    formatter = TextFormatter(sections=[
-        'author',
-        'bug',
-        'brief',
-        'caveat',
-        'copyright',
-        'date',
-        'desc',
-        'env',
-        'error',
-        'example',
-        'exit',
-        'file',
-        'history',
-        'license',
-        'note',
-        'option',
-        'seealso',
-        'stderr',
-        'stdin',
-        'stdout',
-        'usage'
-    ])
+    if cleaned_doc is None:
+        return 1
+
+    formatter = TextFormatter(
+        remove_leading_spaces=0,
+        sections=[
+            'author',
+            'bug',
+            'brief',
+            'caveat',
+            'copyright',
+            'date',
+            'desc',
+            'env',
+            'error',
+            'example',
+            'exit',
+            'file',
+            'history',
+            'license',
+            'note',
+            'option',
+            'seealso',
+            'stderr',
+            'stdin',
+            'stdout',
+            'usage'
+        ]
+    )
 
     formatter.format(cleaned_doc)
 
