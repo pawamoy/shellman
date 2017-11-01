@@ -16,7 +16,7 @@ __version__ = '0.2.2'
 from .tag import add_default_tags, add_default_group_tags
 from .cleaner import Cleaner
 from .reader import DocFile, DocStream
-from .formatter import Formatter, TextFormatter
+from .formatter import Formatter
 
 
 __all__ = ['add_default_tags', 'add_default_group_tags', 'Cleaner', 'DocFile',

@@ -23,7 +23,7 @@ import sys
 
 # from .formatter import get_formatter
 from .cleaner import Cleaner
-from .formatter import Formatter, TextFormatter
+from .formatter import Formatter
 from .reader import DocFile, DocStream
 from .tag import add_default_group_tags, add_default_tags
 
@@ -164,8 +164,7 @@ def main(argv=None):
     if cleaned_doc is None:
         return 1
 
-    formatter = TextFormatter(
-        remove_leading_spaces=0,
+    formatter = Formatter(
         sections=[
             'author',
             'bug',
@@ -191,6 +190,9 @@ def main(argv=None):
         ]
     )
 
-    formatter.format(cleaned_doc)
+    sections = formatter.format(cleaned_doc)
+
+    for section in sections:
+        print(section)
 
     return 0 if args.nice or success else 1

@@ -10,35 +10,53 @@ in different formats.
 from __future__ import print_function
 
 import sys
+import textwrap
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from . import __version__
 from .tag import TAGS, GROUP_TAGS
 
 
-def get_formatter(fmt):
-    """
-    Formatter class getter, given a format.
+DEFAULT_SECTIONS = []
+DEFAULT_GROUP_SECTIONS = []
 
-    Args:
-        fmt (str): format for which to get a formatter class
+# def get_formatter(fmt):
+#     """
+#     Formatter class getter, given a format.
+#
+#     Args:
+#         fmt (str): format for which to get a formatter class
+#
+#     Returns:
+#         a subclass of BaseFormatter class
+#     """
+#     if fmt == 'text':
+#         return TextFormatter
+#     elif fmt == 'man':
+#         return ManFormatter
+#     elif fmt == 'markdown':
+#         return MarkdownFormatter
+#     else:
+#         raise ValueError('shellman: error: incorrect format %s' % fmt)
 
-    Returns:
-        a subclass of BaseFormatter class
-    """
-    if fmt == 'text':
-        return TextFormatter
-    elif fmt == 'man':
-        return ManFormatter
-    elif fmt == 'markdown':
-        return MarkdownFormatter
-    else:
-        raise ValueError('shellman: error: incorrect format %s' % fmt)
+
+class Section(object):
+    def __init__(self, name, contents=''):
+        self.name = name
+        self.contents = contents
+
+    def __str__(self):
+        return '%s\n%s\n' % (self.name, self.contents)
 
 
 class Formatter(object):
     def __init__(self,
-                 sections=None,
-                 group_sections=None):
+                 sections=DEFAULT_SECTIONS,
+                 group_sections=DEFAULT_GROUP_SECTIONS):
         # never remove leading spaces
         # always remove trailing spaces
         # always concatenate lines
@@ -47,9 +65,64 @@ class Formatter(object):
         # reduce code blocks indent as follow:
         # cbi = cbi - (cbi % 2)
         # so 2 stays 2, 3 becomes 2, 4 stays 4, 5 becomes 4, etc.
-        pass
 
-#
+        self.sections = sections
+        self.group_sections = group_sections
+
+    def format(self, cleaned_docs):
+        sections = []
+        minified = cleaned_docs.minified()
+        for section in self.sections:
+            if section in minified.blocks:
+                sections.append(
+                    self.format_section(
+                        section, minified.blocks[section]))
+        return sections
+
+    def format_section(self, tag_name, blocks):
+        tag = TAGS[tag_name]
+        section = Section(tag.section_name)
+        if tag.occurrences == 1:
+            section.contents = self.format_section_contents(blocks[0])
+        else:
+            section.contents = '\n'.join(self.format_section_contents(block)
+                                         for block in blocks)
+        return section
+
+    @staticmethod
+    def format_section_contents(lines):
+        file_str = StringIO()
+        current_file_str = StringIO()
+        previous_line_was_empty = False
+        previous_line_was_code = False
+        written = False
+        for line in lines:
+            line_indent = len(line) - len(line.lstrip(' \t'))
+            if line_indent >= 3:  # code line
+                if written:
+                    file_str.write(textwrap.fill(current_file_str.getvalue(),
+                                                 replace_whitespace=False,
+                                                 drop_whitespace=False))
+                    current_file_str.close()
+                    current_file_str = StringIO()
+                    written = False
+                previous_line_was_code = True
+                previous_line_was_empty = False
+                line = line[1:]
+                line = '\n' + line
+            elif line == '':  # empty line
+                if previous_line_was_empty:
+                    current_file_str.write('\n')
+                else:
+                    current_file_str.write('\n\n')
+                previous_line_was_empty = True
+            else:  # normal line
+                if previous_line_was_empty:
+                    if line[0] == ' ':
+                        line = line[1:]
+                    current_file_str.write(line)
+        return file_str.getvalue()
+
 # class BaseFormatter(object):
 #     """
 #     Formatter base class.

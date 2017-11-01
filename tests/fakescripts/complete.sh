@@ -6,10 +6,24 @@
 ## \caveat first occurrence
 ## \copyright first occurrence
 ## \date first occurrence
-## \desc first occurrence
-## Here are some other lines
-## just to test the rendering functions.
-## I'm so afraid Charles...
+
+## \desc This is a description.
+## I will now test how multiple lines are rendered, as well as wrapping,
+## indenting and concatenation.
+##
+## Here should be a code block:
+##   code1
+##   code2
+##    one more space
+##     two more spaces
+##      three more spaces
+## Line after code block.
+##
+##   code1
+##   code2
+##
+## After again.
+
 ## \env first occurrence
 ## \error first occurrence
 ## \example first occurrence
