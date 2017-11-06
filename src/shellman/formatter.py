@@ -44,13 +44,86 @@ DEFAULT_GROUP_SECTIONS = []
 #         raise ValueError('shellman: error: incorrect format %s' % fmt)
 
 
-class Section(object):
-    def __init__(self, name, contents=''):
-        self.name = name
-        self.contents = contents
+class Line(object):
+    BLANK = 'blank'
+    CODE = 'code'
+    NORMAL = 'normal'
+
+    def __init__(self, line):
+        if line == '':
+            self.line_type = Line.BLANK
+        elif len(line) - len(line.lstrip(' \t')) >= 2:
+            self.line_type = Line.CODE
+        else:
+            self.line_type = Line.NORMAL
+        self.value = line
+
+
+class Paragraph(object):
+    BLANK = Line.BLANK
+    CODE = Line.CODE
+    NORMAL = Line.NORMAL
+    HEADED = 'headed'
+
+    def __init__(self, lines=None, paragraph_type=None, indent=2):
+        if lines is None:
+            lines = []
+        self.lines = lines
+        if paragraph_type is None and self.lines:
+            paragraph_type = self.lines[0].line_type
+        self.paragraph_type = paragraph_type
+        self.indent = indent
+
+    def __bool__(self):
+        return bool(self.lines)
 
     def __str__(self):
-        return '%s\n%s\n' % (self.name, self.contents)
+        return self._to_text()
+
+    def _to_text(self):
+        if self.paragraph_type == Paragraph.HEADED:
+            first_line = self.lines.pop(0)
+            return '%s\n%s%s\n' % (
+                first_line.value,
+                ' ' * self.indent,
+                ''.join(line.value for line in self.lines))
+        elif self.paragraph_type == Paragraph.NORMAL:
+            return ''.join(line.value for line in self.lines)
+        elif self.paragraph_type == Paragraph.BLANK:
+            return '\n' * (len(self.lines) - 1)
+        elif self.paragraph_type == Paragraph.CODE:
+            # find common denominator indent, remove it on all lines
+            return '\n'.join(line.value for line in self.lines)
+
+    def accept(self, line):
+        if self.paragraph_type == line.line_type:
+            self.lines.append(line)
+            return True
+        elif self.paragraph_type is None:
+            self.paragraph_type = line.line_type
+            if self.paragraph_type == Paragraph.NORMAL:
+                line.value = line.value.lstrip(' \t')
+            self.lines.append(line)
+            return True
+        return False
+
+
+class Section(object):
+    def __init__(self, name, paragraphs=None):
+        self.name = name
+        if paragraphs is None:
+            paragraphs = []
+        self.paragraphs = paragraphs
+
+    def __str__(self):
+        return self._to_text()
+
+    def _to_text(self):
+        return '%s\n%s\n' % (
+            self.name,
+            textwrap.indent('\n'.join(str(p)
+                                      for pa in self.paragraphs
+                                      for p in pa), '  '))
 
 
 class Formatter(object):
@@ -61,10 +134,6 @@ class Formatter(object):
         # always remove trailing spaces
         # always concatenate lines
         # enforce first space on each line
-        # code blocks start at indent of 2
-        # reduce code blocks indent as follow:
-        # cbi = cbi - (cbi % 2)
-        # so 2 stays 2, 3 becomes 2, 4 stays 4, 5 becomes 4, etc.
 
         self.sections = sections
         self.group_sections = group_sections
@@ -75,53 +144,34 @@ class Formatter(object):
         for section in self.sections:
             if section in minified.blocks:
                 sections.append(
-                    self.format_section(
+                    Formatter.format_section(
                         section, minified.blocks[section]))
         return sections
 
-    def format_section(self, tag_name, blocks):
+    @staticmethod
+    def format_section(tag_name, blocks):
         tag = TAGS[tag_name]
         section = Section(tag.section_name)
         if tag.occurrences == 1:
-            section.contents = self.format_section_contents(blocks[0])
+            section.paragraphs = [Formatter.format_lines(blocks[0])]
         else:
-            section.contents = '\n'.join(self.format_section_contents(block)
-                                         for block in blocks)
+            section.paragraphs = [Formatter.format_lines(block)
+                                  for block in blocks]
         return section
 
     @staticmethod
-    def format_section_contents(lines):
-        file_str = StringIO()
-        current_file_str = StringIO()
-        previous_line_was_empty = False
-        previous_line_was_code = False
-        written = False
+    def format_lines(lines):
+        lines = [Line(line) for line in lines]
+        paragraphs = []
+        paragraph = Paragraph()
         for line in lines:
-            line_indent = len(line) - len(line.lstrip(' \t'))
-            if line_indent >= 3:  # code line
-                if written:
-                    file_str.write(textwrap.fill(current_file_str.getvalue(),
-                                                 replace_whitespace=False,
-                                                 drop_whitespace=False))
-                    current_file_str.close()
-                    current_file_str = StringIO()
-                    written = False
-                previous_line_was_code = True
-                previous_line_was_empty = False
-                line = line[1:]
-                line = '\n' + line
-            elif line == '':  # empty line
-                if previous_line_was_empty:
-                    current_file_str.write('\n')
-                else:
-                    current_file_str.write('\n\n')
-                previous_line_was_empty = True
-            else:  # normal line
-                if previous_line_was_empty:
-                    if line[0] == ' ':
-                        line = line[1:]
-                    current_file_str.write(line)
-        return file_str.getvalue()
+            if not paragraph.accept(line):
+                paragraphs.append(paragraph)
+                paragraph = Paragraph()
+                paragraph.accept(line)
+        if paragraph:
+            paragraphs.append(paragraph)
+        return paragraphs
 
 # class BaseFormatter(object):
 #     """

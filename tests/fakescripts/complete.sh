@@ -12,15 +12,15 @@
 ## indenting and concatenation.
 ##
 ## Here should be a code block:
-##   code1
-##   code2
-##    one more space
-##     two more spaces
-##      three more spaces
+##    code1
+##    code2
+##     one more space
+##      two more spaces
+##       three more spaces
 ## Line after code block.
 ##
-##   code1
-##   code2
+##    code1
+##    code2
 ##
 ## After again.
 
