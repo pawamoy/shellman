@@ -25,7 +25,7 @@ import sys
 from .cleaner import Cleaner
 from .formatter import Formatter
 from .reader import DocFile, DocStream
-from .tag import add_default_group_tags, add_default_tags
+from .section import add_default_group_sections, add_default_sections
 
 
 def valid_file(value):
@@ -140,8 +140,8 @@ def main(argv=None):
     # else:
     #     add_default_tags()
 
-    add_default_tags()
-    add_default_group_tags()
+    add_default_sections()
+    add_default_group_sections()
 
     success = True
     cleaned_doc = None

@@ -18,7 +18,7 @@ except ImportError:
     from io import StringIO
 
 from . import __version__
-from .tag import TAGS, GROUP_TAGS
+from .section import SECTIONS, GROUP_SECTIONS
 
 
 DEFAULT_SECTIONS = []
@@ -150,9 +150,9 @@ class Formatter(object):
 
     @staticmethod
     def format_section(tag_name, blocks):
-        tag = TAGS[tag_name]
-        section = Section(tag.section_name)
-        if tag.occurrences == 1:
+        tag = SECTIONS[tag_name]
+        section = Section(tag.verbose_name)
+        if tag.unique:
             section.paragraphs = [Formatter.format_lines(blocks[0])]
         else:
             section.paragraphs = [Formatter.format_lines(block)

@@ -5,7 +5,7 @@ from builtins import object
 from collections import defaultdict, namedtuple
 
 from .reader import DocGroup, DocType
-from .tag import GROUP_TAGS, TAGS
+from .section import GROUP_SECTIONS, SECTIONS
 
 
 def err(*args, **kwargs):
@@ -77,8 +77,8 @@ class EmptyWarning(ShellmanWarning):
 class Cleaner(object):
     def __init__(self,
                  doc_object=None,
-                 tags=TAGS,
-                 group_tags=GROUP_TAGS):
+                 tags=SECTIONS,
+                 group_tags=GROUP_SECTIONS):
         self.warnings = []
         self.blocks = []
         self.groups = []
@@ -122,19 +122,19 @@ class Cleaner(object):
                 self._clean_occurrences(tag, blocks)
 
     def _clean_lines(self, tag, block):
-        if tag.lines == 1 and block.lines_number > 1:
+        if not tag.multiline and block.lines_number > 1:
             self.warnings.append(LinesWarning(
                 block.path, block.lineno,
                 '%s (%d/1)' % (tag.name, block.lines_number)))
 
     def _clean_empty(self, tag, block):
-        if tag.header and not block.value:
+        if tag.special and not block.value:
             self.warnings.append(EmptyWarning(
                 block.path, block.lineno, tag.name))
 
     def _clean_occurrences(self, tag, blocks):
         occurrences = len(blocks)
-        if tag.occurrences == 1 and occurrences > 1:
+        if tag.unique and occurrences > 1:
             for block in blocks[1:]:
                 self.warnings.append(OccurrencesWarning(
                     block.path, block.lineno,

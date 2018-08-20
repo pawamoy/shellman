@@ -13,11 +13,11 @@ write this documentation as text, man, or markdown format on stdout.
 
 __version__ = '0.2.2'
 
-from .tag import add_default_tags, add_default_group_tags
+from .section import add_default_sections, add_default_group_sections
 from .cleaner import Cleaner
 from .reader import DocFile, DocStream
 from .formatter import Formatter
 
 
-__all__ = ['add_default_tags', 'add_default_group_tags', 'Cleaner', 'DocFile',
-           'DocStream', 'Formatter', 'TextFormatter']
+__all__ = ['add_default_sections', 'add_default_group_sections', 'Cleaner', 'DocFile',
+           'DocStream', 'Formatter']

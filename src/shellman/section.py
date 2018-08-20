@@ -20,7 +20,8 @@ class Section(object):
                  name,
                  verbose_name,
                  unique=False,
-                 multiline=True):
+                 multiline=True,
+                 special=False):
         """
         Init method.
 
@@ -32,6 +33,7 @@ class Section(object):
         self.verbose_name = verbose_name
         self.unique = unique
         self.multiline = multiline
+        self.special = special
 
 
 class AuthorSection(Section):
@@ -172,43 +174,43 @@ class VersionSection(Section):
 
 SECTIONS = {}
 DEFAULT_SECTIONS = {
-    'author': Section('author', 'Authors', '+', 1),
-    'bug': Section('bug', 'Bugs', '+', '+'),
-    'brief': Section('brief', 'Brief', 1, 1),
-    'caveat': Section('caveat', 'Caveats', '+', '+'),
-    'copyright': Section('copyright', 'Copyright', 1, '+'),
-    'date': Section('date', 'Date', 1, 1),
-    'desc': Section('desc', 'Description', 1, '+'),
-    'env': Section('env', 'Environment variables', '+', '+', True),
-    'error': Section('error', 'Errors', '+', '+', True),
-    'example': Section('example', 'Examples', '+', '+', True),
-    'exit': Section('exit', 'Exit status', '+', '+', True),
-    'file': Section('file', 'Files', '+', '+', True),
-    'history': Section('history', 'History', 1, '+'),
-    'license': Section('license', 'License', 1, '+'),
-    'note': Section('note', 'Notes', '+', '+'),
-    'option': Section('option', 'Options', '+', '+', True),
-    'seealso': Section('seealso', 'See also', '+', 1),
-    'stderr': Section('stderr', 'Stderr', '+', '+'),
-    'stdin': Section('stdin', 'Stdin', '+', '+'),
-    'stdout': Section('stdout', 'Stdout', '+', '+'),
-    'usage': Section('usage', 'Usage', '+', '+'),
-    'version': Section('version', 'Version', 1, 1)
+    'author': Section('author', 'Authors', False, False),
+    'bug': Section('bug', 'Bugs', False, True),
+    'brief': Section('brief', 'Brief', True, False),
+    'caveat': Section('caveat', 'Caveats', False, True),
+    'copyright': Section('copyright', 'Copyright', True, True),
+    'date': Section('date', 'Date', True, False),
+    'desc': Section('desc', 'Description', True, True),
+    'env': Section('env', 'Environment variables', False, True, True),
+    'error': Section('error', 'Errors', False, True, True),
+    'example': Section('example', 'Examples', False, True, True),
+    'exit': Section('exit', 'Exit status', False, True, True),
+    'file': Section('file', 'Files', False, True, True),
+    'history': Section('history', 'History', True, True),
+    'license': Section('license', 'License', True, True),
+    'note': Section('note', 'Notes', False, True),
+    'option': Section('option', 'Options', False, True, True),
+    'seealso': Section('seealso', 'See also', False, False),
+    'stderr': Section('stderr', 'Stderr', False, True),
+    'stdin': Section('stdin', 'Stdin', False, True),
+    'stdout': Section('stdout', 'Stdout', False, True),
+    'usage': Section('usage', 'Usage', False, True),
+    'version': Section('version', 'Version', True, False)
 }
 
 GROUP_SECTIONS = {}
 DEFAULT_GROUP_SECTIONS = {
     'fn': {
-        'fn': Section('fn', 'Function', 1, 1),
-        'brief': Section('brief', 'Brief', 1, 1),
-        'desc': Section('desc', 'Description', 1, '+'),
-        'param': Section('param', 'Parameters', '+', '+', True),
-        'pre': Section('pre', 'Pre-conditions', '+', '+'),
-        'return': Section('return', 'Return code', '+', '+', True),
-        'seealso': Section('seealso', 'See also', '+', 1),
-        'stderr': Section('stderr', 'Standard error', '+', '+'),
-        'stdin': Section('stdin', 'Standard input', '+', '+'),
-        'stdout': Section('stdout', 'Standard output', '+', '+')
+        'fn': Section('fn', 'Function', True, False),
+        'brief': Section('brief', 'Brief', True, False),
+        'desc': Section('desc', 'Description', True, True),
+        'param': Section('param', 'Parameters', False, True, True),
+        'pre': Section('pre', 'Pre-conditions', False, True),
+        'return': Section('return', 'Return code', False, True, True),
+        'seealso': Section('seealso', 'See also', False, False),
+        'stderr': Section('stderr', 'Standard error', False, True),
+        'stdin': Section('stdin', 'Standard input', False, True),
+        'stdout': Section('stdout', 'Standard output', False, True)
     }
 }
 
