@@ -111,24 +111,24 @@ class ErrorTag:
 
 
 class ExampleTag:
-    def __init__(self, title, contents, explanation):
+    def __init__(self, title, code, explanation):
         self.title = title
-        self.contents = contents
+        self.code = code
         self.explanation = explanation
 
     @classmethod
     def from_lines(cls, lines):
-        title, contents, explanation = [], [], []
+        title, code, explanation = [], [], []
         current = None
         for line in lines:
             if line.tag == 'example':
                 if line.value:
                     title.append(line.value)
                 current = 'title'
-            elif line.tag == 'example-contents':
+            elif line.tag == 'example-code':
                 if line.value:
-                    contents.append(line.value)
-                current = 'contents'
+                    code.append(line.value)
+                current = 'code'
             elif line.tag == 'example-explanation':
                 if line.value:
                     explanation.append(line.value)
@@ -136,14 +136,14 @@ class ExampleTag:
             elif not line.tag and line.value:
                 if current == 'title':
                     title.append(line.value)
-                elif current == 'contents':
-                    contents.append(line.value)
+                elif current == 'code':
+                    code.append(line.value)
                 elif current == 'explanation':
                     explanation.append(line.value)
 
         return ExampleTag(
             title='\n'.join(title),
-            contents='\n'.join(contents),
+            code='\n'.join(code),
             explanation='\n'.join(explanation))
 
 
@@ -295,9 +295,9 @@ class OptionTag:
         for line in lines:
             if line.tag == 'option':
                 short, long, positional = re.search(
-                    r'^(?P<short>-.+)'
-                    r'(?:, (?P<long>--.+))?'
-                    r'(?: (?P<positional>[\w ]+))?', line.value).groups()
+                    r'^(?P<short>-\w)'
+                    r'(?:, (?P<long>--[\w-]+))?'
+                    r'(?: (?P<positional>.+))?', line.value).groups()
             elif line.tag == 'option-default':
                 default = line.value
             elif line.tag == 'group':

@@ -1,21 +1,23 @@
 .if n.ad l
 .nh
-.TH {{ shellman.filename }} 1 "{{ doc.date }}" "Shellman {{ shellman.version }}" "User Commands"
+.TH {{ shellman.filename }} 1 "{{ doc.date[0].text }}" "Shellman {{ shellman.version }}" "User Commands"
 .SH "NAME"
-{{ shellman.filename }} \- {{ doc.brief }}
+{{ shellman.filename }} \- {{ doc.brief[0].text }}
 .SH "SYNOPSIS"
 .br
-{% for usage in doc.usage %}
-{{ usage|first_line|first_word|groff_strong }} {{ usage|first_line|body|groff_auto_emphasis|groff_auto_strong|groff_auto_escape }}
-{{ usage|body }}
+{% for usage in doc.usage -%}
+{{ usage.program|groff_strong }} {{ usage.command|groff_auto_emphasis|groff_auto_strong|groff_auto_escape }}
+.br
 {% endfor %}
+.SH "DESCRIPTION"
+{{ doc.desc[0].text }}
 .SH "OPTIONS"
 {% for option in doc.option %}
-.IP "{{ option|first_line|groff_strong }}" 4
-{{ option|body }}
+.IP "{{ option.short|groff_strong }}{% if option.long %}, {{ option.long|groff_strong }}{% endif %}{% if option.positional %} {{ option.positional|groff_auto_emphasis }}{% endif %}" 2
+{{ option.description }}
 {% endfor %}
 .SH "EXAMPLES"
 {% for example in doc.example %}
-.IP "{{ example|first_line|groff_strong }}" 4
-{{ example|body }}
+.IP "{{ example.title|groff_strong }}" 2
+{{ example.code }}
 {% endfor %}

@@ -180,7 +180,7 @@ def preprocess_lines(lines):
                     path, lineno, tag, ''))
             else:
                 current_block.append(DocLine(
-                    path, lineno, None, line))
+                    path, lineno, None, line[1:]))
     if current_block:
         yield current_block
 
@@ -188,6 +188,5 @@ def preprocess_lines(lines):
 def process_blocks(blocks):
     sections = defaultdict(list)
     for block in blocks:
-        print(block.tag)
         sections[block.tag].append(TAGS.get(block.tag).from_lines(block.lines))
     return dict(sections)

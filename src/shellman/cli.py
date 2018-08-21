@@ -21,11 +21,7 @@ import argparse
 import os
 import sys
 
-# from .formatter import get_formatter
-from .cleaner import Cleaner
-from .formatter import Formatter
 from .reader import DocFile, DocStream
-from .section import add_default_group_sections, add_default_sections
 from . import templates
 from . import __version__
 
@@ -142,66 +138,36 @@ def main(argv=None):
     # else:
     #     add_default_tags()
 
-    add_default_sections()
-    add_default_group_sections()
-
     success = True
-    cleaned_doc = None
+    doc = None
 
     if args.FILE:
         for file in args.FILE:
-            cleaned_doc = Cleaner(DocFile(file))
+            doc = DocFile(file)
             if args.warn:
-                cleaned_doc.warn()
-            success &= bool(cleaned_doc)
+                doc.warn()
+            success &= bool(doc)
     else:
         try:
-            cleaned_doc = Cleaner(DocStream(sys.stdin))
+            doc = DocStream(sys.stdin)
             if args.warn:
-                cleaned_doc.warn()
-            success &= bool(cleaned_doc)
+                doc.warn()
+            success &= bool(doc)
         except KeyboardInterrupt:
             pass
 
-    if cleaned_doc is None:
+    if doc is None:
         return 1
 
-    formatter = Formatter(
-        sections=[
-            'author',
-            'bug',
-            'brief',
-            'caveat',
-            'copyright',
-            'date',
-            'desc',
-            'env',
-            'error',
-            'example',
-            'exit',
-            'file',
-            'history',
-            'license',
-            'note',
-            'option',
-            'seealso',
-            'stderr',
-            'stdin',
-            'stdout',
-            'usage'
-        ]
-    )
-
-    sections = formatter.format(cleaned_doc)
-
-    for section in sections:
-        print(section)
-
     template = templates.get_template('manpage', 'groff')
-    rendered = template.render(doc=cleaned_doc, shellman=dict(
-        version=__version__, filename=cleaned_doc.doc_object.filename
+    rendered = template.render(doc=doc.sections, shellman=dict(
+        version=__version__, filename=doc.filename
     ))
 
     print(rendered)
+
+    print(doc.sections['option'][1].short)
+    print(doc.sections['option'][1].long)
+    print(doc.sections['option'][1].positional)
 
     return 0 if args.nice or success else 1

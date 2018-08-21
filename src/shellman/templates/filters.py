@@ -14,7 +14,7 @@ def groff_emphasis(string):
 
 
 def groff_auto_emphasis(string):
-    return re.sub(r'([A-Z]+)', r'\\fI\1\\fR', string)
+    return re.sub(r'([A-Z_]+)', r'\\fI\1\\fR', string)
 
 
 def groff_auto_strong(string):
