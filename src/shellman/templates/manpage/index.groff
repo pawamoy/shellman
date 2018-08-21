@@ -1,0 +1,21 @@
+.if n.ad l
+.nh
+.TH {{ shellman.filename }} 1 "{{ doc.date }}" "Shellman {{ shellman.version }}" "User Commands"
+.SH "NAME"
+{{ shellman.filename }} \- {{ doc.brief }}
+.SH "SYNOPSIS"
+.br
+{% for usage in doc.usage %}
+{{ usage|first_line|first_word|groff_strong }} {{ usage|first_line|body|groff_auto_emphasis|groff_auto_strong|groff_auto_escape }}
+{{ usage|body }}
+{% endfor %}
+.SH "OPTIONS"
+{% for option in doc.option %}
+.IP "{{ option|first_line|groff_strong }}" 4
+{{ option|body }}
+{% endfor %}
+.SH "EXAMPLES"
+{% for example in doc.example %}
+.IP "{{ example|first_line|groff_strong }}" 4
+{{ example|body }}
+{% endfor %}

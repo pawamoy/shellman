@@ -17,29 +17,30 @@ Algorithm is as follows:
 # execute every steps. It means that every block within a DocStruct has a tag
 # (this is not true for DocFile and DocStream objects).
 
+import os
 import re
-from builtins import object
+from collections import defaultdict
 
-tag_value_regexp = re.compile(r'^\s*[\\@]([_a-zA-Z]\w*)\s+(.+)$')
-tag_no_value_regexp = re.compile(r'^\s*[\\@]([_a-zA-Z]\w*)\s*$')
+from .tags import TAGS
+
+tag_value_regexp = re.compile(r'^\s*[\\@]([_a-zA-Z][\w-]*)\s+(.+)$')
+tag_no_value_regexp = re.compile(r'^\s*[\\@]([_a-zA-Z][\w-]*)\s*$')
 
 
-class DocType(object):
+class DocType:
     TAG = 'T'
     TAG_VALUE = 'TV'
     VALUE = 'V'
-    ORPHAN_VALUE = 'OV'
     INVALID = 'I'
 
 
-class DocLine(object):
+class DocLine:
 
-    def __init__(self, path, lineno, tag, value, orphan):
+    def __init__(self, path, lineno, tag, value):
         self.path = path
         self.lineno = lineno
         self.tag = tag
         self.value = value
-        self.orphan = orphan
 
     def __str__(self):
         doc_type = self.doc_type()
@@ -47,11 +48,11 @@ class DocLine(object):
             s = '%s, "%s"' % (self.tag, self.value)
         elif doc_type == DocType.TAG:
             s = self.tag
-        elif doc_type in (DocType.VALUE, DocType.ORPHAN_VALUE):
+        elif doc_type == DocType.VALUE:
             s = '"%s"' % self.value
         else:
             s = 'invalid'
-        return '%s:%s: %s: %s' % (self.path, self.lineno, self.doc_type(), s)
+        return '%s:%s: %s: %s' % (self.path, self.lineno, doc_type, s)
 
     def doc_type(self):
         if self.tag:
@@ -59,13 +60,11 @@ class DocLine(object):
                 return DocType.TAG_VALUE
             return DocType.TAG
         if self.value is not None:
-            if self.orphan:
-                return DocType.ORPHAN_VALUE
             return DocType.VALUE
         return DocType.INVALID
 
 
-class DocBlock(object):
+class DocBlock:
     def __init__(self, lines=None):
         if lines is None:
             lines = []
@@ -113,7 +112,7 @@ class DocBlock(object):
         return [line.value for line in self.lines]
 
 
-class DocGroup(object):
+class DocGroup:
     def __init__(self, blocks=None):
         if blocks is None:
             blocks = []
@@ -130,70 +129,65 @@ class DocGroup(object):
 
 
 class DocStream(DocGroup):
-    def __init__(self, stream):
+    def __init__(self, stream, name=''):
         super(DocStream, self).__init__()
-        self.blocks = list(preprocess_blocks(preprocess_stream(stream)))
+        self.filename = name or stream.name
+        self.blocks = list(preprocess_lines(preprocess_stream(stream)))
+        self.sections = process_blocks(self.blocks)
 
 
 class DocFile(DocGroup):
     def __init__(self, path):
         super(DocFile, self).__init__()
+        self.filename = os.path.basename(path)
         with open(path) as stream:
             try:
-                self.blocks = list(preprocess_blocks(
+                self.blocks = list(preprocess_lines(
                     preprocess_stream(stream)))
             except UnicodeDecodeError:
                 print('Cannot read file %s' % path)
                 self.blocks = []
+        self.sections = process_blocks(self.blocks)
 
 
 def preprocess_stream(stream):
-    current_block = []
     for lineno, line in enumerate(stream, 1):
         line = line.lstrip(' \t').rstrip('\n')
         if line.startswith('##'):
-            current_block.append((stream.name, lineno, line))
-        else:
-            if current_block:
+            yield stream.name, lineno, line
+
+
+def preprocess_lines(lines):
+    current_block = DocBlock()
+    for path, lineno, line in lines:
+        line = line.lstrip('#')
+        res = tag_value_regexp.search(line)
+        if res:
+            tag, value = res.groups()
+            if current_block and not tag.startswith(current_block.tag + '-'):
                 yield current_block
-                current_block = []
+                current_block = DocBlock()
+            current_block.append(DocLine(
+                path, lineno, tag, value))
+        else:
+            res = tag_no_value_regexp.search(line)
+            if res:
+                tag = res.groups()[0]
+                if current_block and not tag.startswith(current_block.tag + '-'):
+                    yield current_block
+                    current_block = DocBlock()
+                current_block.append(DocLine(
+                    path, lineno, tag, ''))
+            else:
+                current_block.append(DocLine(
+                    path, lineno, None, line))
     if current_block:
         yield current_block
 
 
-def preprocess_blocks(blocks):
+def process_blocks(blocks):
+    sections = defaultdict(list)
     for block in blocks:
-        sub_blocks = []
-        current_block = DocBlock()
-        orphan = True
-        for path, lineno, line in block:
-            line = line.lstrip('#')
-            res = tag_value_regexp.search(line)
-            if res:
-                if current_block:
-                    sub_blocks.append(current_block)
-                    current_block = DocBlock()
-                orphan = False
-                tag, value = res.groups()
-                current_block.append(DocLine(
-                    path, lineno, tag, value, False))
-            else:
-                res = tag_no_value_regexp.search(line)
-                if res:
-                    if current_block:
-                        sub_blocks.append(current_block)
-                        current_block = DocBlock()
-                    orphan = False
-                    tag = res.groups()[0]
-                    current_block.append(DocLine(
-                        path, lineno, tag, '', False))
-                elif orphan:
-                    current_block.append(DocLine(
-                        path, lineno, None, line, True))
-                else:
-                    current_block.append(DocLine(
-                        path, lineno, None, line, False))
-        if current_block:
-            sub_blocks.append(current_block)
-        if sub_blocks:
-            yield DocGroup(sub_blocks)
+        print(block.tag)
+        sections[block.tag].append(TAGS.get(block.tag).from_lines(block.lines))
+    return dict(sections)

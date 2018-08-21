@@ -26,6 +26,8 @@ from .cleaner import Cleaner
 from .formatter import Formatter
 from .reader import DocFile, DocStream
 from .section import add_default_group_sections, add_default_sections
+from . import templates
+from . import __version__
 
 
 def valid_file(value):
@@ -194,5 +196,12 @@ def main(argv=None):
 
     for section in sections:
         print(section)
+
+    template = templates.get_template('manpage', 'groff')
+    rendered = template.render(doc=cleaned_doc, shellman=dict(
+        version=__version__, filename=cleaned_doc.doc_object.filename
+    ))
+
+    print(rendered)
 
     return 0 if args.nice or success else 1

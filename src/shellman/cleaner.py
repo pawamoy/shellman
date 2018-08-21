@@ -5,7 +5,6 @@ from builtins import object
 from collections import defaultdict, namedtuple
 
 from .reader import DocGroup, DocType
-from .section import GROUP_SECTIONS, SECTIONS
 
 
 def err(*args, **kwargs):
@@ -84,6 +83,7 @@ class Cleaner(object):
         self.groups = []
         self.tags = tags
         self.group_tags = group_tags
+        self.doc_object = doc_object
 
         if doc_object is not None:
             self.clean(doc_object.blocks)
