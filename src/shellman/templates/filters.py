@@ -14,11 +14,19 @@ def groff_emphasis(string):
 
 
 def groff_auto_emphasis(string):
-    return re.sub(r'([A-Z_]+)', r'\\fI\1\\fR', string)
+    return re.sub(r'(\b[A-Z_0-9]+\b)', r'\\fI\1\\fR', string)
 
 
 def groff_auto_strong(string):
-    return re.sub(r'(--?[a-z0-9-]+=?)', r'\\fB\1\\fR', string)
+    return re.sub(r'(--?[\w-]+=?)', r'\\fB\1\\fR', string)
+
+
+def groff_auto(string, escape=True):
+    string = groff_auto_emphasis(string)
+    string = groff_auto_strong(string)
+    if escape:
+        string = groff_auto_escape(string)
+    return string
 
 
 def first_word(string, delimiter=' '):
@@ -49,6 +57,7 @@ FILTERS = {
     'groff_emphasis': groff_emphasis,
     'groff_auto_strong': groff_auto_strong,
     'groff_auto_emphasis': groff_auto_emphasis,
+    'groff_auto': groff_auto,
     'first_word': first_word,
     'first_line': first_line,
     'body': body,

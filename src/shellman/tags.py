@@ -288,16 +288,21 @@ class OptionTag:
         self.group = group
         self.description = description
 
+
     @classmethod
     def from_lines(cls, lines):
         short, long, positional, default, group = '', '', '', '', ''
         description = []
         for line in lines:
             if line.tag == 'option':
-                short, long, positional = re.search(
+                search = re.search(
                     r'^(?P<short>-\w)'
                     r'(?:, (?P<long>--[\w-]+))?'
-                    r'(?: (?P<positional>.+))?', line.value).groups()
+                    r'(?: (?P<positional>.+))?', line.value)
+                if search:
+                    short, long, positional = search.groups(default='')
+                else:
+                    positional = line.value
             elif line.tag == 'option-default':
                 default = line.value
             elif line.tag == 'group':
@@ -312,15 +317,12 @@ class OptionTag:
 
 
 class SeealsoTag:
-    def __init__(self, references):
-        self.references = references
+    def __init__(self, text):
+        self.text = text
 
     @classmethod
     def from_lines(cls, lines):
-        references = []
-        for line in lines:
-            references.extend(r.trim() for r in line.value.split(', '))
-        return SeealsoTag(references=references)
+        return SeealsoTag(text='\n'.join(l.value for l in lines))
 
 
 class StderrTag:

@@ -20,6 +20,7 @@ Why does this file exist, and why not put this in __main__?
 import argparse
 import os
 import sys
+from datetime import date
 
 from .reader import DocFile, DocStream
 from . import templates
@@ -160,14 +161,13 @@ def main(argv=None):
         return 1
 
     template = templates.get_template('manpage', 'groff')
-    rendered = template.render(doc=doc.sections, shellman=dict(
-        version=__version__, filename=doc.filename
-    ))
+    rendered = template.render(
+        sections=doc.sections,
+        filename=doc.filename,
+        version=__version__,
+        now=date.today()
+    )
 
     print(rendered)
-
-    print(doc.sections['option'][1].short)
-    print(doc.sections['option'][1].long)
-    print(doc.sections['option'][1].positional)
 
     return 0 if args.nice or success else 1

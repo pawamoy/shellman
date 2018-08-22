@@ -188,5 +188,7 @@ def preprocess_lines(lines):
 def process_blocks(blocks):
     sections = defaultdict(list)
     for block in blocks:
-        sections[block.tag].append(TAGS.get(block.tag).from_lines(block.lines))
+        tag_class = TAGS.get(block.tag)
+        if tag_class:
+            sections[block.tag].append(tag_class.from_lines(block.lines))
     return dict(sections)
