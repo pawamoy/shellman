@@ -1,0 +1,4 @@
+.SH "SEE ALSO"
+{% for seealso in section %}
+.IP "{{ seealso.text }}" 4
+{% endfor %}

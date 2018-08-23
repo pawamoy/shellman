@@ -1,0 +1,6 @@
+.SH "SYNOPSIS"
+.br
+{% for usage in section -%}
+{{ usage.program|groff_strong }} {{ usage.command|groff_auto }}
+.br
+{% endfor %}

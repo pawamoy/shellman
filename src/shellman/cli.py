@@ -162,9 +162,34 @@ def main(argv=None):
 
     template = templates.get_template('manpage', 'groff')
     rendered = template.render(
-        sections=doc.sections,
-        filename=doc.filename,
-        version=__version__,
+        doc=doc,
+        context={
+            'indent': 4,
+            'section_order': [
+                'brief',
+                'usage',
+                'desc',
+                'option',
+                'env',
+                'file',
+                'exit',
+                'stdin',
+                'stdout',
+                'stderr',
+                'function',
+                'example',
+                'error',
+                'bug',
+                'caveat',
+                'author',
+                'copyright',
+                'license',
+                'history',
+                'note',
+                'seealso',
+            ]
+        },
+        shellman_version=__version__,
         now=date.today()
     )
 

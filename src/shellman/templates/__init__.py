@@ -11,7 +11,7 @@ def get_path():
 
 
 def get_env(path):
-    env = Environment(loader=FileSystemLoader(path))
+    env = Environment(loader=FileSystemLoader(path), trim_blocks=True, lstrip_blocks=True)
     env.filters.update(FILTERS)
     return env
 

@@ -1,0 +1,2 @@
+.SH "NAME"
+{{ doc.filename }} \- {{ section[0].text }}

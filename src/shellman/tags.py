@@ -223,13 +223,13 @@ class FunctionTag:
             elif line.tag == 'function-description':
                 description.append(line.value)
             elif line.tag == 'function-argument':
-                arguments.append(line.value.split(' ', 1))
+                arguments.append(line.value)
             elif line.tag == 'function-precondition':
                 preconditions.append(line.value)
             elif line.tag == 'function-return':
-                return_codes.append(line.value.split(' ', 1))
+                return_codes.append(line.value)
             elif line.tag == 'function-seealso':
-                seealso.extend(line.value.split(', '))
+                seealso.append(line.value)
             elif line.tag == 'function-stderr':
                 stderr.append(line.value)
             elif line.tag == 'function-stdin':

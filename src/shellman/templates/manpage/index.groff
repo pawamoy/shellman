@@ -1,39 +1,15 @@
 .if n.ad l
 .nh
-.TH {{ filename }} 1 "{% if sections.date %}{{ sections.date[0].text }}{% else %}{{ now }}{% endif %}" "Shellman {{ version }}" "User Commands"
-{% if sections.brief %}
-.SH "NAME"
-{{ filename }} \- {{ sections.brief[0].text }}
-{% endif %}
-{% if sections.usage %}
-.SH "SYNOPSIS"
-.br
-{% for usage in sections.usage -%}
-{{ usage.program|groff_strong }} {{ usage.command|groff_auto }}
-.br
+
+.TH {{ doc.filename }} 1 "{% if doc.sections.version -%}
+Version {{ doc.sections.version[0].text }} - {% endif -%}
+{% if doc.sections.date %}{{ doc.sections.date[0].text }}{% else %}{{ now }}{% endif %}" "Shellman {{ shellman_version }}" "User Commands"
+
+{% for section_name in context.section_order %}
+  {% if doc.sections[section_name] %}
+    {% with section = doc.sections[section_name] %}
+      {% include section_name + ".groff" with context %}
+
+    {% endwith %}
+  {% endif %}
 {% endfor %}
-{% endif %}
-{% if sections.desc %}
-.SH "DESCRIPTION"
-{{ sections.desc[0].text|groff_auto_emphasis }}
-{% endif %}
-{% if sections.option %}
-.SH "OPTIONS"
-{% for option in sections.option %}
-.IP "{% if option.short %}{{ option.short|groff_strong }}{% if option.long %},{% endif %} {% endif %}{% if option.long %}{{ option.long|groff_strong }} {% endif %}{% if option.positional %}{{ option.positional|groff_auto_emphasis }}{% endif %}" 2
-{{ option.description }}
-{% endfor %}
-{% endif %}
-{% if sections.example %}
-.SH "EXAMPLES"
-{% for example in sections.example %}
-.IP "{{ example.title|groff_strong }}" 2
-{{ example.code }}
-{% endfor %}
-{% endif %}
-{% if sections.seealso %}
-.SH "SEE ALSO"
-{% for seealso in sections.seealso %}
-.IP "{{ seealso.text }}" 2
-{% endfor %}
-{% endif %}

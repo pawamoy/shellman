@@ -2,7 +2,12 @@ import re
 
 
 def groff_auto_escape(string):
-    return string.replace('-', '\-').replace("'", "\\'").replace('.', '\.').replace('$', '\\f$')
+    return string\
+        .replace('-', '\\-')\
+        .replace("'", "\\'")\
+        .replace('"', '\\"')\
+        .replace('.', '\\.')\
+        .replace('$', '\\f$')
 
 
 def groff_strong(string):
@@ -14,7 +19,7 @@ def groff_emphasis(string):
 
 
 def groff_auto_emphasis(string):
-    return re.sub(r'(\b[A-Z_0-9]+\b)', r'\\fI\1\\fR', string)
+    return re.sub(r'(\b[A-Z_0-9]{2,}\b)', r'\\fI\1\\fR', string)
 
 
 def groff_auto_strong(string):
