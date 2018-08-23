@@ -19,6 +19,7 @@ Algorithm is as follows:
 
 import os
 import re
+import sys
 from collections import defaultdict
 
 from .tags import TAGS
@@ -188,6 +189,11 @@ def preprocess_lines(lines):
 def process_blocks(blocks):
     sections = defaultdict(list)
     for block in blocks:
+        if block.tag is None:
+            print('shellman: warning: untagged documentation between lines %d and %d' % (
+                block.lineno, block.lines[-1].lineno
+            ), file=sys.stderr)
+            continue
         tag_class = TAGS.get(block.tag)
         if tag_class:
             sections[block.tag].append(tag_class.from_lines(block.lines))

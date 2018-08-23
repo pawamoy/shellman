@@ -8,8 +8,8 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 {% for section_name in context.section_order %}
   {% if doc.sections[section_name] %}
     {% with section = doc.sections[section_name] %}
+.
       {% include section_name + ".groff" with context %}
-
     {% endwith %}
   {% endif %}
 {% endfor %}

@@ -13,9 +13,7 @@ write this documentation as text, man, or markdown format on stdout.
 
 __version__ = '0.2.2'
 
-# from .cleaner import Cleaner
 from .reader import DocFile, DocStream
-# from .formatter import Formatter
 
 
 __all__ = ['DocFile', 'DocStream']

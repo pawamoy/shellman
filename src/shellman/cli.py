@@ -61,53 +61,24 @@ def get_parser():
         '-c', '--check', action='store_true', dest='check',
         help='check if the documentation is correct (false)')
     parser.add_argument(
-        '-f', '--format', dest='format', default='text',
-        choices=['text', 'man', 'markdown'],
-        help='format to write to (text)')
+        '-f', '--format', dest='format', default='',
+        help='template format to choose (different for each template)')
+    parser.add_argument(
+        '-t', '--template', choices=templates.parser_choices(),
+        default='helptext', dest='template',
+        help='The Jinja2 template to use. Prefix with "path:" to specify the path '
+             'to a directory containing a file named "index". '
+             'Available templates: %s' % ', '.join(templates.names()))
     parser.add_argument(
         '-o', '--output', action='store', dest='output',
         default=sys.stdout,
         help='file to write to (stdout by default)')
-    # parser.add_argument(
-    #     '-t', '--tags', action='store', dest='tags', type=parse_tags,
-    #     help='tags to parse. Specify tags to parse with the path to a YAML '
-    #          'file or a string in the following format: '
-    #          '"NAME,SECTION,OCCURRENCES,LINES,HEADER,TYPE[|...]". '
-    #          'where NAME is the tag name (like env), SECTION is the related '
-    #          'section name (like Environment variables), OCCURRENCES and '
-    #          'LINES are 1 or +, HEADER is 0, 1, y[es], n[o], true or false, '
-    #          'and TYPE is "script" (s), "function" (f). or "both" (b), '
-    #          'OCCURRENCES, LINES, HEADER and TYPE are optional, defaults are '
-    #          '1, 1, no, script. '
-    #          'Prefix them with o=, l=, h=, t= to provide only some of them, '
-    #          'unordered, like kwargs in Python. '
-    #          'Example: "the_tag,The tag,1,+,y,t=f". '
-    #          'Separate tags with | (pipe) character.')
-    # parser.add_argument(
-    #     '-T', '--add-default-tags', action='store_true',
-    #     dest='add_default_tags', help='Add all the default tags to be parsed.')
-    # parser.add_argument(
-    #     '-F', '--add-default-function-tags', action='store_true',
-    #     dest='add_default_function_tags',
-    #     help='Add the default function tags to be parsed.')
-    # parser.add_argument(
-    #     '-S', '--add-default-script-tags', action='store_true',
-    #     dest='add_default_script_tags',
-    #     help='Add the default script tags to be parsed.')
     parser.add_argument(
         '-w', '--warn', action='store_true', dest='warn',
         help='actually display the warnings (false)')
     parser.add_argument('FILE', type=valid_file, nargs='*',
                         help='path to the file(s) to read')
     return parser
-
-
-# def parse_tags(arg):
-#     try:
-#         valid_file(arg)
-#         return parse_yaml_tags(arg)
-#     except argparse.ArgumentTypeError:
-#         return parse_string_tags(arg)
 
 
 def main(argv=None):
@@ -126,18 +97,6 @@ def main(argv=None):
     """
     parser = get_parser()
     args = parser.parse_args(argv)
-
-    # if args.tags:
-    #     dispatch_tags(args.tags)
-    #     if args.add_default_tags:
-    #         add_default_tags()
-    #     else:
-    #         if args.add_default_script_tags:
-    #             add_default_script_tags()
-    #         if args.add_default_function_tags:
-    #             add_default_function_tags()
-    # else:
-    #     add_default_tags()
 
     success = True
     doc = None
@@ -160,11 +119,12 @@ def main(argv=None):
     if doc is None:
         return 1
 
-    template = templates.get_template('manpage', 'groff')
+    template = templates.templates[args.template].get(args.format)
+
     rendered = template.render(
         doc=doc,
         context={
-            'indent': 4,
+            'indent': 4 * ' ',
             'section_order': [
                 'brief',
                 'usage',

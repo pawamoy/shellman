@@ -1,5 +1,5 @@
 .SH "OPTIONS"
-{% for option in section -%}
+{% for option in section %}
 .IP "{% if option.short %}{{ option.short|groff_strong }}{% if option.long %},{% endif %} {% endif %}{% if option.long %}{{ option.long|groff_strong }} {% endif %}{% if option.positional %}{{ option.positional|groff_auto_emphasis }}{% endif %}" 4
 {{ option.description }}
 {% endfor %}

@@ -77,7 +77,7 @@ class DescTag:
 
     @classmethod
     def from_lines(cls, lines):
-        return DescTag(text='\n'.join(l.value for l in lines))
+        return DescTag(text='\n'.join(l.value for l in lines) + '\n')
 
 
 class EnvTag:
