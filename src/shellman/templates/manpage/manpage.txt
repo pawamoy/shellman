@@ -1,65 +1,52 @@
-.if n.ad l
-.nh
-
-.TH {{ doc.filename }} 1 "{% if doc.sections.version -%}
-Version {{ doc.sections.version[0].text }} - {% endif -%}
-{% if doc.sections.date %}{{ doc.sections.date[0].text }}{% else %}{{ now }}{% endif %}" "Shellman {{ shellman_version }}" "User Commands"
-
 {% if doc.sections.brief %}
-.SH "NAME"
-{{ doc.filename }} \- {{ doc.sections.brief[0].text }}
+NAME
+{{ context.indent_str }}{{ doc.filename }} - {{ doc.sections.brief[0].text }}
 
 {% endif %}
 {% if doc.sections.usage %}
-.SH "SYNOPSIS"
+SYNOPSIS
 {% for usage in doc.sections.usage %}
-{{ usage.program|groff_strong }} {{ usage.command|groff_auto }}
-{% if not loop.last %}
-.br
-{% endif %}
+{{ context.indent_str }}{{ usage.program }} {{ usage.command }}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.desc %}
-.SH "DESCRIPTION"
+DESCRIPTION
 {% for desc in doc.sections.desc %}
-{{ desc.text }}
+{{ desc.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.option %}
-.SH "OPTIONS"
+OPTIONS
 {% for option in doc.sections.option %}
-.IP "{% if option.short %}{{ option.short|groff_strong }}{% if option.long %},{% endif %} {% endif %}{% if option.long %}{{ option.long|groff_strong }} {% endif %}{% if option.positional %}{{ option.positional|groff_auto_emphasis }}{% endif %}" {{ context.indent }}
-{{ option.description }}
+{{ context.indent_str }}{% if option.short %}{{ option.short }}{% if option.long %},{% endif %} {% endif %}{% if option.long %}{{ option.long }} {% endif %}{% if option.positional %}{{ option.positional }}{% endif %}
+{{ '\n' + option.description|smart_width(context.indent*2) + '\n' }}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.env %}
-.SH "ENVIRONMENT VARIABLES"
+ENVIRONMENT VARIABLES
 {% for env in doc.sections.env %}
-.TP
-.B {{ env.name }}
-{{ env.description }}
+{{ context.indent_str }}{{ env.name }}
+{{ env.description|smart_width(context.indent*2) }}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.file %}
-.SH "FILES"
+FILES
 {% for file in doc.sections.file %}
-.TP
-.I {{ file.name }}
-{{ file.description }}
+{{ context.indent_str }}{{ file.name }}
+{{ file.description|smart_width(context.indent*2) }}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.exit %}
-.SH "EXIT STATUS"
+EXIT STATUS
 {% for exit in doc.sections.exit %}
-.TP
-.B {{ exit.code }}
-{{ exit.description }}
+{{ context.indent_str }}{{ exit.code }}
+{{ exit.description|smart_width(context.indent*2) }}
 {% endfor %}
 
 {% endif %}
@@ -73,89 +60,91 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 
 {% endif %}
 {% if doc.sections.function %}
-.SH "FUNCTIONS"
+FUNCTIONS
 {% for function in doc.sections.function %}
-{% include "function.groff" with context %}
+{% include "function.txt" with context %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.example %}
-.SH "EXAMPLES"
+EXAMPLES
 {% for example in doc.sections.example %}
-.IP "{{ example.title|groff_strong }}" {{ context.indent }}
-{% if example.code %}{{ "\n" + example.code + "\n\n" }}{% endif %}
-{% if example.explanation %}{{ example.explanation }}{% endif %}
+{{ context.indent_str }}{{ example.title }}
+{% if example.code %}{{ "\n" + example.code|smart_width(context.indent*2) + "\n\n" }}{% endif %}
+{% if example.explanation %}
+{{ example.explanation|smart_width(context.indent*2) }}
+{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.error %}
-.SH "ERRORS"
+ERRORS
 {% for error in doc.sections.error %}
-{{ error.description }}
+{{ error.description|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.bug %}
-.SH "BUGS"
+BUGS
 {% for bug in doc.sections.bug %}
-{{ bug.description }}
+{{ bug.description|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.caveat %}
-.SH "CAVEATS"
+CAVEATS
 {% for caveat in doc.sections.caveat %}
-{{ caveat.description }}
+{{ caveat.description|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.author %}
-.SH "AUTHORS"
+AUTHORS
 {% for author in doc.sections.author %}
-{{ author.text }}
+{{ context.indent_str }}{{ author.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.copyright %}
-.SH "COPYRIGHT"
+COPYRIGHT
 {% for copyright in doc.sections.copyright %}
-{{ copyright.text }}
+{{ copyright.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.license %}
-.SH "LICENSE"
+LICENSE
 {% for license in doc.sections.license %}
-{{ license.text }}
+{{ license.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.history %}
-.SH "HISTORY"
+HISTORY
 {% for history in doc.sections.history %}
-{{ history.text }}
+{{ history.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.note %}
-.SH "NOTES"
+NOTES
 {% for note in doc.sections.note %}
-{{ note.text }}
+{{ note.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.seealso %}
-.SH "SEE ALSO"
+SEE ALSO
 {% for seealso in doc.sections.seealso %}
-{{ seealso.text }}
+{{ seealso.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 {% endif %}

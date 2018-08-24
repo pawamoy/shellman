@@ -1,4 +1,7 @@
 import re
+import shutil
+import textwrap
+from collections import defaultdict
 
 
 def groff_auto_escape(string):
@@ -56,6 +59,68 @@ def trim_join(string_list, join_str=' '):
     return join_str.join(s.trim() for s in string_list)
 
 
+def console_width(default=80):
+    """
+    Return current console width.
+
+    Args:
+        default (int): default value if width cannot be retrieved.
+
+    Returns:
+        int: console width.
+    """
+    # only solution that works with stdin redirected from file
+    # https://stackoverflow.com/questions/566746
+    return shutil.get_terminal_size((default, 20)).columns
+
+
+def smart_width(text, indent=4, width=None):
+    if width is None or width < 0:
+        c_width = console_width(default=79)
+        if width is None:
+            width = c_width
+        else:
+            width += c_width
+
+    indent_str = indent * ' '
+    to_join = defaultdict(lambda: False)
+    lines = text.split('\n')
+    previous = True
+    for i, line in enumerate(lines):
+        if not (line == '' or line[0] in (' ', '\t')):
+            if previous:
+                to_join[i] = True
+            previous = True
+        else:
+            previous = False
+    joined_lines = [lines[0]]
+    for i in range(1, len(lines)):
+        if to_join[i]:
+            joined_lines.append(' ' + lines[i])
+        else:
+            joined_lines.append('\n' + lines[i])
+    new_text = ''.join(joined_lines)
+    new_text_lines = new_text.split('\n')
+    wrap_indented_text_lines = []
+    for line in new_text_lines:
+        if not (line == '' or line[0] in (' ', '\t')):
+            wrap_indented_text_lines.append(
+                textwrap.fill(
+                    line,
+                    width,
+                    initial_indent=indent_str,
+                    subsequent_indent=indent_str
+                )
+            )
+        else:
+            wrap_indented_text_lines.append(indent_str + line)
+    return '\n'.join(wrap_indented_text_lines)
+
+
+def format(s, *args, **kwargs):
+    return s.format(*args, **kwargs)
+
+
 FILTERS = {
     'groff_auto_escape': groff_auto_escape,
     'groff_strong': groff_strong,
@@ -66,5 +131,7 @@ FILTERS = {
     'first_word': first_word,
     'first_line': first_line,
     'body': body,
-    'trim_join': trim_join
+    'trim_join': trim_join,
+    'smart_width': smart_width,
+    'format': format
 }

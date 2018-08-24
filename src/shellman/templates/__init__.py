@@ -42,7 +42,8 @@ class Template:
             loader=FileSystemLoader(self.directory),
             trim_blocks=True,
             lstrip_blocks=True,
-            keep_trailing_newline=True
+            keep_trailing_newline=True,
+            optimized=True
         )
         self.env.filters.update(FILTERS)
 

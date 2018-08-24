@@ -71,7 +71,7 @@ def get_parser():
              'Available templates: %s' % ', '.join(templates.names()))
     parser.add_argument(
         '-o', '--output', action='store', dest='output',
-        default=sys.stdout,
+        default=None,
         help='file to write to (stdout by default)')
     parser.add_argument(
         '-w', '--warn', action='store_true', dest='warn',
@@ -119,6 +119,8 @@ def main(argv=None):
     if doc is None:
         return 1
 
+    if args.format and not args.format.startswith('.'):
+        args.format = '.' + args.format
     template = templates.templates[args.template].get(args.format)
 
     indent = 4
@@ -133,6 +135,10 @@ def main(argv=None):
         now=date.today()
     )
 
-    print(rendered)
+    if args.output is not None:
+        with open(args.output, 'w') as write_stream:
+            print(rendered, file=write_stream)
+    else:
+        print(rendered)
 
     return 0 if args.nice or success else 1
