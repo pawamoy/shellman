@@ -121,34 +121,14 @@ def main(argv=None):
 
     template = templates.templates[args.template].get(args.format)
 
+    indent = 4
     rendered = template.render(
         doc=doc,
-        context={
-            'indent': 4 * ' ',
-            'section_order': [
-                'brief',
-                'usage',
-                'desc',
-                'option',
-                'env',
-                'file',
-                'exit',
-                'stdin',
-                'stdout',
-                'stderr',
-                'function',
-                'example',
-                'error',
-                'bug',
-                'caveat',
-                'author',
-                'copyright',
-                'license',
-                'history',
-                'note',
-                'seealso',
-            ]
-        },
+        context=dict(
+            indent=indent,
+            indent_str=indent * " ",
+            section_order=templates.SECTION_ORDER
+        ),
         shellman_version=__version__,
         now=date.today()
     )

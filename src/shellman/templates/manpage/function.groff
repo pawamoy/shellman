@@ -1,6 +1,4 @@
-.SH "FUNCTIONS"
-{% for function in section -%}
-.IP "{{ function.prototype|groff_auto_escape|groff_strong }}" 4
+.IP "{{ function.prototype|groff_auto_escape|groff_strong }}" {{ context.indent }}
 {{ function.brief }}
 
 {% if function.description %}
@@ -10,28 +8,28 @@
 {% if function.arguments %}
 {{ "Arguments"|groff_strong }}
 {% for argument in function.arguments %}
-{{ context.indent }}{{ argument|first_word|groff_strong }} - {{ argument|body }}
+{{ context.indent_str }}{{ argument|first_word|groff_strong }} - {{ argument|body }}
 {% endfor %}
 {% endif %}
 
 {% if function.return_codes %}
 {{ "Return codes"|groff_strong }}
 {% for return_code in function.return_codes %}
-{{ context.indent }}{{ return_code|first_word|groff_strong }} - {{ return_code|body }}
+{{ context.indent_str }}{{ return_code|first_word|groff_strong }} - {{ return_code|body }}
 {% endfor %}
 {% endif %}
 
 {% if function.preconditions %}
 {{ "Pre-conditions"|groff_strong }}
 {% for precondition in function.preconditions %}
-{{ context.indent }}{{ precondition }}
+{{ context.indent_str }}{{ precondition }}
 {% endfor %}
 {% endif %}
 
 {% if function.seealso %}
 {{ "See also"|groff_strong }}
 {% for seealso in function.seealso %}
-{{ context.indent }}{{ seealso }}
+{{ context.indent_str }}{{ seealso }}
 {% endfor %}
 {% endif %}
 
@@ -43,5 +41,3 @@
 
 {% if function.stdout %}
 {% endif %}
-
-{% endfor %}

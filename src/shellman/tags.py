@@ -10,20 +10,12 @@ import re
 
 
 class AuthorTag:
-    def __init__(self, name, email):
-        self.name = name
-        self.email = email
+    def __init__(self, text):
+        self.text = text
 
     @classmethod
     def from_lines(cls, lines):
-        name, email = '', ''
-        for line in lines:
-            if line.tag == 'author':
-                name, email = re.search(r'^(?P<name>.+)(?: (?P<email><.+>))?', line.value).groups()
-            elif line.tag == 'author-email':
-                email = line.value
-            # no tag case not handled
-        return AuthorTag(name=name, email=email)
+        return AuthorTag(text='\n'.join(l.value for l in lines))
 
 
 class BugTag:
@@ -77,7 +69,7 @@ class DescTag:
 
     @classmethod
     def from_lines(cls, lines):
-        return DescTag(text='\n'.join(l.value for l in lines) + '\n')
+        return DescTag(text='\n'.join(l.value for l in lines))
 
 
 class EnvTag:
@@ -177,7 +169,7 @@ class FileTag:
     def from_lines(cls, lines):
         name, description = '', []
         for line in lines:
-            if line.tag == 'exit':
+            if line.tag == 'file':
                 split = line.value.split(' ', 1)
                 if len(split) > 1:
                     name = split[0]
@@ -359,6 +351,7 @@ class UsageTag:
 
     @classmethod
     def from_lines(cls, lines):
+        # TODO: only first line kept. Change it?
         program, command = '', ''
         split = lines[0].value.split(' ', 1)
         if len(split) > 1:
@@ -374,6 +367,7 @@ class VersionTag:
 
     @classmethod
     def from_lines(cls, lines):
+        # TODO: only first line kept. Change it?
         return VersionTag(text=lines[0].value)
 
 

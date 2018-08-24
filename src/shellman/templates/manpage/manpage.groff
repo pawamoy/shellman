@@ -5,11 +5,157 @@
 Version {{ doc.sections.version[0].text }} - {% endif -%}
 {% if doc.sections.date %}{{ doc.sections.date[0].text }}{% else %}{{ now }}{% endif %}" "Shellman {{ shellman_version }}" "User Commands"
 
-{% for section_name in context.section_order %}
-  {% if doc.sections[section_name] %}
-    {% with section = doc.sections[section_name] %}
-.
-      {% include section_name + ".groff" with context %}
-    {% endwith %}
-  {% endif %}
+{% if doc.sections.brief %}
+.SH "NAME"
+{{ doc.filename }} \- {{ doc.sections.brief[0].text }}
+
+{% endif %}
+{% if doc.sections.usage %}
+.SH "SYNOPSIS"
+{% for usage in doc.sections.usage %}
+{{ usage.program|groff_strong }} {{ usage.command|groff_auto }}
+{% if not loop.last %}
+.br
+{% endif %}
 {% endfor %}
+
+{% endif %}
+{% if doc.sections.desc %}
+.SH "DESCRIPTION"
+{% for desc in doc.sections.desc %}
+{{ desc.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.option %}
+.SH "OPTIONS"
+{% for option in doc.sections.option %}
+.IP "{% if option.short %}{{ option.short|groff_strong }}{% if option.long %},{% endif %} {% endif %}{% if option.long %}{{ option.long|groff_strong }} {% endif %}{% if option.positional %}{{ option.positional|groff_auto_emphasis }}{% endif %}" {{ context.indent }}
+{{ option.description }}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.env %}
+.SH "ENVIRONMENT VARIABLES"
+{% for env in doc.sections.env %}
+.TP
+.B {{ env.name }}
+{{ env.description }}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.file %}
+.SH "FILES"
+{% for file in doc.sections.file %}
+.TP
+.I {{ file.name }}
+{{ file.description }}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.exit %}
+.SH "EXIT STATUS"
+{% for exit in doc.sections.exit %}
+.TP
+.B {{ exit.code }}
+{{ exit.description }}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.stdin %}
+
+{% endif %}
+{% if doc.sections.stdout %}
+
+{% endif %}
+{% if doc.sections.stderr %}
+
+{% endif %}
+{% if doc.sections.function %}
+.SH "FUNCTIONS"
+{% for function in doc.sections.function %}
+{% include function.groff with context %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.example %}
+.SH "EXAMPLES"
+{% for example in doc.sections.example %}
+.IP "{{ example.title|groff_strong }}" {{ context.indent }}
+{% if example.code %}{{ "\n" + example.code + "\n\n" }}{% endif %}
+{% if example.explanation %}{{ example.explanation }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.error %}
+.SH "ERRORS"
+{% for error in doc.sections.error %}
+{{ error.description }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.bug %}
+.SH "BUGS"
+{% for bug in doc.sections.bug %}
+{{ bug.description }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.caveat %}
+.SH "CAVEATS"
+{% for caveat in doc.sections.caveat %}
+{{ caveat.description }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.author %}
+.SH "AUTHORS"
+{% for author in doc.sections.author %}
+{{ author.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.copyright %}
+.SH "COPYRIGHT"
+{% for copyright in doc.sections.copyright %}
+{{ copyright.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.license %}
+.SH "LICENSE"
+{% for license in doc.sections.license %}
+{{ license.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.history %}
+.SH "HISTORY"
+{% for history in doc.sections.history %}
+{{ history.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.note %}
+.SH "NOTES"
+{% for note in doc.sections.note %}
+{{ note.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if doc.sections.seealso %}
+.SH "SEE ALSO"
+{% for seealso in doc.sections.seealso %}
+{{ seealso.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+{% endif %}

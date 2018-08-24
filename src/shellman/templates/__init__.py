@@ -7,6 +7,31 @@ from jinja2.exceptions import TemplateNotFound
 from .filters import FILTERS
 
 
+SECTION_ORDER = [
+    'brief',
+    'usage',
+    'desc',
+    'option',
+    'env',
+    'file',
+    'exit',
+    'stdin',
+    'stdout',
+    'stderr',
+    'function',
+    'example',
+    'error',
+    'bug',
+    'caveat',
+    'author',
+    'copyright',
+    'license',
+    'history',
+    'note',
+    'seealso',
+]
+
+
 class Template:
     def __init__(self, name, directory='', base_template='', default_format=''):
         self.name = name
@@ -16,7 +41,9 @@ class Template:
         self.env = Environment(
             loader=FileSystemLoader(self.directory),
             trim_blocks=True,
-            lstrip_blocks=True)
+            lstrip_blocks=True,
+            keep_trailing_newline=True
+        )
         self.env.filters.update(FILTERS)
 
     def get(self, format=None):
