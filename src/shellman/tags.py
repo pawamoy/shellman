@@ -9,67 +9,41 @@ This module contains the Section class.
 import re
 
 
-class AuthorTag:
+class Tag:
     def __init__(self, text):
         self.text = text
 
     @classmethod
     def from_lines(cls, lines):
-        return AuthorTag(text='\n'.join(l.value for l in lines))
+        return cls(text='\n'.join(l.value for l in lines))
 
 
-class BugTag:
-    def __init__(self, text):
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines):
-        return BugTag(text='\n'.join(l.value for l in lines))
+class AuthorTag(Tag):
+    pass
 
 
-class BriefTag:
-    def __init__(self, text):
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines):
-        return BriefTag(text='\n'.join(l.value for l in lines))
+class BugTag(Tag):
+    pass
 
 
-class CaveatTag:
-    def __init__(self, text):
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines):
-        return CaveatTag(text='\n'.join(l.value for l in lines))
+class BriefTag(Tag):
+    pass
 
 
-class CopyrightTag:
-    def __init__(self, text):
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines):
-        return CopyrightTag(text='\n'.join(l.value for l in lines))
+class CaveatTag(Tag):
+    pass
 
 
-class DateTag:
-    def __init__(self, text):
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines):
-        return DateTag(text='\n'.join(l.value for l in lines))
+class CopyrightTag(Tag):
+    pass
 
 
-class DescTag:
-    def __init__(self, text):
-        self.text = text
+class DateTag(Tag):
+    pass
 
-    @classmethod
-    def from_lines(cls, lines):
-        return DescTag(text='\n'.join(l.value for l in lines))
+
+class DescTag(Tag):
+    pass
 
 
 class EnvTag:
@@ -93,13 +67,8 @@ class EnvTag:
         return EnvTag(name=name, description='\n'.join(description))
 
 
-class ErrorTag:
-    def __init__(self, text):
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines):
-        return ErrorTag(text='\n'.join(l.value for l in lines))
+class ErrorTag(Tag):
+    pass
 
 
 class ExampleTag:
@@ -244,31 +213,16 @@ class FunctionTag:
             stdout=stdout)
 
 
-class HistoryTag:
-    def __init__(self, text):
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines):
-        return HistoryTag(text='\n'.join(l.value for l in lines))
+class HistoryTag(Tag):
+    pass
 
 
-class LicenseTag:
-    def __init__(self, text):
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines):
-        return LicenseTag(text='\n'.join(l.value for l in lines))
+class LicenseTag(Tag):
+    pass
 
 
-class NoteTag:
-    def __init__(self, text):
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines):
-        return NoteTag(text='\n'.join(l.value for l in lines))
+class NoteTag(Tag):
+    pass
 
 
 class OptionTag:
@@ -279,7 +233,6 @@ class OptionTag:
         self.default = default
         self.group = group
         self.description = description
-
 
     @classmethod
     def from_lines(cls, lines):
@@ -308,40 +261,20 @@ class OptionTag:
             default=default, group=group, description='\n'.join(description))
 
 
-class SeealsoTag:
-    def __init__(self, text):
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines):
-        return SeealsoTag(text='\n'.join(l.value for l in lines))
+class SeealsoTag(Tag):
+    pass
 
 
-class StderrTag:
-    def __init__(self):
-        pass
-
-    @classmethod
-    def from_lines(cls, lines):
-        return StderrTag()
+class StderrTag(Tag):
+    pass
 
 
-class StdinTag:
-    def __init__(self):
-        pass
-
-    @classmethod
-    def from_lines(cls, lines):
-        return StdinTag()
+class StdinTag(Tag):
+    pass
 
 
-class StdoutTag:
-    def __init__(self):
-        pass
-
-    @classmethod
-    def from_lines(cls, lines):
-        return StdoutTag()
+class StdoutTag(Tag):
+    pass
 
 
 class UsageTag:
@@ -372,6 +305,7 @@ class VersionTag:
 
 
 TAGS = {
+    None: Tag,
     'author': AuthorTag,
     'bug': BugTag,
     'brief': BriefTag,

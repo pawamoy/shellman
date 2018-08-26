@@ -46,8 +46,8 @@ def valid_file(value):
         raise argparse.ArgumentTypeError("%s is not a valid file path" %
                                          value)
     elif os.path.isdir(value):
-        raise argparse.ArgumentTypeError("%s is a directory, "
-                                         "not a regular file" % value)
+        raise argparse.ArgumentTypeError(
+            "%s is a directory, not a regular file" % value)
     return value
 
 
@@ -99,20 +99,23 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     success = True
-    doc = None
+    docs = None
 
     if args.FILE:
         for file in args.FILE:
+            # TODO: actually support multiple files at once.
+            # Their sections should be merged.
+            # What about the filename?
             doc = DocFile(file)
-            if args.warn:
-                doc.warn()
-            success &= bool(doc)
+            # if args.warn:
+            #     doc.warn()
+            # success &= bool(doc)
     else:
         try:
             doc = DocStream(sys.stdin)
-            if args.warn:
-                doc.warn()
-            success &= bool(doc)
+            # if args.warn:
+            #     doc.warn()
+            # success &= bool(doc)
         except KeyboardInterrupt:
             pass
 

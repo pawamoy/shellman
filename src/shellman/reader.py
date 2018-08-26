@@ -4,22 +4,14 @@
 Module to read a file/stream and pre-process the documentation lines.
 
 Algorithm is as follows:
-1. preprocess_stream: filter blocks of documentation (blocks of lines
-    starting with or without spaces, then double-hash)
-2. preprocess_blocks: separate blocks by tag and groups of tags,
-    transform them into DocBlock objects (composed of DocLine objects).
-"""
+1. preprocess_stream: yield documentation lines.
+2. preprocess_lines: group documentation lines as blocks of documentation.
+3. process_blocks: tidy blocks by tag in a dictionary.
 
-# 3. arrange_blocks: return a named tuple with valid blocks (arranged by tag in
-#     a dictionary), orphan lines and invalid lines.
-#
-# DocFile and DocStream object will stop after step 2, while DocStruct will
-# execute every steps. It means that every block within a DocStruct has a tag
-# (this is not true for DocFile and DocStream objects).
+"""
 
 import os
 import re
-import sys
 from collections import defaultdict
 
 from .tags import TAGS
@@ -113,42 +105,25 @@ class DocBlock:
         return [line.value for line in self.lines]
 
 
-class DocGroup:
-    def __init__(self, blocks=None):
-        if blocks is None:
-            blocks = []
-        self.blocks = blocks
-
-    def __bool__(self):
-        return bool(self.blocks)
-
-    def __str__(self):
-        return '\n\n'.join([str(block) for block in self.blocks])
-
-    def append(self, block):
-        self.blocks.append(block)
-
-
-class DocStream(DocGroup):
+class DocStream:
     def __init__(self, stream, name=''):
-        super(DocStream, self).__init__()
+        self.filepath = None
         self.filename = name or stream.name
-        self.blocks = list(preprocess_lines(preprocess_stream(stream)))
-        self.sections = process_blocks(self.blocks)
+        self.sections = process_blocks(
+            preprocess_lines(preprocess_stream(stream)))
 
 
-class DocFile(DocGroup):
+class DocFile:
     def __init__(self, path):
-        super(DocFile, self).__init__()
+        self.filepath = path
         self.filename = os.path.basename(path)
         with open(path) as stream:
             try:
-                self.blocks = list(preprocess_lines(
-                    preprocess_stream(stream)))
+                self.sections = process_blocks(
+                    preprocess_lines(preprocess_stream(stream)))
             except UnicodeDecodeError:
                 print('Cannot read file %s' % path)
-                self.blocks = []
-        self.sections = process_blocks(self.blocks)
+                self.sections = []
 
 
 def preprocess_stream(stream):
@@ -189,12 +164,6 @@ def preprocess_lines(lines):
 def process_blocks(blocks):
     sections = defaultdict(list)
     for block in blocks:
-        if block.tag is None:
-            print('shellman: warning: untagged documentation between lines %d and %d' % (
-                block.lineno, block.lines[-1].lineno
-            ), file=sys.stderr)
-            continue
-        tag_class = TAGS.get(block.tag)
-        if tag_class:
-            sections[block.tag].append(tag_class.from_lines(block.lines))
+        tag_class = TAGS.get(block.tag, TAGS[None])
+        sections[block.tag].append(tag_class.from_lines(block.lines))
     return dict(sections)

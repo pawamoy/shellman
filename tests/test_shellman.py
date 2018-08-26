@@ -5,8 +5,7 @@
 import pytest
 
 from shellman.cli import main
-from shellman.formatter import get_formatter
-from shellman.tag import TAGS, Tag
+from shellman.tags import TAGS
 
 
 # class TestMain(object):
