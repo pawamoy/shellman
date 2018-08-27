@@ -74,7 +74,7 @@ def console_width(default=80):
     return shutil.get_terminal_size((default, 20)).columns
 
 
-def smart_width(text, indent=4, width=None):
+def smart_width(text, indent=4, width=None, first_line=True):
     if width is None or width < 0:
         c_width = console_width(default=79)
         if width is None:
@@ -108,7 +108,7 @@ def smart_width(text, indent=4, width=None):
                 textwrap.fill(
                     line,
                     width,
-                    initial_indent=indent_str,
+                    initial_indent=indent_str if first_line else '',
                     subsequent_indent=indent_str
                 )
             )
