@@ -97,7 +97,8 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 {% for example in doc.sections.example %}
 .IP "{{ example.title|groff_strong }}" {{ context.indent }}
 {% if example.code %}{{ "\n" + example.code + "\n\n" }}{% endif %}
-{% if example.explanation %}{{ example.explanation }}{% endif %}
+{% if example.explanation %}{{ example.explanation + "\n" }}{% endif %}
+{% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}

@@ -22,9 +22,15 @@
 {% endif %}
 {% if doc.sections.option %}
 ## Options
-{% for option in doc.sections.option %}
+{% for opt_group, opt_list in doc.sections.option|groupby_unsorted('group') %}
+{% if opt_group %}
+### {{ opt_group }}
+{% endif %}
+{% for option in opt_list %}
 - {% if option.short %}**`{{ option.short }}`**{% if option.long %},{% endif %} {% endif %}{% if option.long %}**`{{ option.long }}`**{% if option.positional %} {% endif %}{% endif %}{% if option.positional %}*`{{ option.positional }}`*{% endif %}:
   {{ option.description|e|indent(context.indent) }}
+{% endfor %}
+{% if not loop.last %}{{ '\n' }}{% endif %}
 {% endfor %}
 
 {% endif %}
@@ -81,7 +87,7 @@
   ```
 {% endif %}
 {% if example.explanation %}
-  {{ example.explanation|e|indent(context.indent) }}
+  {{ example.explanation|e|indent(2) }}
 {% endif %}
 {% endfor %}
 

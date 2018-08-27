@@ -131,12 +131,13 @@ def main(argv=None):
         doc=doc,
         context=dict(
             indent=indent,
-            indent_str=indent * " ",
-            section_order=templates.SECTION_ORDER
+            indent_str=indent * " "
         ),
         shellman_version=__version__,
         now=date.today()
     )
+
+    rendered = rendered.rstrip('\n')
 
     if args.output is not None:
         with open(args.output, 'w') as write_stream:

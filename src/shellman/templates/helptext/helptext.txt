@@ -14,9 +14,15 @@ Usage: {{ doc.sections.usage[0].program }} {{ doc.sections.usage[0].command }}
 {% endif %}
 {% if doc.sections.option %}
 Options:
-{% set width=30 %}
-{% for option in doc.sections.option %}
+{% set width=22 %}
+{% for opt_group, opt_list in doc.sections.option|groupby_unsorted('group') %}
+{% if opt_group %}
+{{ ' ' * (context.indent / 2)|int }}{{ opt_group }}:
+{% endif %}
+{% for option in opt_list %}
 {{ context.indent_str }}{{ "{sign:{width}}"|format(sign=option.signature, width=width-1-context.indent) }} {% if option.signature|length > width-2-context.indent %}{{ '\n' + option.description|smart_width(context.indent + width-context.indent) + '\n' }}{% else %}{{ option.description|smart_width(context.indent + width-context.indent, indentfirst=False) + '\n' }}{% endif %}
+{% endfor %}
+{% if not loop.last %}{{ '\n' }}{% endif %}
 {% endfor %}
 
 {% endif %}
@@ -69,7 +75,6 @@ Examples:
 {{ example.explanation|smart_width(context.indent*2) }}
 {% endif %}
 {% endfor %}
-
 {% endif %}
 {#
 {% if doc.sections.error %}

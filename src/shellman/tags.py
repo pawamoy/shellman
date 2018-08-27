@@ -243,8 +243,9 @@ class OptionTag:
         if self.short:
             sign = self.short
             if self.long:
-                sign += ','
-            sign += ' '
+                sign += ', '
+            elif self.positional:
+                sign += ' '
         if self.long:
             if not self.short:
                 sign += '    '
