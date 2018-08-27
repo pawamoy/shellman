@@ -1,78 +1,46 @@
-.if n.ad l
-.nh
-
-.TH {{ doc.filename }} 1 "{% if doc.sections.version -%}
-Version {{ doc.sections.version[0].text }} - {% endif -%}
-{% if doc.sections.date %}{{ doc.sections.date[0].text }}{% else %}{{ now }}{% endif %}" "Shellman {{ shellman_version }}" "User Commands"
-
-{% if doc.sections.brief %}
-.SH "NAME"
-{{ doc.filename }} \- {{ doc.sections.brief[0].text }}
-
-{% endif %}
 {% if doc.sections.usage %}
-.SH "SYNOPSIS"
-{% for usage in doc.sections.usage %}
-{{ usage.program|groff_strong }} {{ usage.command|groff_auto }}
-{% if not loop.last %}
-.br
-{% endif %}
+Usage: {{ doc.sections.usage[0].program }} {{ doc.sections.usage[0].command }}
+{% for usage in doc.sections.usage[1:] %}
+       {{ usage.program }} {{ usage.command }}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.desc %}
-.SH "DESCRIPTION"
 {% for desc in doc.sections.desc %}
-{{ desc.text }}
+{{ desc.text|smart_width(0) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.option %}
-.SH "OPTIONS"
-{% set width=context.indent*2 %}
-{% for opt_group, opt_list in doc.sections.option|groupby_unsorted('group') %}
-{% if opt_group %}
-.SS "{{ opt_group }}"
-{% endif %}
-{% for option in opt_list %}
-{% with sign = option.signature.lstrip() %}
-{% if sign|length > width-2-context.indent %}
-.IP "{{ sign|groff_auto }}" {{ context.indent }}
-{{ option.description + '\n' }}
-{% else %}
-.TP
-{{ "{sign:{width}}"|format(sign=sign, width=width-1-context.indent)|groff_auto }} {{ option.description }}
-{% endif %}
-{% endwith %}
-{% endfor %}
+Options:
+{% set width=30 %}
+{% for option in doc.sections.option %}
+{{ context.indent_str }}{{ "{sign:{width}}"|format(sign=option.signature, width=width-1-context.indent) }} {% if option.signature|length > width-2-context.indent %}{{ '\n' + option.description|smart_width(context.indent + width-context.indent) + '\n' }}{% else %}{{ option.description|smart_width(context.indent + width-context.indent, indentfirst=False) + '\n' }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.env %}
-.SH "ENVIRONMENT VARIABLES"
+Environment Variables:
 {% for env in doc.sections.env %}
-.TP
-.B {{ env.name }}
-{{ env.description }}
+{{ context.indent_str }}{{ env.name }}
+{{ env.description|smart_width(context.indent*2) }}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.file %}
-.SH "FILES"
+Files:
 {% for file in doc.sections.file %}
-.TP
-.I {{ file.name }}
-{{ file.description }}
+{{ context.indent_str }}{{ file.name }}
+{{ file.description|smart_width(context.indent*2) }}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.exit %}
-.SH "EXIT STATUS"
+Exit Status:
 {% for exit in doc.sections.exit %}
-.TP
-.B {{ exit.code }}
-{{ exit.description }}
+{{ context.indent_str }}{{ exit.code }}
+{{ exit.description|smart_width(context.indent*2) }}
 {% endfor %}
 
 {% endif %}
@@ -86,89 +54,93 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 
 {% endif %}
 {% if doc.sections.function %}
-.SH "FUNCTIONS"
+Functions:
 {% for function in doc.sections.function %}
-{% include "function.groff" with context %}
+{% include "function.txt" with context %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.example %}
-.SH "EXAMPLES"
+Examples:
 {% for example in doc.sections.example %}
-.IP "{{ example.title|groff_strong }}" {{ context.indent }}
-{% if example.code %}{{ "\n" + example.code + "\n\n" }}{% endif %}
-{% if example.explanation %}{{ example.explanation }}{% endif %}
+{{ context.indent_str }}{{ example.title }}
+{% if example.code %}{{ "\n" + example.code|smart_width(context.indent*2) + "\n\n" }}{% endif %}
+{% if example.explanation %}
+{{ example.explanation|smart_width(context.indent*2) }}
+{% endif %}
 {% endfor %}
 
 {% endif %}
+{#
 {% if doc.sections.error %}
-.SH "ERRORS"
+Errors:
 {% for error in doc.sections.error %}
-{{ error.description }}
+{{ error.description|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.bug %}
-.SH "BUGS"
+Bugs:
 {% for bug in doc.sections.bug %}
-{{ bug.description }}
+{{ bug.description|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.caveat %}
-.SH "CAVEATS"
+Caveats:
 {% for caveat in doc.sections.caveat %}
-{{ caveat.description }}
+{{ caveat.description|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.author %}
-.SH "AUTHORS"
+Authors:
 {% for author in doc.sections.author %}
-{{ author.text }}
+{{ context.indent_str }}{{ author.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.copyright %}
-.SH "COPYRIGHT"
+Copyright:
 {% for copyright in doc.sections.copyright %}
-{{ copyright.text }}
+{{ copyright.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.license %}
-.SH "LICENSE"
+License:
 {% for license in doc.sections.license %}
-{{ license.text }}
+{{ license.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.history %}
-.SH "HISTORY"
+History:
 {% for history in doc.sections.history %}
-{{ history.text }}
+{{ history.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.note %}
-.SH "NOTES"
+Notes:
 {% for note in doc.sections.note %}
-{{ note.text }}
+{{ note.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.seealso %}
-.SH "SEE ALSO"
+See Also:
 {% for seealso in doc.sections.seealso %}
-{{ seealso.text }}
+{{ seealso.text|smart_width(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 {% endif %}
+#}

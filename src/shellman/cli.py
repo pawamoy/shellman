@@ -99,7 +99,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     success = True
-    docs = None
+    doc = None
 
     if args.FILE:
         for file in args.FILE:

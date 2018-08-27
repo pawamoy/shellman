@@ -2,6 +2,9 @@ import re
 import shutil
 import textwrap
 from collections import defaultdict
+from itertools import groupby
+
+from jinja2.filters import make_attrgetter, _GroupTuple, environmentfilter
 
 
 def groff_auto_escape(string):
@@ -74,7 +77,7 @@ def console_width(default=80):
     return shutil.get_terminal_size((default, 20)).columns
 
 
-def smart_width(text, indent=4, width=None, first_line=True):
+def smart_width(text, indent=4, width=None, indentfirst=True):
     if width is None or width < 0:
         c_width = console_width(default=79)
         if width is None:
@@ -108,7 +111,7 @@ def smart_width(text, indent=4, width=None, first_line=True):
                 textwrap.fill(
                     line,
                     width,
-                    initial_indent=indent_str if first_line else '',
+                    initial_indent=indent_str if indentfirst else '',
                     subsequent_indent=indent_str
                 )
             )
@@ -119,6 +122,20 @@ def smart_width(text, indent=4, width=None, first_line=True):
 
 def format(s, *args, **kwargs):
     return s.format(*args, **kwargs)
+
+
+@environmentfilter
+def groupby_unsorted(environment, value, attribute):
+    expr = make_attrgetter(environment, attribute)
+    groups_all = [expr(i) for i in value]
+    groups_set = set()
+    groups_unique = []
+    for group in groups_all:
+        if group not in groups_set:
+            groups_unique.append(group)
+            groups_set.add(group)
+    grouped = {k: list(v) for k, v in groupby(sorted(value, key=expr), expr)}
+    return [_GroupTuple(group, grouped[group]) for group in groups_unique]
 
 
 FILTERS = {
@@ -133,5 +150,6 @@ FILTERS = {
     'body': body,
     'trim_join': trim_join,
     'smart_width': smart_width,
-    'format': format
+    'format': format,
+    'groupby_unsorted': groupby_unsorted
 }

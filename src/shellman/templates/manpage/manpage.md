@@ -21,10 +21,15 @@
 {% endif %}
 {% if doc.sections.option %}
 **OPTIONS**  
-{% for option in doc.sections.option %}
+{% for opt_group, opt_list in doc.sections.option|groupby_unsorted('group') %}
+{% if opt_group %}
+*{{ opt_group }}*
+{% endif %}
+{% for option in opt_list %}
 {% if option.short %}**`{{ option.short }}`**{% if option.long %},{% endif %} {% endif %}{% if option.long %}**`{{ option.long }}`**{% if option.positional %} {% endif %}{% endif %}{% if option.positional %}*`{{ option.positional }}`*{% endif %}  
 {{ option.description|e }}
 
+{% endfor %}
 {% endfor %}
 
 {% endif %}

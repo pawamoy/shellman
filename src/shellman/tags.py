@@ -233,6 +233,26 @@ class OptionTag:
         self.default = default
         self.group = group
         self.description = description
+        self.__signature = None
+
+    @property
+    def signature(self):
+        if self.__signature is not None:
+            return self.__signature
+        sign = ''
+        if self.short:
+            sign = self.short
+            if self.long:
+                sign += ','
+            sign += ' '
+        if self.long:
+            if not self.short:
+                sign += '    '
+            sign += self.long + ' '
+        if self.positional:
+            sign += self.positional
+        self.__signature = sign
+        return self.__signature
 
     @classmethod
     def from_lines(cls, lines):
@@ -241,18 +261,19 @@ class OptionTag:
         for line in lines:
             if line.tag == 'option':
                 search = re.search(
-                    r'^(?P<short>-\w)'
-                    r'(?:, (?P<long>--[\w-]+))?'
-                    r'(?: (?P<positional>.+))?', line.value)
+                    r'^(?P<short>-\w)?'
+                    r'(?:, )?'
+                    r'(?P<long>--[\w-]+)? ?'
+                    r'(?P<positional>.+)?', line.value)
                 if search:
                     short, long, positional = search.groups(default='')
                 else:
                     positional = line.value
             elif line.tag == 'option-default':
                 default = line.value
-            elif line.tag == 'group':
+            elif line.tag == 'option-group':
                 group = line.value
-            elif line.tag == 'description' and line.value:
+            elif line.tag == 'option-description' and line.value:
                 description.append(line.value)
             else:
                 description.append(line.value)
