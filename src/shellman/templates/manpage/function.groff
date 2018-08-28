@@ -1,4 +1,4 @@
-.IP "{{ function.prototype|groff_auto_escape|groff_strong }}" {{ context.indent }}
+.IP "{{ function.prototype|groffautoescape|groffstrong }}" {{ context.indent }}
 {{ function.brief }}
 
 {% if function.description %}
@@ -7,9 +7,9 @@
 {% endif %}
 {% if function.arguments %}
 .I Arguments
-{% with longest = function.arguments|map('first_word')|map('length')|max %}
+{% with longest = function.arguments|map('firstword')|map('length')|max %}
 {% for argument in function.arguments %}
-{{ context.indent_str }}{{ "{a:{w}}"|format(a=argument|first_word, w=longest)|groff_strong }} - {{ argument|body }}
+{{ context.indent_str }}{{ "{a:{w}}"|format(a=argument|firstword, w=longest)|groffstrong }} - {{ argument|body }}
 {% endfor %}
 {% endwith %}
 
@@ -17,7 +17,7 @@
 {% if function.return_codes %}
 .I Return codes
 {% for return_code in function.return_codes %}
-{{ context.indent_str }}{{ return_code|first_word|groff_strong }} - {{ return_code|body }}
+{{ context.indent_str }}{{ return_code|firstword|groffstrong }} - {{ return_code|body }}
 {% endfor %}
 
 {% endif %}

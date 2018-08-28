@@ -7,20 +7,19 @@ Usage: {{ doc.sections.usage[0].program }} {{ doc.sections.usage[0].command }}
 {% endif %}
 {% if doc.sections.desc %}
 {% for desc in doc.sections.desc %}
-{{ desc.text|smart_width(0) }}
+{{ desc.text|smartwrap(0) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.option %}
 Options:
-{% set width=22 %}
-{% for opt_group, opt_list in doc.sections.option|groupby_unsorted('group') %}
+{% for opt_group, opt_list in doc.sections.option|groupby('group', sort=False) %}
 {% if opt_group %}
 {{ ' ' * (context.indent / 2)|int }}{{ opt_group }}:
 {% endif %}
 {% for option in opt_list %}
-{{ context.indent_str }}{{ "{sign:{width}}"|format(sign=option.signature, width=width-1-context.indent) }} {% if option.signature|length > width-2-context.indent %}{{ '\n' + option.description|smart_width(context.indent + width-context.indent) + '\n' }}{% else %}{{ option.description|smart_width(context.indent + width-context.indent, indentfirst=False) + '\n' }}{% endif %}
+{{ context.indent_str }}{{ "{sign:{padding}}"|format(sign=option.signature, padding=context.option_padding-1) }} {% if option.signature|length > context.option_padding-2 %}{{ '\n' + option.description|smartwrap(context.indent + context.option_padding) + '\n' }}{% else %}{{ option.description|smartwrap(context.indent + context.option_padding, indentfirst=False) + '\n' }}{% endif %}
 {% endfor %}
 {% if not loop.last %}{{ '\n' }}{% endif %}
 {% endfor %}
@@ -30,7 +29,7 @@ Options:
 Environment Variables:
 {% for env in doc.sections.env %}
 {{ context.indent_str }}{{ env.name }}
-{{ env.description|smart_width(context.indent*2) }}
+{{ env.description|smartwrap(context.indent*2) }}
 {% endfor %}
 
 {% endif %}
@@ -38,7 +37,7 @@ Environment Variables:
 Files:
 {% for file in doc.sections.file %}
 {{ context.indent_str }}{{ file.name }}
-{{ file.description|smart_width(context.indent*2) }}
+{{ file.description|smartwrap(context.indent*2) }}
 {% endfor %}
 
 {% endif %}
@@ -46,17 +45,32 @@ Files:
 Exit Status:
 {% for exit in doc.sections.exit %}
 {{ context.indent_str }}{{ exit.code }}
-{{ exit.description|smart_width(context.indent*2) }}
+{{ exit.description|smartwrap(context.indent*2) }}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.stdin %}
+Standard Input:
+{% for stdin in doc.sections.stdin %}
+{{ stdin.text|smartwrap(context.indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.stdout %}
+Standard Output:
+{% for stdout in doc.sections.stdout %}
+{{ stdout.text|smartwrap(context.indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.stderr %}
+Standard Error:
+{% for stderr in doc.sections.stderr %}
+{{ stderr.text|smartwrap(context.indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.function %}
@@ -70,9 +84,9 @@ Functions:
 Examples:
 {% for example in doc.sections.example %}
 {{ context.indent_str }}{{ example.title }}
-{% if example.code %}{{ "\n" + example.code|smart_width(context.indent*2) + "\n\n" }}{% endif %}
+{% if example.code %}{{ "\n" + example.code|smartwrap(context.indent*2) + "\n\n" }}{% endif %}
 {% if example.explanation %}
-{{ example.explanation|smart_width(context.indent*2) }}
+{{ example.explanation|smartwrap(context.indent*2) }}
 {% endif %}
 {% endfor %}
 {% endif %}
@@ -80,7 +94,7 @@ Examples:
 {% if doc.sections.error %}
 Errors:
 {% for error in doc.sections.error %}
-{{ error.description|smart_width(context.indent) }}
+{{ error.text|smartwrap(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -88,7 +102,7 @@ Errors:
 {% if doc.sections.bug %}
 Bugs:
 {% for bug in doc.sections.bug %}
-{{ bug.description|smart_width(context.indent) }}
+{{ bug.text|smartwrap(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -96,7 +110,7 @@ Bugs:
 {% if doc.sections.caveat %}
 Caveats:
 {% for caveat in doc.sections.caveat %}
-{{ caveat.description|smart_width(context.indent) }}
+{{ caveat.text|smartwrap(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -112,7 +126,7 @@ Authors:
 {% if doc.sections.copyright %}
 Copyright:
 {% for copyright in doc.sections.copyright %}
-{{ copyright.text|smart_width(context.indent) }}
+{{ copyright.text|smartwrap(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -120,7 +134,7 @@ Copyright:
 {% if doc.sections.license %}
 License:
 {% for license in doc.sections.license %}
-{{ license.text|smart_width(context.indent) }}
+{{ license.text|smartwrap(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -128,7 +142,7 @@ License:
 {% if doc.sections.history %}
 History:
 {% for history in doc.sections.history %}
-{{ history.text|smart_width(context.indent) }}
+{{ history.text|smartwrap(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -136,7 +150,7 @@ History:
 {% if doc.sections.note %}
 Notes:
 {% for note in doc.sections.note %}
-{{ note.text|smart_width(context.indent) }}
+{{ note.text|smartwrap(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -144,7 +158,7 @@ Notes:
 {% if doc.sections.seealso %}
 See Also:
 {% for seealso in doc.sections.seealso %}
-{{ seealso.text|smart_width(context.indent) }}
+{{ seealso.text|smartwrap(context.indent) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 {% endif %}

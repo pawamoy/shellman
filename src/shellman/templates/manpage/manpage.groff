@@ -13,7 +13,7 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 {% if doc.sections.usage %}
 .SH "SYNOPSIS"
 {% for usage in doc.sections.usage %}
-{{ usage.program|groff_strong }} {{ usage.command|groff_auto }}
+{{ usage.program|groffstrong }} {{ usage.command|groffauto }}
 {% if not loop.last %}
 .br
 {% endif %}
@@ -30,19 +30,18 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 {% endif %}
 {% if doc.sections.option %}
 .SH "OPTIONS"
-{% set width=context.indent*2 %}
-{% for opt_group, opt_list in doc.sections.option|groupby_unsorted('group') %}
+{% for opt_group, opt_list in doc.sections.option|groupby('group', sort=False) %}
 {% if opt_group %}
 .SS "{{ opt_group }}"
 {% endif %}
 {% for option in opt_list %}
 {% with sign = option.signature.lstrip() %}
-{% if sign|length > width-2-context.indent %}
-.IP "{{ sign|groff_auto }}" {{ context.indent }}
+{% if sign|length > context.indent-2 %}
+.IP "{{ sign|groffauto }}" {{ context.indent }}
 {{ option.description + '\n' }}
 {% else %}
 .TP
-{{ "{sign:{width}}"|format(sign=sign, width=width-1-context.indent)|groff_auto }} {{ option.description }}
+{{ "{sign:{padding}}"|format(sign=sign, padding=context.indent-1)|groffauto }} {{ option.description }}
 {% endif %}
 {% endwith %}
 {% endfor %}
@@ -77,12 +76,27 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 
 {% endif %}
 {% if doc.sections.stdin %}
+.SH "STANDARD INPUT"
+{% for stdin in doc.sections.stdin %}
+{{ stdin.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.stdout %}
+.SH "STANDARD OUTPUT"
+{% for stdout in doc.sections.stdout %}
+{{ stdout.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.stderr %}
+.SH "STANDARD ERROR"
+{% for stderr in doc.sections.stderr %}
+{{ stderr.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.function %}
@@ -95,7 +109,7 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 {% if doc.sections.example %}
 .SH "EXAMPLES"
 {% for example in doc.sections.example %}
-.IP "{{ example.title|groff_strong }}" {{ context.indent }}
+.IP "{{ example.title|groffstrong }}" {{ context.indent }}
 {% if example.code %}{{ "\n" + example.code + "\n\n" }}{% endif %}
 {% if example.explanation %}{{ example.explanation + "\n" }}{% endif %}
 {% if not loop.last %}{{ "\n" }}{% endif %}
@@ -105,7 +119,7 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 {% if doc.sections.error %}
 .SH "ERRORS"
 {% for error in doc.sections.error %}
-{{ error.description }}
+{{ error.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -113,7 +127,7 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 {% if doc.sections.bug %}
 .SH "BUGS"
 {% for bug in doc.sections.bug %}
-{{ bug.description }}
+{{ bug.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -121,7 +135,7 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 {% if doc.sections.caveat %}
 .SH "CAVEATS"
 {% for caveat in doc.sections.caveat %}
-{{ caveat.description }}
+{{ caveat.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 

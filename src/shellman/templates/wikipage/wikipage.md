@@ -22,13 +22,13 @@
 {% endif %}
 {% if doc.sections.option %}
 ## Options
-{% for opt_group, opt_list in doc.sections.option|groupby_unsorted('group') %}
+{% for opt_group, opt_list in doc.sections.option|groupby('group', sort=False) %}
 {% if opt_group %}
 ### {{ opt_group }}
 {% endif %}
 {% for option in opt_list %}
 - {% if option.short %}**`{{ option.short }}`**{% if option.long %},{% endif %} {% endif %}{% if option.long %}**`{{ option.long }}`**{% if option.positional %} {% endif %}{% endif %}{% if option.positional %}*`{{ option.positional }}`*{% endif %}:
-  {{ option.description|e|indent(context.indent) }}
+  {{ option.description|e|indent(2) }}
 {% endfor %}
 {% if not loop.last %}{{ '\n' }}{% endif %}
 {% endfor %}
@@ -38,7 +38,7 @@
 ## Environment Variables
 {% for env in doc.sections.env %}
 - *`{{ env.name }}`*:
-  {{ env.description|e|indent(context.indent) }}
+  {{ env.description|e|indent(2) }}
 {% endfor %}
 
 {% endif %}
@@ -46,7 +46,7 @@
 ## Files
 {% for file in doc.sections.file %}
 - *`{{ file.name }}`*:
-  {{ file.description|e|indent(context.indent) }}
+  {{ file.description|e|indent(2) }}
 {% endfor %}
 
 {% endif %}
@@ -54,17 +54,29 @@
 ## Exit Status
 {% for exit in doc.sections.exit %}
 - **`{{ exit.code }}`**:
-  {{ exit.description|e|indent(context.indent) }}
+  {{ exit.description|e|indent(2) }}
 {% endfor %}
 
 {% endif %}
 {% if doc.sections.stdin %}
+## Standard Input
+{% for stdin in doc.sections.stdin %}
+{{ stdin.text|e }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
 
 {% endif %}
 {% if doc.sections.stdout %}
+## Standard Output
+{% for stdout in doc.sections.stdout %}
+{{ stdout.text|e }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
 
 {% endif %}
 {% if doc.sections.stderr %}
+## Standard Error
+{% for stderr in doc.sections.stderr %}
+{{ stderr.text|e }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
 
 {% endif %}
 {% if doc.sections.function %}
@@ -95,7 +107,7 @@
 {% if doc.sections.error %}
 ## Errors
 {% for error in doc.sections.error %}
-- {{ error.description|e|indent(context.indent) }}
+- {{ error.text|e|indent(2) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -103,7 +115,7 @@
 {% if doc.sections.bug %}
 ## Bugs
 {% for bug in doc.sections.bug %}
-- {{ bug.description|e|indent(context.indent) }}
+- {{ bug.text|e|indent(2) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -111,7 +123,7 @@
 {% if doc.sections.caveat %}
 ## Caveats
 {% for caveat in doc.sections.caveat %}
-- {{ caveat.description|e|indent(context.indent) }}
+- {{ caveat.text|e|indent(2) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -119,7 +131,7 @@
 {% if doc.sections.author %}
 ## Authors
 {% for author in doc.sections.author %}
-- {{ author.text|indent(context.indent) }}
+- {{ author.text|indent(2) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 

@@ -21,7 +21,7 @@
 {% endif %}
 {% if doc.sections.option %}
 **OPTIONS**  
-{% for opt_group, opt_list in doc.sections.option|groupby_unsorted('group') %}
+{% for opt_group, opt_list in doc.sections.option|groupby('group', sort=False) %}
 {% if opt_group %}
 *{{ opt_group }}*
 {% endif %}
@@ -61,12 +61,27 @@
 
 {% endif %}
 {% if doc.sections.stdin %}
+**STANDARD INPUT**  
+{% for stdin in doc.sections.stdin %}
+{{ stdin.text|e }}  
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.stdout %}
+**STANDARD OUTPUT**  
+{% for stdout in doc.sections.stdout %}
+{{ stdout.text|e }}  
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.stderr %}
+**STANDARD ERROR**  
+{% for stderr in doc.sections.stderr %}
+{{ stderr.text|e }}  
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.function %}
@@ -95,7 +110,7 @@
 {% if doc.sections.error %}
 **ERRORS**  
 {% for error in doc.sections.error %}
-{{ error.description|e }}  
+{{ error.text|e }}  
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -103,7 +118,7 @@
 {% if doc.sections.bug %}
 **BUGS**  
 {% for bug in doc.sections.bug %}
-{{ bug.description|e }}  
+{{ bug.text|e }}  
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
@@ -111,7 +126,7 @@
 {% if doc.sections.caveat %}
 **CAVEATS**  
 {% for caveat in doc.sections.caveat %}
-{{ caveat.description|e }}  
+{{ caveat.text|e }}  
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 

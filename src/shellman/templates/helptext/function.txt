@@ -2,14 +2,14 @@
 {{ context.indent_str * 2 }}{{ function.brief }}
 
 {% if function.description %}
-{{ function.description|smart_width(context.indent*2) }}
+{{ function.description|smartwrap(context.indent*2) }}
 
 {% endif %}
 {% if function.arguments %}
 {{ context.indent_str * 2 }}Arguments:
-{% with longest = function.arguments|map('first_word')|map('length')|max %}
+{% with longest = function.arguments|map('firstword')|map('length')|max %}
 {% for argument in function.arguments %}
-{{ context.indent_str * 3 }}{{ "{a:{w}}"|format(a=argument|first_word, w=longest) }} - {{ argument|body }}
+{{ context.indent_str * 3 }}{{ "{a:{w}}"|format(a=argument|firstword, w=longest) }} - {{ argument|body }}
 {% endfor %}
 {% endwith %}
 
@@ -17,7 +17,7 @@
 {% if function.return_codes %}
 {{ context.indent_str * 2 }}Return codes:
 {% for return_code in function.return_codes %}
-{{ context.indent_str * 3 }}{{ return_code|first_word }} - {{ return_code|body }}
+{{ context.indent_str * 3 }}{{ return_code|firstword }} - {{ return_code|body }}
 {% endfor %}
 
 {% endif %}

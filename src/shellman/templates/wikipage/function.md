@@ -8,14 +8,14 @@
 {% if function.arguments %}
 #### Arguments
 {% for argument in function.arguments %}
-- **`{{ argument|first_word }}`**: {{ argument|body }}
+- **`{{ argument|firstword }}`**: {{ argument|body }}
 {% endfor %}
 
 {% endif %}
 {% if function.return_codes %}
 #### Return codes
 {% for return_code in function.return_codes %}
-- **`{{ return_code|first_word }}`**: {{ return_code|body }}
+- **`{{ return_code|firstword }}`**: {{ return_code|body }}
 {% endfor %}
 
 {% endif %}

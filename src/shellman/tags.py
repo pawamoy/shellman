@@ -15,7 +15,7 @@ class Tag:
 
     @classmethod
     def from_lines(cls, lines):
-        return cls(text='\n'.join(l.value for l in lines))
+        return cls(text="\n".join(l.value for l in lines))
 
 
 class AuthorTag(Tag):
@@ -53,10 +53,10 @@ class EnvTag:
 
     @classmethod
     def from_lines(cls, lines):
-        name, description = '', []
+        name, description = "", []
         for line in lines:
-            if line.tag == 'env':
-                split = line.value.split(' ', 1)
+            if line.tag == "env":
+                split = line.value.split(" ", 1)
                 if len(split) > 1:
                     name = split[0]
                     description.append(split[1])
@@ -64,7 +64,7 @@ class EnvTag:
                     name = split[0]
             else:
                 description.append(line.value)
-        return EnvTag(name=name, description='\n'.join(description))
+        return EnvTag(name=name, description="\n".join(description))
 
 
 class ErrorTag(Tag):
@@ -82,30 +82,31 @@ class ExampleTag:
         title, code, explanation = [], [], []
         current = None
         for line in lines:
-            if line.tag == 'example':
+            if line.tag == "example":
                 if line.value:
                     title.append(line.value)
-                current = 'title'
-            elif line.tag == 'example-code':
+                current = "title"
+            elif line.tag == "example-code":
                 if line.value:
                     code.append(line.value)
-                current = 'code'
-            elif line.tag == 'example-explanation':
+                current = "code"
+            elif line.tag == "example-explanation":
                 if line.value:
                     explanation.append(line.value)
-                current = 'explanation'
+                current = "explanation"
             elif not line.tag and line.value:
-                if current == 'title':
+                if current == "title":
                     title.append(line.value)
-                elif current == 'code':
+                elif current == "code":
                     code.append(line.value)
-                elif current == 'explanation':
+                elif current == "explanation":
                     explanation.append(line.value)
 
         return ExampleTag(
-            title='\n'.join(title),
-            code='\n'.join(code),
-            explanation='\n'.join(explanation))
+            title="\n".join(title),
+            code="\n".join(code),
+            explanation="\n".join(explanation),
+        )
 
 
 class ExitTag:
@@ -115,10 +116,10 @@ class ExitTag:
 
     @classmethod
     def from_lines(cls, lines):
-        code, description = '', []
+        code, description = "", []
         for line in lines:
-            if line.tag == 'exit':
-                split = line.value.split(' ', 1)
+            if line.tag == "exit":
+                split = line.value.split(" ", 1)
                 if len(split) > 1:
                     code = split[0]
                     description.append(split[1])
@@ -126,7 +127,7 @@ class ExitTag:
                     code = split[0]
             else:
                 description.append(line.value)
-        return ExitTag(code=code, description='\n'.join(description))
+        return ExitTag(code=code, description="\n".join(description))
 
 
 class FileTag:
@@ -136,10 +137,10 @@ class FileTag:
 
     @classmethod
     def from_lines(cls, lines):
-        name, description = '', []
+        name, description = "", []
         for line in lines:
-            if line.tag == 'file':
-                split = line.value.split(' ', 1)
+            if line.tag == "file":
+                split = line.value.split(" ", 1)
                 if len(split) > 1:
                     name = split[0]
                     description.append(split[1])
@@ -147,12 +148,23 @@ class FileTag:
                     name = split[0]
             else:
                 description.append(line.value)
-        return FileTag(name=name, description='\n'.join(description))
+        return FileTag(name=name, description="\n".join(description))
 
 
 class FunctionTag:
-    def __init__(self, prototype, brief, description, arguments, preconditions,
-                 return_codes, seealso, stderr, stdin, stdout):
+    def __init__(
+        self,
+        prototype,
+        brief,
+        description,
+        arguments,
+        preconditions,
+        return_codes,
+        seealso,
+        stderr,
+        stdin,
+        stdout,
+    ):
         self.prototype = prototype
         self.brief = brief
         self.description = description
@@ -166,8 +178,8 @@ class FunctionTag:
 
     @classmethod
     def from_lines(cls, lines):
-        brief = ''
-        prototype = ''
+        brief = ""
+        prototype = ""
         description = []
         arguments = []
         return_codes = []
@@ -177,25 +189,25 @@ class FunctionTag:
         stdin = []
         stdout = []
         for line in lines:
-            if line.tag == 'function':
+            if line.tag == "function":
                 prototype = line.value
-            elif line.tag == 'function-brief':
+            elif line.tag == "function-brief":
                 brief = line.value
-            elif line.tag == 'function-description':
+            elif line.tag == "function-description":
                 description.append(line.value)
-            elif line.tag == 'function-argument':
+            elif line.tag == "function-argument":
                 arguments.append(line.value)
-            elif line.tag == 'function-precondition':
+            elif line.tag == "function-precondition":
                 preconditions.append(line.value)
-            elif line.tag == 'function-return':
+            elif line.tag == "function-return":
                 return_codes.append(line.value)
-            elif line.tag == 'function-seealso':
+            elif line.tag == "function-seealso":
                 seealso.append(line.value)
-            elif line.tag == 'function-stderr':
+            elif line.tag == "function-stderr":
                 stderr.append(line.value)
-            elif line.tag == 'function-stdin':
+            elif line.tag == "function-stdin":
                 stdin.append(line.value)
-            elif line.tag == 'function-stdout':
+            elif line.tag == "function-stdout":
                 stdout.append(line.value)
             else:
                 description.append(line.value)
@@ -203,14 +215,15 @@ class FunctionTag:
         return FunctionTag(
             prototype=prototype,
             brief=brief,
-            description='\n'.join(description),
+            description="\n".join(description),
             arguments=arguments,
             preconditions=preconditions,
             return_codes=return_codes,
             seealso=seealso,
             stderr=stderr,
             stdin=stdin,
-            stdout=stdout)
+            stdout=stdout,
+        )
 
 
 class HistoryTag(Tag):
@@ -239,17 +252,17 @@ class OptionTag:
     def signature(self):
         if self.__signature is not None:
             return self.__signature
-        sign = ''
+        sign = ""
         if self.short:
             sign = self.short
             if self.long:
-                sign += ', '
+                sign += ", "
             elif self.positional:
-                sign += ' '
+                sign += " "
         if self.long:
             if not self.short:
-                sign += '    '
-            sign += self.long + ' '
+                sign += "    "
+            sign += self.long + " "
         if self.positional:
             sign += self.positional
         self.__signature = sign
@@ -257,30 +270,37 @@ class OptionTag:
 
     @classmethod
     def from_lines(cls, lines):
-        short, long, positional, default, group = '', '', '', '', ''
+        short, long, positional, default, group = "", "", "", "", ""
         description = []
         for line in lines:
-            if line.tag == 'option':
+            if line.tag == "option":
                 search = re.search(
-                    r'^(?P<short>-\w)?'
-                    r'(?:, )?'
-                    r'(?P<long>--[\w-]+)? ?'
-                    r'(?P<positional>.+)?', line.value)
+                    r"^(?P<short>-\w)?"
+                    r"(?:, )?"
+                    r"(?P<long>--[\w-]+)? ?"
+                    r"(?P<positional>.+)?",
+                    line.value,
+                )
                 if search:
-                    short, long, positional = search.groups(default='')
+                    short, long, positional = search.groups(default="")
                 else:
                     positional = line.value
-            elif line.tag == 'option-default':
+            elif line.tag == "option-default":
                 default = line.value
-            elif line.tag == 'option-group':
+            elif line.tag == "option-group":
                 group = line.value
-            elif line.tag == 'option-description' and line.value:
+            elif line.tag == "option-description" and line.value:
                 description.append(line.value)
             else:
                 description.append(line.value)
         return OptionTag(
-            short=short, long=long, positional=positional,
-            default=default, group=group, description='\n'.join(description))
+            short=short,
+            long=long,
+            positional=positional,
+            default=default,
+            group=group,
+            description="\n".join(description),
+        )
 
 
 class SeealsoTag(Tag):
@@ -307,8 +327,8 @@ class UsageTag:
     @classmethod
     def from_lines(cls, lines):
         # TODO: only first line kept. Change it?
-        program, command = '', ''
-        split = lines[0].value.split(' ', 1)
+        program, command = "", ""
+        split = lines[0].value.split(" ", 1)
         if len(split) > 1:
             program, command = split
         else:
@@ -328,27 +348,27 @@ class VersionTag:
 
 TAGS = {
     None: Tag,
-    'author': AuthorTag,
-    'bug': BugTag,
-    'brief': BriefTag,
-    'caveat': CaveatTag,
-    'copyright': CopyrightTag,
-    'date': DateTag,
-    'desc': DescTag,
-    'env': EnvTag,
-    'error': ErrorTag,
-    'example': ExampleTag,
-    'exit': ExitTag,
-    'file': FileTag,
-    'function': FunctionTag,
-    'history': HistoryTag,
-    'license': LicenseTag,
-    'note': NoteTag,
-    'option': OptionTag,
-    'seealso': SeealsoTag,
-    'stderr': StderrTag,
-    'stdin': StdinTag,
-    'stdout': StdoutTag,
-    'usage': UsageTag,
-    'version': VersionTag,
+    "author": AuthorTag,
+    "bug": BugTag,
+    "brief": BriefTag,
+    "caveat": CaveatTag,
+    "copyright": CopyrightTag,
+    "date": DateTag,
+    "desc": DescTag,
+    "env": EnvTag,
+    "error": ErrorTag,
+    "example": ExampleTag,
+    "exit": ExitTag,
+    "file": FileTag,
+    "function": FunctionTag,
+    "history": HistoryTag,
+    "license": LicenseTag,
+    "note": NoteTag,
+    "option": OptionTag,
+    "seealso": SeealsoTag,
+    "stderr": StderrTag,
+    "stdin": StdinTag,
+    "stdout": StdoutTag,
+    "usage": UsageTag,
+    "version": VersionTag,
 }
