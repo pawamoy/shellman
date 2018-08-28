@@ -63,6 +63,7 @@
 {% for stdin in doc.sections.stdin %}
 {{ stdin.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.stdout %}
@@ -70,6 +71,7 @@
 {% for stdout in doc.sections.stdout %}
 {{ stdout.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.stderr %}
@@ -77,6 +79,7 @@
 {% for stderr in doc.sections.stderr %}
 {{ stderr.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if doc.sections.function %}
