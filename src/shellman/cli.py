@@ -20,6 +20,8 @@ Why does this file exist, and why not put this in __main__?
 import argparse
 import os
 import sys
+from datetime import date
+import re
 
 from .reader import DocFile, DocStream, merge
 from . import templates
@@ -39,6 +41,8 @@ def valid_file(value):
     Returns:
         str: original value argument.
     """
+    if value == "-":
+        return value
     if not value:
         raise argparse.ArgumentTypeError("'' is not a valid file path")
     elif not os.path.exists(value):
@@ -54,165 +58,98 @@ def get_parser():
     """Return a parser for the command line arguments."""
     parser = argparse.ArgumentParser()
 
-    mxg = parser.add_mutually_exclusive_group()
-
-    parser.add_argument(
-        "-0",
-        "-n",
-        "--nice",
-        action="store_true",
-        dest="nice",
-        help="be nice: return 0 even if warnings (default: false)",
-    )
-    mxg.add_argument(
-        "-c",
-        "--check",
-        action="store_true",
-        dest="check",
-        help="only check if the documentation is correct, no output (default: false)",
-    )
-    parser.add_argument(
-        "-f",
-        "--format",
-        dest="format",
-        default="",
-        help="template format to choose (different for each template)",
-    )
     parser.add_argument(
         "-t",
         "--template",
         choices=templates.parser_choices(),
         default="helptext",
         dest="template",
-        help='the Jinja2 template to use. Prefix with "path:" to specify the path '
-        'to a directory containing a file named "index". '
+        help="the Jinja2 template to use. "
+        'Prefix with "path:" to specify the path '
+        "to a custom template. "
         "Available templates: %s" % ", ".join(templates.names()),
     )
+
     parser.add_argument(
         "-m",
         "--merge",
-        action="store_true",
         dest="merge",
-        help="when multiple files as input, merge their sections in the output (default: false)",
+        nargs="?",
+        metavar="FILENAME",
+        const=True,
+        default=False,
+        help="with multiple input files, merge their contents in the output "
+        "instead of appending (default: false)",
     )
-    mxg.add_argument(
+
+    parser.add_argument(
         "-o",
         "--output",
         action="store",
         dest="output",
         default=None,
-        help="file to write to (default: stdout)",
+        help="file to write to (default: stdout). You can use the {filename} variable.",
     )
-    mxg.add_argument(
-        "-O",
-        "--multiple-output",
-        action="store",
-        dest="multiple_output",
-        default=None,
-        help="output file path formatted for each input file. "
-        "You can use the following variables: "
-        "{filename} and {format} (default: not used)",
-    )
+    # parser.add_argument(
+    #     "-w",
+    #     "--warn",
+    #     action="store_true",
+    #     dest="warn",
+    #     help="actually display the warnings (default: false)",
+    # )
+    # parser.add_argument(
+    #     "-0",
+    #     "-n",
+    #     "--nice",
+    #     action="store_true",
+    #     dest="nice",
+    #     help="be nice: return 0 even if warnings (default: false)",
+    # )
+    # mxg.add_argument(
+    #     "-c",
+    #     "--check",
+    #     action="store_true",
+    #     dest="check",
+    #     help="only check if the documentation is correct, no output (default: false)",
+    # )
+
     parser.add_argument(
-        "-w",
-        "--warn",
-        action="store_true",
-        dest="warn",
-        help="actually display the warnings (default: false)",
-    )
-    parser.add_argument(
-        "FILE", type=valid_file, nargs="*", help="path to the file(s) to read"
+        "FILE",
+        type=valid_file,
+        nargs="*",
+        help="path to the file(s) to read. Use - to read on standard input.",
     )
     return parser
 
 
-def main(argv=None):
-    """
-    Main function.
-
-    Args:
-        argv (list): options and path to file to read
-
-    Returns:
-        int: 0, unless exception
-
-    Get the file to parse, construct a Doc object, get file's doc,
-    get the according formatter class, instantiate it
-    with acquired doc and write on specified file (stdout by default).
-    """
-    parser = get_parser()
-    args = parser.parse_args(argv)
-
-    success = True
-    docs = []
-
-    if len(args.FILE) > 1 and args.multiple_output and args.merge:
-        print(
-            "shellman: error: cannot merge multiple files and output in multiple files.\n"
-            "                 Please use --output instead, or remove --merge."
-        )
-        return 2
-
-    if args.FILE:
-        for file in args.FILE:
-            docs.append(DocFile(file))
-            # if args.warn:
-            #     doc.warn()
-            # success &= bool(doc)
-    else:
-        print("shellman: reading on standard input -", file=sys.stderr)
-        try:
-            docs.append(DocStream(sys.stdin, name=args.output or ""))
-            # if args.warn:
-            #     doc.warn()
-            # success &= bool(doc)
-        except KeyboardInterrupt:
-            pass
-
-    template = templates.templates[args.template]
-
-    if len(docs) == 1:
-        doc = docs[0]
-        contents = get_contents(template, args.format, doc)
-        if args.output:
-            write(contents, args.output)
-        elif args.multiple_output:
-            write(
-                contents,
-                args.multiple_output.format(filename=doc.filename, format=args.format),
-            )
-        else:
-            print(contents)
-    else:
-        if args.output or not args.multiple_output:
-            if args.merge:
-                doc = merge(
-                    docs, os.path.basename(args.output or common_ancestor(docs))
-                )
-                contents = get_contents(template, args.format, doc)
-            else:
-                contents = "\n\n\n".join(
-                    get_contents(template, args.format, doc) for doc in docs
-                )
-            if args.output:
-                write(contents, args.output)
-            else:
-                print(contents)
-        elif args.multiple_output:
-            for doc in docs:
-                contents = get_contents(template, args.format, doc)
-                write(
-                    contents,
-                    args.multiple_output.format(
-                        filename=doc.filename, format=args.format
-                    ),
-                )
-
-    return 0 if args.nice or success else 1
+def get_cli_context():
+    return {}
 
 
-def get_contents(template, format, doc):
-    return template.render(format, doc=doc, shellman_version=__version__)
+def get_env_context():
+    return {}
+
+
+def get_file_context():
+    return {}
+
+
+def get_context():
+    context = get_file_context()
+    context.update(get_env_context())
+    context.update(get_cli_context())
+    return context
+
+
+def render(template, doc=None, **context):
+    shellman = dict()
+    if doc is not None:
+        shellman["doc"] = doc.sections
+        shellman["filename"] = doc.filename
+        shellman["filepath"] = doc.filepath
+    shellman["today"] = date.today()
+    shellman["version"] = __version__
+    return template.render(shellman=shellman, **context)
 
 
 def write(contents, filepath):
@@ -235,3 +172,96 @@ def common_ancestor(docs):
             break
         common = v[0]
     return common or "<VARIOUS_INPUTS>"
+
+
+def is_format_string(s):
+    if re.search(r"{[a-zA-Z_][\w]*}", s):
+        return True
+    return False
+
+
+def guess_filename(output, docs=None):
+    if output and not is_format_string(output):
+        return os.path.basename(output)
+    if docs:
+        return common_ancestor(docs)
+    return ""
+
+
+def main(argv=None):
+    """
+    Main function.
+
+    Args:
+        argv (list): options and path to file to read
+
+    Returns:
+        int: 0, unless exception
+
+    Get the file to parse, construct a Doc object, get file's doc,
+    get the according formatter class, instantiate it
+    with acquired doc and write on specified file (stdout by default).
+    """
+    parser = get_parser()
+    args = parser.parse_args(argv)
+
+    # Catch errors as early as possible
+    if args.merge and len(args.FILE) < 2:
+        print(
+            "shellman: warning: --merge option is ignored with less than 2 inputs",
+            file=sys.stderr,
+        )
+
+    if not args.FILE and args.output and is_format_string(args.output):
+        print(
+            "shellman: error: cannot format output name without file inputs. "
+            "Please remove variables from output name, or provide file inputs",
+            file=sys.stderr,
+        )
+        return 2
+
+    # Immediately get the template to throw error if not found
+    if args.template.startswith("path:"):
+        template = templates.get_custom_template(args.template[5:])
+    else:
+        template = templates.templates[args.template]
+
+    # Render template with context only
+    if not args.FILE:
+        contents = render(template, None, **get_context())
+        if args.output:
+            write(contents, args.output)
+        else:
+            print(contents)
+        return 0
+
+    # Parse input files
+    docs = []
+    for file in args.FILE:
+        if file == "-":
+            docs.append(DocStream(sys.stdin, filename=guess_filename(args.output)))
+        else:
+            docs.append(DocFile(file))
+
+    # Optionally merge the parsed contents
+    if args.merge:
+        if isinstance(args.merge, str):
+            new_filename = args.merge
+        else:
+            new_filename = guess_filename(args.output, docs)
+        docs = [merge(docs, new_filename)]
+
+    # If args.output contains variables, each input has its own output
+    if args.output and is_format_string(args.output):
+        for doc in docs:
+            write(render(template, doc), args.output.format(filename=doc.filename))
+    # Else, concatenate contents (no effect if already merged), then output to file or stdout
+    else:
+        contents = "\n\n\n".join(render(template, doc) for doc in docs)
+        if args.output:
+            write(contents, args.output)
+        else:
+            print(contents)
+
+    # return 0 if args.nice or success else 1
+    return 0

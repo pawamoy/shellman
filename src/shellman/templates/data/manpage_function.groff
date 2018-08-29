@@ -1,4 +1,4 @@
-.IP "{{ function.prototype|groffautoescape|groffstrong }}" {{ context.indent }}
+.IP "{{ function.prototype|groffautoescape|groffstrong }}" {{ indent }}
 {{ function.brief }}
 
 {% if function.description %}
@@ -9,7 +9,7 @@
 .I Arguments
 {% with longest = function.arguments|map('firstword')|map('length')|max %}
 {% for argument in function.arguments %}
-{{ context.indent_str }}{{ "{a:{w}}"|format(a=argument|firstword, w=longest)|groffstrong }} - {{ argument|body }}
+{{ indent_str }}{{ "{a:{w}}"|format(a=argument|firstword, w=longest)|groffstrong }} - {{ argument|body }}
 {% endfor %}
 {% endwith %}
 
@@ -17,21 +17,21 @@
 {% if function.return_codes %}
 .I Return codes
 {% for return_code in function.return_codes %}
-{{ context.indent_str }}{{ return_code|firstword|groffstrong }} - {{ return_code|body }}
+{{ indent_str }}{{ return_code|firstword|groffstrong }} - {{ return_code|body }}
 {% endfor %}
 
 {% endif %}
 {% if function.preconditions %}
 .I Pre\-conditions
 {% for precondition in function.preconditions %}
-{{ context.indent_str }}{{ precondition }}
+{{ indent_str }}{{ precondition }}
 {% endfor %}
 
 {% endif %}
 {% if function.seealso %}
 .I See also
 {% for seealso in function.seealso %}
-{{ context.indent_str }}{{ seealso }}
+{{ indent_str }}{{ seealso }}
 {% endfor %}
 
 {% endif %}

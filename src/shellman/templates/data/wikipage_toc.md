@@ -1,60 +1,60 @@
-{% if doc.sections.usage %}
+{% if shellman.doc.usage %}
 - [Usage](#usage)
 {% endif %}
-{% if doc.sections.desc %}
+{% if shellman.doc.desc %}
 - [Description](#description)
 {% endif %}
-{% if doc.sections.option %}
+{% if shellman.doc.option %}
 - [Options](#options)
 {% endif %}
-{% if doc.sections.env %}
+{% if shellman.doc.env %}
 - [Environment Variables](#environment-variables)
 {% endif %}
-{% if doc.sections.file %}
+{% if shellman.doc.file %}
 - [Files](#files)
 {% endif %}
-{% if doc.sections.exit %}
+{% if shellman.doc.exit %}
 - [Exit Status](#exit-status)
 {% endif %}
-{% if doc.sections.stdin %}
+{% if shellman.doc.stdin %}
 - [Standard Input](#standard-input)
 {% endif %}
-{% if doc.sections.stdout %}
+{% if shellman.doc.stdout %}
 - [Standard Output](#standard-output)
 {% endif %}
-{% if doc.sections.stderr %}
+{% if shellman.doc.stderr %}
 - [Standard Error](#standard-error)
 {% endif %}
-{% if doc.sections.function %}
+{% if shellman.doc.function %}
 - [Functions](#functions)
 {% endif %}
-{% if doc.sections.example %}
+{% if shellman.doc.example %}
 - [Examples](#examples)
 {% endif %}
-{% if doc.sections.error %}
+{% if shellman.doc.error %}
 - [Errors](#errors)
 {% endif %}
-{% if doc.sections.bug %}
+{% if shellman.doc.bug %}
 - [Bugs](#bugs)
 {% endif %}
-{% if doc.sections.caveat %}
+{% if shellman.doc.caveat %}
 - [Caveats](#caveats)
 {% endif %}
-{% if doc.sections.author %}
+{% if shellman.doc.author %}
 - [Authors](#authors)
 {% endif %}
-{% if doc.sections.copyright %}
+{% if shellman.doc.copyright %}
 - [Copyright](#copyright)
 {% endif %}
-{% if doc.sections.license %}
+{% if shellman.doc.license %}
 - [License](#license)
 {% endif %}
-{% if doc.sections.history %}
+{% if shellman.doc.history %}
 - [History](#history)
 {% endif %}
-{% if doc.sections.note %}
+{% if shellman.doc.note %}
 - [Notes](#notes)
 {% endif %}
-{% if doc.sections.seealso %}
+{% if shellman.doc.seealso %}
 - [See Also](#see-also)
 {% endif %}

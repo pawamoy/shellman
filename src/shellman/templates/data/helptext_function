@@ -1,37 +1,37 @@
-{{ context.indent_str }}{{ function.prototype }}
-{{ context.indent_str * 2 }}{{ function.brief }}
+{{ indent_str }}{{ function.prototype }}
+{{ indent_str * 2 }}{{ function.brief }}
 
 {% if function.description %}
-{{ function.description|smartwrap(context.indent*2) }}
+{{ function.description|smartwrap(indent*2) }}
 
 {% endif %}
 {% if function.arguments %}
-{{ context.indent_str * 2 }}Arguments:
+{{ indent_str * 2 }}Arguments:
 {% with longest = function.arguments|map('firstword')|map('length')|max %}
 {% for argument in function.arguments %}
-{{ context.indent_str * 3 }}{{ "{a:{w}}"|format(a=argument|firstword, w=longest) }} - {{ argument|body }}
+{{ indent_str * 3 }}{{ "{a:{w}}"|format(a=argument|firstword, w=longest) }} - {{ argument|body }}
 {% endfor %}
 {% endwith %}
 
 {% endif %}
 {% if function.return_codes %}
-{{ context.indent_str * 2 }}Return codes:
+{{ indent_str * 2 }}Return codes:
 {% for return_code in function.return_codes %}
-{{ context.indent_str * 3 }}{{ return_code|firstword }} - {{ return_code|body }}
+{{ indent_str * 3 }}{{ return_code|firstword }} - {{ return_code|body }}
 {% endfor %}
 
 {% endif %}
 {% if function.preconditions %}
-{{ context.indent_str * 2 }}Pre-conditions:
+{{ indent_str * 2 }}Pre-conditions:
 {% for precondition in function.preconditions %}
-{{ context.indent_str * 3 }}{{ precondition }}
+{{ indent_str * 3 }}{{ precondition }}
 {% endfor %}
 
 {% endif %}
 {% if function.seealso %}
-{{ context.indent_str * 2 }}See also:
+{{ indent_str * 2 }}See also:
 {% for seealso in function.seealso %}
-{{ context.indent_str * 3 }}{{ seealso }}
+{{ indent_str * 3 }}{{ seealso }}
 {% endfor %}
 
 {% endif %}

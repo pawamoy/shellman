@@ -1,18 +1,18 @@
 .if n.ad l
 .nh
 
-.TH {{ doc.filename }} 1 "{% if doc.sections.version -%}
-Version {{ doc.sections.version[0].text }} - {% endif -%}
-{% if doc.sections.date %}{{ doc.sections.date[0].text }}{% else %}{{ now }}{% endif %}" "Shellman {{ shellman_version }}" "User Commands"
+.TH {{ shellman.filename }} 1 "{% if shellman.doc.version -%}
+Version {{ shellman.doc.version[0].text }} - {% endif -%}
+{% if shellman.doc.date %}{{ shellman.doc.date[0].text }}{% else %}{{ shellman.today }}{% endif %}" "Shellman {{ shellman.version }}" "User Commands"
 
-{% if doc.sections.brief %}
+{% if shellman.doc.brief %}
 .SH "NAME"
-{{ doc.filename }} \- {{ doc.sections.brief[0].text }}
+{{ shellman.filename }} \- {{ shellman.doc.brief[0].text }}
 
 {% endif %}
-{% if doc.sections.usage %}
+{% if shellman.doc.usage %}
 .SH "SYNOPSIS"
-{% for usage in doc.sections.usage %}
+{% for usage in shellman.doc.usage %}
 {{ usage.program|groffstrong }} {{ usage.command|groffauto }}
 {% if not loop.last %}
 .br
@@ -20,169 +20,169 @@ Version {{ doc.sections.version[0].text }} - {% endif -%}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.desc %}
+{% if shellman.doc.desc %}
 .SH "DESCRIPTION"
-{% for desc in doc.sections.desc %}
+{% for desc in shellman.doc.desc %}
 {{ desc.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.option %}
+{% if shellman.doc.option %}
 .SH "OPTIONS"
-{% for opt_group, opt_list in doc.sections.option|groupby('group', sort=False) %}
+{% for opt_group, opt_list in shellman.doc.option|groupby('group', sort=False) %}
 {% if opt_group %}
 .SS "{{ opt_group }}"
 {% endif %}
 {% for option in opt_list %}
 {% with sign = option.signature.lstrip() %}
-{% if sign|length > context.indent-2 %}
-.IP "{{ sign|groffauto }}" {{ context.indent }}
+{% if sign|length > indent-2 %}
+.IP "{{ sign|groffauto }}" {{ indent }}
 {{ option.description + '\n' }}
 {% else %}
 .TP
-{{ "{sign:{padding}}"|format(sign=sign, padding=context.indent-1)|groffauto }} {{ option.description }}
+{{ "{sign:{padding}}"|format(sign=sign, padding=indent-1)|groffauto }} {{ option.description }}
 {% endif %}
 {% endwith %}
 {% endfor %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.env %}
+{% if shellman.doc.env %}
 .SH "ENVIRONMENT VARIABLES"
-{% for env in doc.sections.env %}
+{% for env in shellman.doc.env %}
 .TP
 .B {{ env.name }}
 {{ env.description }}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.file %}
+{% if shellman.doc.file %}
 .SH "FILES"
-{% for file in doc.sections.file %}
+{% for file in shellman.doc.file %}
 .TP
 .I {{ file.name }}
 {{ file.description }}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.exit %}
+{% if shellman.doc.exit %}
 .SH "EXIT STATUS"
-{% for exit in doc.sections.exit %}
+{% for exit in shellman.doc.exit %}
 .TP
 .B {{ exit.code }}
 {{ exit.description }}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.stdin %}
+{% if shellman.doc.stdin %}
 .SH "STANDARD INPUT"
-{% for stdin in doc.sections.stdin %}
+{% for stdin in shellman.doc.stdin %}
 {{ stdin.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.stdout %}
+{% if shellman.doc.stdout %}
 .SH "STANDARD OUTPUT"
-{% for stdout in doc.sections.stdout %}
+{% for stdout in shellman.doc.stdout %}
 {{ stdout.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.stderr %}
+{% if shellman.doc.stderr %}
 .SH "STANDARD ERROR"
-{% for stderr in doc.sections.stderr %}
+{% for stderr in shellman.doc.stderr %}
 {{ stderr.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.function %}
+{% if shellman.doc.function %}
 .SH "FUNCTIONS"
-{% for function in doc.sections.function %}
+{% for function in shellman.doc.function %}
 {% include "function.groff" with context %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.example %}
+{% if shellman.doc.example %}
 .SH "EXAMPLES"
-{% for example in doc.sections.example %}
-.IP "{{ example.title|groffstrong }}" {{ context.indent }}
+{% for example in shellman.doc.example %}
+.IP "{{ example.brief|groffstrong }}" {{ indent }}
 {% if example.code %}{{ "\n" + example.code + "\n\n" }}{% endif %}
-{% if example.explanation %}{{ example.explanation + "\n" }}{% endif %}
+{% if example.description %}{{ example.description + "\n" }}{% endif %}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.error %}
+{% if shellman.doc.error %}
 .SH "ERRORS"
-{% for error in doc.sections.error %}
+{% for error in shellman.doc.error %}
 {{ error.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.bug %}
+{% if shellman.doc.bug %}
 .SH "BUGS"
-{% for bug in doc.sections.bug %}
+{% for bug in shellman.doc.bug %}
 {{ bug.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.caveat %}
+{% if shellman.doc.caveat %}
 .SH "CAVEATS"
-{% for caveat in doc.sections.caveat %}
+{% for caveat in shellman.doc.caveat %}
 {{ caveat.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.author %}
+{% if shellman.doc.author %}
 .SH "AUTHORS"
-{% for author in doc.sections.author %}
+{% for author in shellman.doc.author %}
 {{ author.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.copyright %}
+{% if shellman.doc.copyright %}
 .SH "COPYRIGHT"
-{% for copyright in doc.sections.copyright %}
+{% for copyright in shellman.doc.copyright %}
 {{ copyright.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.license %}
+{% if shellman.doc.license %}
 .SH "LICENSE"
-{% for license in doc.sections.license %}
+{% for license in shellman.doc.license %}
 {{ license.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.history %}
+{% if shellman.doc.history %}
 .SH "HISTORY"
-{% for history in doc.sections.history %}
+{% for history in shellman.doc.history %}
 {{ history.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.note %}
+{% if shellman.doc.note %}
 .SH "NOTES"
-{% for note in doc.sections.note %}
+{% for note in shellman.doc.note %}
 {{ note.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.seealso %}
+{% if shellman.doc.seealso %}
 .SH "SEE ALSO"
-{% for seealso in doc.sections.seealso %}
+{% for seealso in shellman.doc.seealso %}
 {{ seealso.text }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}

@@ -105,9 +105,9 @@ class DocBlock:
 
 
 class DocStream:
-    def __init__(self, stream, name=""):
+    def __init__(self, stream, filename=""):
         self.filepath = None
-        self.filename = name or stream.name
+        self.filename = filename
         self.sections = process_blocks(preprocess_lines(preprocess_stream(stream)))
 
 

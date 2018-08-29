@@ -72,40 +72,43 @@ class ErrorTag(Tag):
 
 
 class ExampleTag:
-    def __init__(self, title, code, explanation):
-        self.title = title
+    def __init__(self, brief, code, code_lang, description):
+        self.brief = brief
         self.code = code
-        self.explanation = explanation
+        self.code_lang = code_lang
+        self.description = description
 
     @classmethod
     def from_lines(cls, lines):
-        title, code, explanation = [], [], []
+        brief, code, description = [], [], []
+        code_lang = ""
         current = None
         for line in lines:
             if line.tag == "example":
                 if line.value:
-                    title.append(line.value)
-                current = "title"
+                    brief.append(line.value)
+                current = "brief"
             elif line.tag == "example-code":
                 if line.value:
-                    code.append(line.value)
+                    code_lang = line.value
                 current = "code"
-            elif line.tag == "example-explanation":
+            elif line.tag == "example-description":
                 if line.value:
-                    explanation.append(line.value)
-                current = "explanation"
-            elif not line.tag and line.value:
-                if current == "title":
-                    title.append(line.value)
+                    description.append(line.value)
+                current = "description"
+            else:
+                if current == "brief":
+                    brief.append(line.value)
                 elif current == "code":
                     code.append(line.value)
-                elif current == "explanation":
-                    explanation.append(line.value)
+                elif current == "description":
+                    description.append(line.value)
 
         return ExampleTag(
-            title="\n".join(title),
+            brief="\n".join(brief),
             code="\n".join(code),
-            explanation="\n".join(explanation),
+            code_lang=code_lang,
+            description="\n".join(description),
         )
 
 

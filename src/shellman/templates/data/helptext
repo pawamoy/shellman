@@ -1,0 +1,167 @@
+{% if shellman.doc.usage %}
+Usage: {{ shellman.doc.usage[0].program }} {{ shellman.doc.usage[0].command }}
+{% for usage in shellman.doc.usage[1:] %}
+       {{ usage.program }} {{ usage.command }}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.desc %}
+{% for desc in shellman.doc.desc %}
+{{ desc.text|smartwrap(0) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.option %}
+Options:
+{% for opt_group, opt_list in shellman.doc.option|groupby('group', sort=False) %}
+{% if opt_group %}
+{{ ' ' * (indent / 2)|int }}{{ opt_group }}:
+{% endif %}
+{% for option in opt_list %}
+{{ indent_str }}{{ "{sign:{padding}}"|format(sign=option.signature, padding=option_padding-1) }} {% if option.signature|length > option_padding-2 %}{{ '\n' + option.description|smartwrap(indent + option_padding) + '\n' }}{% else %}{{ option.description|smartwrap(indent + option_padding, indentfirst=False) + '\n' }}{% endif %}
+{% endfor %}
+{% if not loop.last %}{{ '\n' }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.env %}
+Environment Variables:
+{% for env in shellman.doc.env %}
+{{ indent_str }}{{ env.name }}
+{{ env.description|smartwrap(indent*2) }}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.file %}
+Files:
+{% for file in shellman.doc.file %}
+{{ indent_str }}{{ file.name }}
+{{ file.description|smartwrap(indent*2) }}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.exit %}
+Exit Status:
+{% for exit in shellman.doc.exit %}
+{{ indent_str }}{{ exit.code }}
+{{ exit.description|smartwrap(indent*2) }}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.stdin %}
+Standard Input:
+{% for stdin in shellman.doc.stdin %}
+{{ stdin.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.stdout %}
+Standard Output:
+{% for stdout in shellman.doc.stdout %}
+{{ stdout.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.stderr %}
+Standard Error:
+{% for stderr in shellman.doc.stderr %}
+{{ stderr.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.function %}
+Functions:
+{% for function in shellman.doc.function %}
+{% include "function.txt" with context %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.example %}
+Examples:
+{% for example in shellman.doc.example %}
+{{ indent_str }}{{ example.brief }}
+{% if example.code %}{{ "\n" + example.code|smartwrap(indent*2) + "\n\n" }}{% endif %}
+{% if example.description %}
+{{ example.description|smartwrap(indent*2) }}
+{% endif %}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{#
+{% if shellman.doc.error %}
+Errors:
+{% for error in shellman.doc.error %}
+{{ error.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.bug %}
+Bugs:
+{% for bug in shellman.doc.bug %}
+{{ bug.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.caveat %}
+Caveats:
+{% for caveat in shellman.doc.caveat %}
+{{ caveat.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.author %}
+Authors:
+{% for author in shellman.doc.author %}
+{{ indent_str }}{{ author.text }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.copyright %}
+Copyright:
+{% for copyright in shellman.doc.copyright %}
+{{ copyright.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.license %}
+License:
+{% for license in shellman.doc.license %}
+{{ license.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.history %}
+History:
+{% for history in shellman.doc.history %}
+{{ history.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.note %}
+Notes:
+{% for note in shellman.doc.note %}
+{{ note.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.seealso %}
+See Also:
+{% for seealso in shellman.doc.seealso %}
+{{ seealso.text|smartwrap(indent) }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+{% endif %}
+#}

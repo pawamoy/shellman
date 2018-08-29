@@ -1,28 +1,28 @@
-{% if doc.sections.brief %}
+{% if shellman.doc.brief %}
 ## Name
-**{{ doc.filename }}** - {{ doc.sections.brief[0].text|e }}
+**{{ shellman.filename }}** - {{ shellman.doc.brief[0].text|e }}
 
 {% include "toc.md" with context %}
 
 {% endif %}
-{% if doc.sections.usage %}
+{% if shellman.doc.usage %}
 ## Usage
-{% for usage in doc.sections.usage %}
+{% for usage in shellman.doc.usage %}
 - `{{ usage.program }} {{ usage.command }}`
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.desc %}
+{% if shellman.doc.desc %}
 ## Description
-{% for desc in doc.sections.desc %}
+{% for desc in shellman.doc.desc %}
 {{ desc.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.option %}
+{% if shellman.doc.option %}
 ## Options
-{% for opt_group, opt_list in doc.sections.option|groupby('group', sort=False) %}
+{% for opt_group, opt_list in shellman.doc.option|groupby('group', sort=False) %}
 {% if opt_group %}
 ### {{ opt_group }}
 {% endif %}
@@ -34,57 +34,57 @@
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.env %}
+{% if shellman.doc.env %}
 ## Environment Variables
-{% for env in doc.sections.env %}
+{% for env in shellman.doc.env %}
 - *`{{ env.name }}`*:
   {{ env.description|e|indent(2) }}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.file %}
+{% if shellman.doc.file %}
 ## Files
-{% for file in doc.sections.file %}
+{% for file in shellman.doc.file %}
 - *`{{ file.name }}`*:
   {{ file.description|e|indent(2) }}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.exit %}
+{% if shellman.doc.exit %}
 ## Exit Status
-{% for exit in doc.sections.exit %}
+{% for exit in shellman.doc.exit %}
 - **`{{ exit.code }}`**:
   {{ exit.description|e|indent(2) }}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.stdin %}
+{% if shellman.doc.stdin %}
 ## Standard Input
-{% for stdin in doc.sections.stdin %}
+{% for stdin in shellman.doc.stdin %}
 {{ stdin.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.stdout %}
+{% if shellman.doc.stdout %}
 ## Standard Output
-{% for stdout in doc.sections.stdout %}
+{% for stdout in shellman.doc.stdout %}
 {{ stdout.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.stderr %}
+{% if shellman.doc.stderr %}
 ## Standard Error
-{% for stderr in doc.sections.stderr %}
+{% for stderr in shellman.doc.stderr %}
 {{ stderr.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.function %}
+{% if shellman.doc.function %}
 ## Functions
-{% for function in doc.sections.function %}
+{% for function in shellman.doc.function %}
 {% include "function.md" with context %}
 {% if not loop.last %}
 ---
@@ -92,88 +92,88 @@
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.example %}
+{% if shellman.doc.example %}
 ## Examples
-{% for example in doc.sections.example %}
-- **{{ example.title|e }}**
+{% for example in shellman.doc.example %}
+- **{{ example.brief|e }}**
 {% if example.code %}
-  ```bash
+  ```{{ example.code_lang }}
 {{ example.code }}
   ```
 {% endif %}
-{% if example.explanation %}
-  {{ example.explanation|e|indent(2) }}
+{% if example.description %}
+  {{ example.description|e|indent(2) }}
 {% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.error %}
+{% if shellman.doc.error %}
 ## Errors
-{% for error in doc.sections.error %}
+{% for error in shellman.doc.error %}
 - {{ error.text|e|indent(2) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.bug %}
+{% if shellman.doc.bug %}
 ## Bugs
-{% for bug in doc.sections.bug %}
+{% for bug in shellman.doc.bug %}
 - {{ bug.text|e|indent(2) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.caveat %}
+{% if shellman.doc.caveat %}
 ## Caveats
-{% for caveat in doc.sections.caveat %}
+{% for caveat in shellman.doc.caveat %}
 - {{ caveat.text|e|indent(2) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.author %}
+{% if shellman.doc.author %}
 ## Authors
-{% for author in doc.sections.author %}
+{% for author in shellman.doc.author %}
 - {{ author.text|indent(2) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.copyright %}
+{% if shellman.doc.copyright %}
 ## Copyright
-{% for copyright in doc.sections.copyright %}
+{% for copyright in shellman.doc.copyright %}
 {{ copyright.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.license %}
+{% if shellman.doc.license %}
 ## License
-{% for license in doc.sections.license %}
+{% for license in shellman.doc.license %}
 {{ license.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.history %}
+{% if shellman.doc.history %}
 ## History
-{% for history in doc.sections.history %}
+{% for history in shellman.doc.history %}
 {{ history.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.note %}
+{% if shellman.doc.note %}
 ## Notes
-{% for note in doc.sections.note %}
+{% for note in shellman.doc.note %}
 {{ note.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
 {% endif %}
-{% if doc.sections.seealso %}
+{% if shellman.doc.seealso %}
 ## See Also
-{% for seealso in doc.sections.seealso %}
+{% for seealso in shellman.doc.seealso %}
 {{ seealso.text|e }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}

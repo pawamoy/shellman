@@ -5,6 +5,7 @@ from collections import defaultdict
 from itertools import groupby
 
 from jinja2.filters import make_attrgetter, _GroupTuple, environmentfilter
+from jinja2.utils import escape
 
 
 def do_groffautoescape(string):
@@ -150,6 +151,13 @@ def do_groupby(environment, value, attribute, sort=True):
     return [_GroupTuple(group, grouped[group]) for group in unique_groups]
 
 
+def do_escapetextonly(value):
+    return "\n".join(
+        line if line == "" or line[0] in " \t" else escape(line)
+        for line in value.split("\n")
+    )
+
+
 FILTERS = {
     "groffstrong": do_groffstrong,
     "groffemphasis": do_groffemphasis,
@@ -163,4 +171,5 @@ FILTERS = {
     "body": do_body,
     "smartwrap": do_smartwrap,
     "format": do_format,
+    "escapetextonly": do_escapetextonly,
 }
