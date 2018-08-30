@@ -3,6 +3,7 @@ import os
 
 
 ENV_VAR_PREFIX = 'SHELLMAN_CONTEXT_'
+DEFAULT_JSON_FILE = '.shellman.json'
 
 
 def get_cli_context(args):
@@ -21,7 +22,7 @@ def get_env_context():
     context = {}
     for env_name, env_value in os.environ.items():
         if env_name.startswith(ENV_VAR_PREFIX):
-            context_var_name = env_name[len(ENV_VAR_PREFIX):]
+            context_var_name = env_name[len(ENV_VAR_PREFIX):].lower()
             context[context_var_name] = env_value
     return context
 
@@ -38,7 +39,7 @@ def get_context(args):
         context.update(get_file_context(args.context_file))
     else:
         try:
-            context.update(get_file_context('.shellman.json'))
+            context.update(get_file_context(DEFAULT_JSON_FILE))
         except FileNotFoundError:
             pass
 
