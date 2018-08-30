@@ -74,6 +74,7 @@ def get_parser():
     parser.add_argument(
         "-t",
         "--template",
+        metavar="TEMPLATE",
         choices=templates.parser_choices(),
         default="helptext",
         dest="template",
@@ -196,6 +197,8 @@ def main(argv=None):
     get the according formatter class, instantiate it
     with acquired doc and write on specified file (stdout by default).
     """
+    templates.load_plugin_templates()
+
     parser = get_parser()
     args = parser.parse_args(argv)
 

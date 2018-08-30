@@ -1,7 +1,7 @@
 import os
 from copy import deepcopy
 
-# import pkg_resources
+import pkg_resources
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import TemplateNotFound
 
@@ -23,17 +23,22 @@ def get_env(path):
 
 
 builtin_env = get_env(get_builtin_path())
-builtin_env.filters.update(FILTERS)
 
 
 class Template:
-    def __init__(self, env_or_directory, base_template, context=None):
+    def __init__(self, env_or_directory, base_template, context=None, filters=None):
         if isinstance(env_or_directory, Environment):
             self.env = env_or_directory
         elif isinstance(env_or_directory, str):
             self.env = get_env(env_or_directory)
         else:
             raise ValueError(env_or_directory)
+
+        if filters is None:
+            filters = {}
+
+        self.env.filters.update(FILTERS)
+        self.env.filters.update(filters)
         self.base_template = base_template
         self.context = context or {}
         self.__template = None
@@ -56,6 +61,17 @@ def get_custom_template(base_template_path):
         return Template(directory or ".", base_template)
     except TemplateNotFound:
         raise FileNotFoundError
+
+
+def load_plugin_templates():
+    for entry_point in pkg_resources.iter_entry_points(group="shellman"):
+        obj = entry_point.load()
+        if isinstance(obj, Template):
+            templates[entry_point.name] = obj
+        elif isinstance(obj, dict):
+            for name, template in obj.items():
+                if isinstance(template, Template):
+                    templates[name] = template
 
 
 def names():
@@ -95,14 +111,3 @@ templates = {
     "wikipage.md": wikipage,
     "wikipage.markdown": wikipage,
 }
-
-
-# def get_plugin_templates():
-#     plugins = []
-#     for entry_point in pkg_resources.iter_entry_points(group="shellman"):
-#         obj = entry_point.load()
-#         if isinstance(obj, Template):
-#             plugins.append(obj)
-#     return plugins
-
-# templates.update(get_plugin_templates())
