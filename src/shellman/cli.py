@@ -1,30 +1,13 @@
 # -*- coding: utf-8 -*-
 
-"""
-Module that contains the command line app.
-
-Why does this file exist, and why not put this in __main__?
-
-  You might be tempted to import things from __main__ later,
-  but that will cause problems: the code will get executed twice:
-
-  - When you run `python -mshellman` python will execute
-    ``__main__.py`` as a script. That means there won't be any
-    ``shellman.__main__`` in ``sys.modules``.
-  - When you import __main__ it will get executed again (as a module) because
-    there's no ``shellman.__main__`` in ``sys.modules``.
-
-  Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
-"""
-
 import argparse
 import os
+import re
 import sys
 from datetime import date
-import re
 
-from . import templates, __version__
-from .context import get_context
+from . import __version__, templates
+from .context import DEFAULT_JSON_FILE, get_context
 from .reader import DocFile, DocStream, merge
 
 
@@ -55,20 +38,24 @@ def valid_file(value):
 
 
 def get_parser():
-    """Return a parser for the command line arguments."""
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
+        "-c",
         "--context",
         dest="context",
         nargs="+",
-        help="context to inject. You can pass JSON strings or key=value pairs."
+        help="context to inject when rendering the template. "
+        "You can pass JSON strings or key=value pairs. "
+        "Example: `--context project=hello '{\"version\": [0, 3, 1]}'`.",
     )
 
     parser.add_argument(
         "--context-file",
         dest="context_file",
-        help="JSON file to read context from."
+        help="JSON file to read context from. "
+        "By default shellman will try to read the file '%s' "
+        "in the current directory." % DEFAULT_JSON_FILE,
     )
 
     parser.add_argument(
@@ -93,7 +80,9 @@ def get_parser():
         const=True,
         default=False,
         help="with multiple input files, merge their contents in the output "
-        "instead of appending (default: false)",
+        "instead of appending (default: %(default)s). "
+        "FILENAME will be used as the filename variable when rendering the template "
+        "(default: empty string).",
     )
 
     parser.add_argument(
@@ -102,30 +91,12 @@ def get_parser():
         action="store",
         dest="output",
         default=None,
-        help="file to write to (default: stdout). You can use the {filename} variable.",
+        help="file to write to (default: stdout). "
+        "You can use the following variables in the output name: "
+        "{basename}, {ext}, {filename} (equal to {basename}.{ext}), "
+        "{filepath}, {dirname}, {dirpath}. "
+        "They will be populated from each input file.",
     )
-    # parser.add_argument(
-    #     "-w",
-    #     "--warn",
-    #     action="store_true",
-    #     dest="warn",
-    #     help="actually display the warnings (default: false)",
-    # )
-    # parser.add_argument(
-    #     "-0",
-    #     "-n",
-    #     "--nice",
-    #     action="store_true",
-    #     dest="nice",
-    #     help="be nice: return 0 even if warnings (default: false)",
-    # )
-    # mxg.add_argument(
-    #     "-c",
-    #     "--check",
-    #     action="store_true",
-    #     dest="check",
-    #     help="only check if the documentation is correct, no output (default: false)",
-    # )
 
     parser.add_argument(
         "FILE",
@@ -181,6 +152,22 @@ def guess_filename(output, docs=None):
     if docs:
         return common_ancestor(docs)
     return ""
+
+
+def output_name_variables(doc=None):
+    if doc:
+        basename, ext = os.path.splitext(doc.filename)
+        dirpath = os.path.split(doc.filepath)[0]
+        dirname = os.path.basename(dirpath)
+        return dict(
+            filename=doc.filename,
+            filepath=doc.filepath,
+            basename=basename,
+            ext=ext,
+            dirpath=dirpath,
+            dirname=dirname,
+        )
+    return {}
 
 
 def main(argv=None):
@@ -253,7 +240,10 @@ def main(argv=None):
     # If args.output contains variables, each input has its own output
     if args.output and is_format_string(args.output):
         for doc in docs:
-            write(render(template, doc, **context), args.output.format(filename=doc.filename))
+            write(
+                render(template, doc, **context),
+                args.output.format(**output_name_variables(doc)),
+            )
     # Else, concatenate contents (no effect if already merged), then output to file or stdout
     else:
         contents = "\n\n\n".join(render(template, doc, **context) for doc in docs)
@@ -262,5 +252,4 @@ def main(argv=None):
         else:
             print(contents)
 
-    # return 0 if args.nice or success else 1
     return 0

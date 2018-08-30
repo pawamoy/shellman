@@ -4,7 +4,7 @@ import textwrap
 from collections import defaultdict
 from itertools import groupby
 
-from jinja2.filters import make_attrgetter, _GroupTuple, environmentfilter
+from jinja2.filters import _GroupTuple, environmentfilter, make_attrgetter
 from jinja2.utils import escape
 
 

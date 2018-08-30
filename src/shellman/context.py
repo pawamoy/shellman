@@ -1,9 +1,8 @@
 import json
 import os
 
-
-ENV_VAR_PREFIX = 'SHELLMAN_CONTEXT_'
-DEFAULT_JSON_FILE = '.shellman.json'
+ENV_VAR_PREFIX = "SHELLMAN_CONTEXT_"
+DEFAULT_JSON_FILE = ".shellman.json"
 
 
 def get_cli_context(args):
@@ -13,7 +12,7 @@ def get_cli_context(args):
             if context_arg[0] == "{":
                 context.update(json.loads(context_arg))
             else:
-                name, value = context_arg.split('=')
+                name, value = context_arg.split("=")
                 context[name] = value
     return context
 
@@ -22,7 +21,7 @@ def get_env_context():
     context = {}
     for env_name, env_value in os.environ.items():
         if env_name.startswith(ENV_VAR_PREFIX):
-            context_var_name = env_name[len(ENV_VAR_PREFIX):].lower()
+            context_var_name = env_name[len(ENV_VAR_PREFIX) :].lower()
             context[context_var_name] = env_value
     return context
 
