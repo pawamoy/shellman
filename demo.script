@@ -1,7 +1,7 @@
 workon py36
 psgit
 clear
-termtosvg -g 130x40 demo.svg  # demo: sleep 2
+termtosvg -g 80x20 demo.svg  # demo: sleep 2
 cat demo.bash  # demo: sleep 3
 clear
 grep '##' demo.bash  # demo: sleep 3
