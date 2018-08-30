@@ -87,7 +87,7 @@
 {% if shellman.doc.function %}
 **FUNCTIONS**  
 {% for function in shellman.doc.function %}
-{% include "function.md" with context %}
+{% include "manpage_function.md" with context %}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 

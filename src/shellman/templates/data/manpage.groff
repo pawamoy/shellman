@@ -102,7 +102,7 @@ Version {{ shellman.doc.version[0].text }} - {% endif -%}
 {% if shellman.doc.function %}
 .SH "FUNCTIONS"
 {% for function in shellman.doc.function %}
-{% include "function.groff" with context %}
+{% include "manpage_function.groff" with context %}
 {% endfor %}
 
 {% endif %}

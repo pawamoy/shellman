@@ -1,8 +1,8 @@
 {% if shellman.doc.brief %}
-## Name
-**{{ shellman.filename }}** - {{ shellman.doc.brief[0].text|e }}
+## {{ shellman.filename }}
+{{ shellman.doc.brief[0].text|e }}
 
-{% include "toc.md" with context %}
+{% include "wikipage_toc.md" with context %}
 
 {% endif %}
 {% if shellman.doc.usage %}
@@ -85,7 +85,7 @@
 {% if shellman.doc.function %}
 ## Functions
 {% for function in shellman.doc.function %}
-{% include "function.md" with context %}
+{% include "wikipage_function.md" with context %}
 {% if not loop.last %}
 ---
 {% endif %}
@@ -97,9 +97,11 @@
 {% for example in shellman.doc.example %}
 - **{{ example.brief|e }}**
 {% if example.code %}
+
   ```{{ example.code_lang }}
 {{ example.code }}
   ```
+
 {% endif %}
 {% if example.description %}
   {{ example.description|e|indent(2) }}

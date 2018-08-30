@@ -76,7 +76,7 @@ Standard Error:
 {% if shellman.doc.function %}
 Functions:
 {% for function in shellman.doc.function %}
-{% include "function.txt" with context %}
+{% include "helptext_function" with context %}
 {% endfor %}
 
 {% endif %}
