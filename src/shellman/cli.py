@@ -7,7 +7,7 @@ import sys
 from datetime import date
 
 from . import __version__, templates
-from .context import DEFAULT_JSON_FILE, get_context
+from .context import DEFAULT_JSON_FILE, get_context, update
 from .reader import DocFile, DocStream, merge
 
 
@@ -40,6 +40,9 @@ def valid_file(value):
 def get_parser():
     parser = argparse.ArgumentParser()
 
+    ## \option -c, --context CONTEXT [CONTEXT ...]
+    ## Context to inject when rendering the template.
+    ## You can pass JSON strings or key=value pairs.
     parser.add_argument(
         "-c",
         "--context",
@@ -50,6 +53,10 @@ def get_parser():
         "Example: `--context project=hello '{\"version\": [0, 3, 1]}'`.",
     )
 
+    ## \option --context-file
+    ## JSON file to read context from.
+    ## By default shellman will try to read the file '.shellman.json'
+    ## in the current directory.
     parser.add_argument(
         "--context-file",
         dest="context_file",
@@ -58,6 +65,12 @@ def get_parser():
         "in the current directory." % DEFAULT_JSON_FILE,
     )
 
+    ## \option -t, --template TEMPLATE
+    ## The Jinja2 template to use. Prefix with "path:" to
+    ## specify the path to a custom template. Available
+    ## templates: hello, helptext, manpage, manpage.1,
+    ## manpage.3, manpage.groff, manpage.markdown,
+    ## manpage.md, wikipage, wikipage.markdown, wikipage.md
     parser.add_argument(
         "-t",
         "--template",
@@ -71,20 +84,26 @@ def get_parser():
         "Available templates: %s" % ", ".join(templates.names()),
     )
 
+    ## \option -m, --merge [FILENAME]
+    ## With multiple input files, merge their contents in the
+    ## output instead of appending (default: False). FILENAME
+    ## will be used as the filename variable when rendering
+    ## the template (default: empty string).
     parser.add_argument(
         "-m",
         "--merge",
         dest="merge",
-        nargs="?",
-        metavar="FILENAME",
-        const=True,
-        default=False,
+        action="store_true",
         help="with multiple input files, merge their contents in the output "
-        "instead of appending (default: %(default)s). "
-        "FILENAME will be used as the filename variable when rendering the template "
-        "(default: empty string).",
+        "instead of appending (default: %(default)s). ",
     )
 
+    ## \option -o, --output OUTPUT
+    ## file to write to (default: stdout). You can use the
+    ## following variables in the output name: {basename},
+    ## {ext}, {filename} (equal to {basename}.{ext}),
+    ## {filepath}, {dirname}, {dirpath}. They will be
+    ## populated from each input file.
     parser.add_argument(
         "-o",
         "--output",
@@ -115,6 +134,10 @@ def render(template, doc=None, **context):
         shellman["filepath"] = doc.filepath
     shellman["today"] = date.today()
     shellman["version"] = __version__
+
+    if "shellman" in context:
+        update(shellman, context.pop("shellman"))
+
     return template.render(shellman=shellman, **context)
 
 
@@ -231,10 +254,7 @@ def main(argv=None):
 
     # Optionally merge the parsed contents
     if args.merge:
-        if isinstance(args.merge, str):
-            new_filename = args.merge
-        else:
-            new_filename = guess_filename(args.output, docs)
+        new_filename = guess_filename(args.output, docs)
         docs = [merge(docs, new_filename)]
 
     # If args.output contains variables, each input has its own output

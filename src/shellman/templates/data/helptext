@@ -1,5 +1,6 @@
 {% if indent is string %}{% set indent=indent|int %}{% endif %}
 {% set indent_str=" "*indent %}
+{% if option_padding is string %}{% set option_padding=option_padding|int %}{% endif %}
 {% if shellman.doc.usage %}
 Usage: {{ shellman.doc.usage[0].program }} {{ shellman.doc.usage[0].command }}
 {% for usage in shellman.doc.usage[1:] %}

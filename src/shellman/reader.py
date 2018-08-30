@@ -166,7 +166,7 @@ def process_blocks(blocks):
 
 
 def merge(docs, filename):
-    final_doc = DocStream(stream=[], name=filename)
+    final_doc = DocStream(stream=[], filename=filename)
     for doc in docs:
         for section, values in doc.sections.items():
             if section not in final_doc.sections:

@@ -1,3 +1,4 @@
+import collections
 import json
 import os
 
@@ -13,7 +14,15 @@ def get_cli_context(args):
                 context.update(json.loads(context_arg))
             else:
                 name, value = context_arg.split("=")
-                context[name] = value
+                if '.' in name:
+                    name_dict = d = {}
+                    parts = name.split('.')
+                    for name_part in parts[1:-1]:
+                        d[name_part] = d = {}
+                    d[parts[-1]] = value
+                    context[parts[0]] = name_dict
+                else:
+                    context[name] = value
     return context
 
 
@@ -42,7 +51,16 @@ def get_context(args):
         except FileNotFoundError:
             pass
 
-    context.update(get_env_context())
-    context.update(get_cli_context(args.context))
+    update(context, get_env_context())
+    update(context, get_cli_context(args.context))
 
     return context
+
+
+def update(d, u):
+    for k, v in u.items():
+        if isinstance(v, collections.Mapping):
+            d[k] = update(d.get(k, {}), v)
+        else:
+            d[k] = v
+    return d
