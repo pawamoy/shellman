@@ -91,10 +91,10 @@ def parser_choices():
 helptext = Template(
     builtin_env,
     "helptext",
-    context={"indent": 2, "indent_str": "  ", "option_padding": 22},
+    context={"indent": 2, "option_padding": 22},
 )
 manpage = Template(
-    builtin_env, "manpage.groff", context={"indent": 4, "indent_str": "    "}
+    builtin_env, "manpage.groff", context={"indent": 4}
 )
 manpage_md = Template(builtin_env, "manpage.md")
 wikipage = Template(builtin_env, "wikipage.md")
