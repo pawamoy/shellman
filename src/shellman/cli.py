@@ -23,9 +23,9 @@ import sys
 from datetime import date
 import re
 
+from . import templates, __version__
+from .context import get_context
 from .reader import DocFile, DocStream, merge
-from . import templates
-from . import __version__
 
 
 def valid_file(value):
@@ -57,6 +57,19 @@ def valid_file(value):
 def get_parser():
     """Return a parser for the command line arguments."""
     parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--context",
+        dest="context",
+        nargs="+",
+        help="context to inject. You can pass JSON strings or key=value pairs."
+    )
+
+    parser.add_argument(
+        "--context-file",
+        dest="context_file",
+        help="JSON file to read context from."
+    )
 
     parser.add_argument(
         "-t",
@@ -120,25 +133,6 @@ def get_parser():
         help="path to the file(s) to read. Use - to read on standard input.",
     )
     return parser
-
-
-def get_cli_context():
-    return {}
-
-
-def get_env_context():
-    return {}
-
-
-def get_file_context():
-    return {}
-
-
-def get_context():
-    context = get_file_context()
-    context.update(get_env_context())
-    context.update(get_cli_context())
-    return context
 
 
 def render(template, doc=None, **context):
@@ -226,9 +220,11 @@ def main(argv=None):
     else:
         template = templates.templates[args.template]
 
+    context = get_context(args)
+
     # Render template with context only
     if not args.FILE:
-        contents = render(template, None, **get_context())
+        contents = render(template, None, **context)
         if args.output:
             write(contents, args.output)
         else:
@@ -254,10 +250,10 @@ def main(argv=None):
     # If args.output contains variables, each input has its own output
     if args.output and is_format_string(args.output):
         for doc in docs:
-            write(render(template, doc), args.output.format(filename=doc.filename))
+            write(render(template, doc, **context), args.output.format(filename=doc.filename))
     # Else, concatenate contents (no effect if already merged), then output to file or stdout
     else:
-        contents = "\n\n\n".join(render(template, doc) for doc in docs)
+        contents = "\n\n\n".join(render(template, doc, **context) for doc in docs)
         if args.output:
             write(contents, args.output)
         else:
