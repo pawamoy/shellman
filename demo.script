@@ -1,0 +1,16 @@
+workon py36
+psgit
+clear
+termtosvg -g 130x40 demo.svg  # demo: sleep 2
+cat demo.bash  # demo: sleep 3
+clear
+grep '##' demo.bash  # demo: sleep 3
+clear
+shellman demo.bash  # demo: sleep 2
+clear
+shellman demo.bash -t manpage # demo: sleep 2
+clear
+man <(shellman demo.bash -t manpage) # demo: sleep 3
+qclear
+shellman demo.bash -t wikipage  # demo: sleep 3
+exit
