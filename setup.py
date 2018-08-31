@@ -33,7 +33,7 @@ setup(
     description='Write doc in your shell scripts.',
     long_description='%s' % (
         re.compile('^<!-- start-badges.*^.. end-badges -->', re.M | re.S)
-        .sub('', read('README.md')))
+        .sub('', read('README.md'))
     ),
     author=u'Timothee Mazzucotelli',
     author_email='timothee.mazzucotelli@gmail.com',
