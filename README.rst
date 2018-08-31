@@ -206,6 +206,7 @@ Bug
 ---
 
 .. code::
+
     ## \bug Describe a bug.
     ## This is typically a well-known bug that won't be fixed.
 
