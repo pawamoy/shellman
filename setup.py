@@ -31,14 +31,13 @@ setup(
     version='0.2.2',
     license='ISC',
     description='Write doc in your shell scripts.',
-    long_description='%s\n%s' % (
-        re.compile('^.. start-badges.*^.. end-badges', re.M | re.S)
-        .sub('', read('README.rst')),
-        re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))
+    long_description='%s' % (
+        re.compile('^<!-- start-badges.*^.. end-badges -->', re.M | re.S)
+        .sub('', read('README.md')))
     ),
     author=u'Timothee Mazzucotelli',
     author_email='timothee.mazzucotelli@gmail.com',
-    url='https://github.com/Pawamoy/shellman',
+    url='https://gitlab.com/pawamoy/shellman',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
