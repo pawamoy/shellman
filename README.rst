@@ -111,6 +111,8 @@ Documentation syntax
 
 - Documentation lines always begin with `##` and a space.
 
+.. code::
+
     ## This is a doc line.
     # This is not a doc line.
     ##This is not valid because there is no space after ##.
@@ -176,7 +178,7 @@ Documentation syntax
     some_function() { echo "Hello"; }
 
 - When rendering a tag's contents as text, shellman will indent and wrap it. To prevent joining
-  lines that should not be joined, simply indent them with one more spaces or tabs. Also blank
+  lines that should not be joined, simply indent them with one more space or tab. Also blank
   documentation lines are kept as blank lines.
 
 .. code::
@@ -198,13 +200,12 @@ Author
 
 .. code::
 
-    ## \author Timothée Mazzucotelli <pawamoy@pm.me>
+    ## \author Timothée Mazzucotelli / @pawamoy / <pawamoy@pm.me>
 
 Bug
 ---
 
 .. code::
-
     ## \bug Describe a bug.
     ## This is typically a well-known bug that won't be fixed.
 
