@@ -31,10 +31,9 @@ setup(
     version='0.2.2',
     license='ISC',
     description='Write doc in your shell scripts.',
-    long_description='%s' % (
-        re.compile('^<!-- start-badges.*^.. end-badges -->', re.M | re.S)
-        .sub('', read('README.md'))
-    ),
+    long_description=re.compile(
+        '^<!-- start-badges.*^.. end-badges -->', re.M | re.S
+    ).sub('', read('README.md')),
     author=u'Timothee Mazzucotelli',
     author_email='timothee.mazzucotelli@gmail.com',
     url='https://gitlab.com/pawamoy/shellman',
