@@ -49,7 +49,7 @@ Shellman
 Read documentation from comments and render it with templates.
 
 ``shellman`` can generate man pages, wiki pages and help text using documentation written
-in a shell script's comments.
+in shell scripts comments.
 
 For example:
 
@@ -97,122 +97,6 @@ with the ``--template template_name`` syntax.
 See http://jinja.pocoo.org/docs/2.10/templates/ for more information
 on how to write Jinja2 templates.
 
-Documentation syntax
-====================
-
-- Documentation lines always begin with `##`.
-
-    ## This is a doc line.
-    # This is not a doc line.
-
-- Documentation lines can't be placed at the end of instructions.
-
-    ## This will be recognized.
-        ## Even with spaces before.
-    echo "This will NOT be recognized" ## Ignored
-
-- Documentation **tags** are available to precise the type of documentation.
-  Tags are always preceded with either ``@`` or ``\`` (at or backslash).
-  Example:
-
-    ## @brief This file is the README.
-    ## \desc I personally prefer backslash,
-    ## I find it more readable.
-
-# CONTINUE HERE
-- The previous example leads us to tags' **occurrences** and **number of possible lines**.
-  Currently the script only handles **one** or **many** for both (and not
-  specific numbers like 2, 17, or 94873407).
-
-    ## \brief Accepted only once, next ones will be ignored.
-    ## \brief The first one is kept. Only one line here.
-    ## So this line is ignored because it has no tags.
-
-    ## \desc Accepted only once.
-    ## Can have many lines below.
-    ## You want a empty line? Here:
-    ##
-    ## End.
-
-    ## \usage Some tags can be used several times
-    ## and also have many lines
-    ## \usage like this one (usage).
-    ## See below how such tags' content will be displayed.
-
-- If a tag supports many lines, it will end at first non-documentation line or
-  first documentation line with a tag.
-
-    ## \desc Ook. Ook?
-
-    ## This line will be ignored, because the blank line above "ended" the current tag.
-
-    ## \usage An instruction between doc lines
-    echo "Ook! Ook!"
-    ## will also "end" the current tag documentation (this line is ignored).
-
-- shellman also handles documentation for functions. Start documentation for
-  a function with the `fn` tag.
-
-    ## \fn some prototype or else
-    ## \brief one-line description
-    ## \param P some parameter
-    some_function() { echo "Hello"; }
-
-    ## \fn and again...
-
-- Some tags have a special behaviour for display. If their content have multiple
-  lines, then the first line is considered a header. If they have just one line,
-  then the first word is considered the header. It helps to create a better
-  display (with indentation).
-
-    ## \option -o Optimize computation.
-    ## \option -s, --slow
-    ## Slower computation.
-
-    Options:
-      -o Optimize computation.
-      -s, --slow
-        Slower computation.
-
-
-
-
-Author
-------
-
-.. code::
-
-    ## \author
-Bug
-Brief
-Caveat
-Copyright
-Date
-Desc
-Env
-Error
-Example
-Exit
-File
-Function
-History
-License
-Note
-Option
-Seealso
-Stderr
-Stdin
-Stdout
-Usage
-Version
-
-
-License
-=======
-
-Software licensed under `ISC`_ license.
-
-.. _ISC: https://www.isc.org/downloads/software-support-policy/isc-license/
 
 Installation
 ============
@@ -221,11 +105,344 @@ Installation
 
     [sudo -H] pip install shellman
 
-Development
-===========
 
-To run all the tests: ``tox``
+Documentation syntax
+====================
+
+- Documentation lines always begin with `##` and a space.
+
+    ## This is a doc line.
+    # This is not a doc line.
+    ##This is not valid because there is no space after ##.
+
+- Documentation lines cannot be placed at the end of instructions.
+
+.. code::
+
+    ## This will be recognized.
+        ## Even with spaces or tabs before.
+    echo "This will NOT be recognized" ## Ignored
+
+- Documentation **tags** are available to precise the type of documentation.
+  Tags are always preceded with either ``@`` or ``\`` (at or backslash).
+  Example:
+
+.. code::
+
+    ## @brief This file is the README.
+    ## \desc I personally prefer backslash, I find it more readable.
+
+- A documentation tag can have multiple lines of contents.
+
+.. code::
+
+    ## \bug First line.
+    ## Second line.
+    ##
+    ## Fourth line.
+
+- You can leave the first line blank though.
+
+.. code::
+
+    ## \bug
+    ## First line.
+    ##
+    ## Third line.
+
+- There is no restriction in the number of occurrences or number of lines per tag.
+
+.. code::
+
+    ## \brief Although only the first brief will be used in builtin templates...
+    ## \brief ...you still can write more than one.
+
+- Documentation lines without tags are always attached to the previous tag.
+
+.. code::
+
+    ## \note This is the first note.
+
+    ## This is still the first note.
+    ## \note This is another note.
+
+- Tags can have sub-tags. The best example is the ``\function`` tag:
+
+.. code::
+
+    ## \function some prototype or else
+    ## \function-brief one-line description
+    ## \function-argument arg1 some argument
+    some_function() { echo "Hello"; }
+
+- When rendering a tag's contents as text, shellman will indent and wrap it. To prevent joining
+  lines that should not be joined, simply indent them with one more spaces or tabs. Also blank
+  documentation lines are kept as blank lines.
+
+.. code::
+
+    ## \desc Starting a description.
+    ## Showing a list of steps:
+    ##
+    ##   - do this
+    ##   - and do that
+
+
+List of supported tags
+======================
+
+You will find here the list of supported tags and examples of how to use them.
+
+Author
+------
+
+.. code::
+
+    ## \author Timothée Mazzucotelli <pawamoy@pm.me>
+
+Bug
+---
+
+.. code::
+
+    ## \bug Describe a bug.
+    ## This is typically a well-known bug that won't be fixed.
+
+Brief
+-----
+
+.. code::
+
+    ## \brief A brief description of the script or library.
+    ## You can use multiple lines, but usually one is better.
+
+Caveat
+------
+
+.. code::
+
+    ## \caveat A limitation in your code.
+    ## Use as many lines as you want.
+
+Copyright
+---------
+
+.. code::
+
+    ## \copyright Copyright 2018 Timothée Mazzucotelli.
+    ## You could also include the text of the license.
+
+Date
+----
+
+.. code::
+
+    ## \date 2018-08-31. Or 31 Août 2018.
+    ## It's just text, it will not be parsed as a date object. Prefer one line.
+
+Description
+-----------
+
+.. code::
+
+    ## \desc The big description.
+    ## Usually takes many lines.
+
+Environment Variable
+--------------------
+
+It has a ``name`` and a ``description``.
+
+.. code::
+
+    ## \env MY_VARIABLE And a short description. Or...
+    ## \env MY_VARIABLE
+    ## A longer
+    ## description.
+
+    ## \env MY_VARIABLE Actually you can mix both styles,
+    ## as each new line of documentation will be appended to the description
+    ## of the given environment variable.
+    ## The first word will be the variable name (everything before the first space).
+
+Error
+-----
+
+.. code::
+
+    ## \error Just like bugs, notes, caveats...
+    ## An error is something the user should not do,
+    ## something that is considered wrong or bad practice when using your script.
+
+    ## If you want to document the standard error messages, or the exit status,
+    ## see \stderr and \exit.
+
+Example
+-------
+
+It has ``brief``, ``code``, ``code_lang`` and ``description`` attributes.
+
+.. code::
+
+    ## \example The first line is the brief description.
+    ## Can span multiple lines.
+    ## \example-code bash
+    ##   # Note the "bash" keyword on the previous line.
+    ##   # It will be used in, for example, Markdown templates, for code syntax highlighting.
+    ##   if this_condition; then
+    ##     cd this_dir && do_that_thing
+    ##   fi
+    ## \example-description Now we describe the example more seriously.
+    ## But you can simply skip the description if it easy enough to understand.
+
+Exit Status
+-----------
+
+It has a ``code`` and a ``description``.
+
+.. code::
+
+    ## \exit 0 Everything went fine.
+
+    ## \exit 1 Something went wrong.
+    ## I don't know why, really.
+
+    ## \exit 73
+    ## I had never encounter this exit code before!
+
+    ## \exit NO_INTERNET
+    ## The code can also be a string.
+
+File
+----
+
+It has a ``name`` and a ``description``.
+
+.. code::
+
+    ## \file /etc/super_script/default_conf.rc The default configuration file for my super script.
+
+    ## \file /dev/null
+    ## I think you got it.
+
+Function
+--------
+
+A function has the following attributes:
+``prototype``, ``brief``, ``description``,
+``arguments``, ``preconditions``, ``return_codes``,
+``seealso``, ``stderr``, ``stdin`` and ``stdout``.
+
+For now, shellman does not support too much verbosity for the attributes:
+only one line can be used for each.
+
+Each line without a tag will be appended to the description.
+
+.. code::
+
+    ## \function say_hello(person, hello='bonjour')
+    ## \function-brief Say hello (in French by default) to the given person.
+    ## \function-argument hello How to say hello. Default is "bonjour".
+    ## \function-precondition The person you say hello to must be a human or a dog.
+    ## \function-return 0 The person was not authorized to answer back.
+    ## \function-return 1 The person was human.
+    ## \function-return 17 The person was a good boy.
+    ## \function-stdout The person's answer will be printed on standard output.
+
+History
+-------
+
+.. code::
+
+    ## \history 2018-08-31: this example was written.
+
+    ## \history Far future:
+    ## 2K stars on GitHub!
+
+
+License
+-------
+
+.. code::
+
+    ## \license ISC License
+    ##
+    ## Copyright (c) 2018, Timothée Mazzucotelli
+    ##
+    ## Permission to use, copy, modify, and/or distribute this software for any
+    ## purpose with or without fee is hereby granted, provided that the above
+    ## copyright notice and this permission notice appear in all copies.
+    ##
+    ## THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    ## WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+    ## MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ## ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    ## WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+    ## ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    ## OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Note
+----
+
+.. code::
+
+    ## \note If shellman does not work as expected, please file a bug on GitLab.
+    ## Here is the URL: https://gitlab.com/pawamoy/shellman.
+
+Option
+------
+
+.. code::
+
+    ## \option
+
+See Also
+--------
+
+.. code::
+
+    ## \seealso A note about something else to look at.
+
+Standard Error
+--------------
+
+.. code::
+
+    ## \stderr
+
+Standard Input
+--------------
+
+.. code::
+
+    ## \stdin
+
+Standard Output
+---------------
+
+.. code::
+
+    ## \stdout
 
 Usage
-=====
+-----
 
+.. code::
+
+    ## \usage
+
+Version
+-------
+
+.. code::
+
+    ## \version
+
+
+
+License
+=======
+
+Software licensed under `ISC`_ license.
+
+.. _ISC: https://www.isc.org/downloads/software-support-policy/isc-license/
