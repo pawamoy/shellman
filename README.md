@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.png">
+</p>
+
 <h1 align="center">## \shellman</h1>
 
 <!-- start-badges -->
@@ -11,9 +15,6 @@
   </a>
   <a href="https://www.codacy.com/app/pawamoy/shellman/dashboard">
     <img src="https://api.codacy.com/project/badge/Coverage/85e410da099c46d0bcf3700c563bbc2a">
-  </a>
-  <a href="https://pyup.io/repos/github/pawamoy/shellman/">
-    <img src="https://pyup.io/repos/github/pawamoy/shellman/shield.svg">
   </a>
   <a href="https://pypi.python.org/pypi/shellman/">
     <img src="https://img.shields.io/pypi/v/shellman.svg?style=flat">
@@ -29,8 +30,6 @@
 <!-- end-badges -->
 
 <p align="center">Read documentation from comments and render it with templates.</p>
-
----
 
 `shellman` can generate man pages, wiki pages and help text using documentation written
 in shell scripts comments.
