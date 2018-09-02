@@ -180,3 +180,7 @@
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 {% endif %}
+
+{% if shellman.credits|default(true, true) %}
+<hr><small>Wiki page generated with <a href="https://github.com/pawamoy/shellman">shellman</a></small>
+{% endif %}
