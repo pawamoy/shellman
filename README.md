@@ -7,7 +7,6 @@
 <p align="center">Write documentation in comments and render it with templates.</p>
 
 <!-- start-badges -->
-
 <p align="center">
   <a href="https://travis-ci.org/pawamoy/shellman/">
     <img src="https://travis-ci.org/pawamoy/shellman.svg?branch=master">
@@ -28,9 +27,7 @@
     <img src="https://badges.gitter.im/pawamoy/shellman.svg">
   </a>
 </p>
-
 <!-- end-badges -->
-
 
 `shellman` can generate man pages, wiki pages and help text
 using documentation written in shell scripts comments.
@@ -85,15 +82,19 @@ You can also write a plugin: see [the wiki page on GitLab] or [on GitHub].
 [the wiki page on GitLab]: https://gitlab.com/pawamoy/shellman/wikis/plugin
 [on GitHub]: https://github.com/pawamoy/shellman/wiki/plugins
 
-
 ## Installation
 `shellman` is written in Python, so you must install it with `pip`:
 
     pip install shellman
 
+## Some projects using shellman
+
+- [shellm](https://github.com/shellm-org) —
+  A collection of scripts and libraries
+  built on its [core inclusion-system](https://github.com/shellm-org/core),
+  all installable with [basher](https://github.com/basherpm/basher).
 
 ## License
-
 Software licensed under [ISC] license.
 
 [ISC]: https://www.isc.org/downloads/software-support-policy/isc-license/
