@@ -1,18 +1,36 @@
-# ## \shellman
+<h1 align="center">## \shellman</h1>
 
 <!-- start-badges -->
 
-[![Travis-CI Build Status](https://travis-ci.org/pawamoy/shellman.svg?branch=master)](https://travis-ci.org/pawamoy/shellman/)
-[![Codacy Code Quality Status](https://api.codacy.com/project/badge/Grade/85e410da099c46d0bcf3700c563bbc2a)](https://www.codacy.com/app/Pawamoy/shellman/dashboard)
-[![Codacy Code Coverage](https://api.codacy.com/project/badge/Coverage/85e410da099c46d0bcf3700c563bbc2a)](https://www.codacy.com/app/pawamoy/shellman/dashboard)
-[![Updates](https://pyup.io/repos/github/pawamoy/shellman/shield.svg)](https://pyup.io/repos/github/pawamoy/shellman/)
-[![PyPI Package latest release](https://img.shields.io/pypi/v/shellman.svg?style=flat)](https://pypi.python.org/pypi/shellman/)
-[![PyPI Wheel](https://img.shields.io/pypi/wheel/shellman.svg?style=flat)](https://pypi.python.org/pypi/shellman/)
-[![Join the chat at https://gitter.im/pawamoy/shellman](https://badges.gitter.im/pawamoy/shellman.svg)](https://gitter.im/pawamoy/shellman)
+<p align="center">
+  <a href="https://travis-ci.org/pawamoy/shellman/">
+    <img src="https://travis-ci.org/pawamoy/shellman.svg?branch=master">
+  </a>
+  <a href="https://www.codacy.com/app/Pawamoy/shellman/dashboard">
+    <img src="https://api.codacy.com/project/badge/Grade/85e410da099c46d0bcf3700c563bbc2a">
+  </a>
+  <a href="https://www.codacy.com/app/pawamoy/shellman/dashboard">
+    <img src="https://api.codacy.com/project/badge/Coverage/85e410da099c46d0bcf3700c563bbc2a">
+  </a>
+  <a href="https://pyup.io/repos/github/pawamoy/shellman/">
+    <img src="https://pyup.io/repos/github/pawamoy/shellman/shield.svg">
+  </a>
+  <a href="https://pypi.python.org/pypi/shellman/">
+    <img src="https://img.shields.io/pypi/v/shellman.svg?style=flat">
+  </a>
+  <a href="https://pypi.python.org/pypi/shellman/">
+    <img src="https://img.shields.io/pypi/wheel/shellman.svg?style=flat">
+  </a>
+  <a href="https://gitter.im/pawamoy/shellman">
+    <img src="https://badges.gitter.im/pawamoy/shellman.svg">
+  </a>
+</p>
 
 <!-- end-badges -->
 
-Read documentation from comments and render it with templates.
+<p align="center">Read documentation from comments and render it with templates.</p>
+
+---
 
 `shellman` can generate man pages, wiki pages and help text using documentation written
 in shell scripts comments.
@@ -81,7 +99,7 @@ on how to write Jinja2 templates.
       ## Even with spaces or tabs before.
   echo "This will NOT be recognized" ## Ignored
   ```
-  
+
 - Documentation **tags** are available to precise the type of documentation.
   Tags are always preceded with either ``@`` or ``\`` (at or backslash).
   Example:
@@ -89,7 +107,7 @@ on how to write Jinja2 templates.
   ## @brief This file is the README.
   ## \desc I personally prefer backslash, I find it more readable.
   ```
-  
+
 - A documentation tag can have multiple lines of contents.
   ```
   ## \bug First line.
@@ -115,7 +133,7 @@ on how to write Jinja2 templates.
 - Documentation lines without tags are always attached to the previous tag.
   ```
   ## \note This is the first note.
-  
+
   ## This is still the first note.
   ## \note This is another note.
   ```
