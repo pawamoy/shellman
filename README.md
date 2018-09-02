@@ -4,6 +4,8 @@
 
 <h1 align="center">Shell Script Documentation</h1>
 
+<p align="center">Write documentation in comments and render it with templates.</p>
+
 <!-- start-badges -->
 
 <p align="center">
@@ -29,7 +31,6 @@
 
 <!-- end-badges -->
 
-<p align="center">Write documentation in comments and render it with templates.</p>
 
 `shellman` can generate man pages, wiki pages and help text
 using documentation written in shell scripts comments.
