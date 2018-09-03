@@ -193,6 +193,9 @@ def output_name_variables(doc=None):
     return {}
 
 
+## \usage shellman [-h] [-c CONTEXT [CONTEXT ...]]
+## [--context-file CONTEXT_FILE] [-t TEMPLATE] [-m]
+## [-o OUTPUT] [FILE [FILE ...]]
 def main(argv=None):
     """
     Main function.
@@ -237,6 +240,13 @@ def main(argv=None):
 
     # Render template with context only
     if not args.FILE:
+        if not context:
+            print(
+                "shellman: error: please specify "
+                "input file(s) or context",
+                file=sys.stderr
+            )
+            return 1
         contents = render(template, None, **context)
         if args.output:
             write(contents, args.output)

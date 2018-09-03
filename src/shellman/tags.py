@@ -336,6 +336,8 @@ class UsageTag:
             program, command = split
         else:
             program = split[0]
+        if len(lines) > 1:
+            command = command + "\n" + "\n".join(l.value for l in lines)
         return UsageTag(program=program, command=command)
 
 
