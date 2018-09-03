@@ -329,7 +329,6 @@ class UsageTag:
 
     @classmethod
     def from_lines(cls, lines):
-        # TODO: only first line kept. Change it?
         program, command = "", ""
         split = lines[0].value.split(" ", 1)
         if len(split) > 1:
@@ -337,7 +336,7 @@ class UsageTag:
         else:
             program = split[0]
         if len(lines) > 1:
-            command = command + "\n" + "\n".join(l.value for l in lines)
+            command = command + "\n" + "\n".join(l.value for l in lines[1:])
         return UsageTag(program=program, command=command)
 
 

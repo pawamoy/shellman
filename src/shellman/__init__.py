@@ -13,3 +13,5 @@ from .reader import DocFile, DocStream
 from .templates import Template
 
 __all__ = ["DocFile", "DocStream", "Template"]
+
+# TODO: add {cvsroot} variable to output variables.
