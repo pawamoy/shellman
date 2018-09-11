@@ -117,13 +117,19 @@ def do_smartwrap(text, indent=4, width=None, indentfirst=True):
             wrapper.width = width - indent
             wrapper.initial_indent = ""
         wrap_indented_text_lines.append(wrapper.fill(first_line))
+    elif first_line:
+        wrap_indented_text_lines.append(indent_str + first_line)
+    else:
+        wrap_indented_text_lines.append("")
     wrapper.width = width
-    wrapper.initial_indent = ""
+    wrapper.initial_indent = indent_str
     for line in new_text_lines[1:]:
         if not (line == "" or line[0] in (" ", "\t")):
             wrap_indented_text_lines.append(wrapper.fill(line))
-        else:
+        elif line:
             wrap_indented_text_lines.append(indent_str + line)
+        else:
+            wrap_indented_text_lines.append("")
     return "\n".join(wrap_indented_text_lines)
 
 

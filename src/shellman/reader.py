@@ -126,10 +126,11 @@ class DocFile:
 
 
 def preprocess_stream(stream):
+    name = getattr(stream, "name", "")
     for lineno, line in enumerate(stream, 1):
         line = line.lstrip(" \t").rstrip("\n")
         if line.startswith("##"):
-            yield stream.name, lineno, line
+            yield name, lineno, line
 
 
 def preprocess_lines(lines):

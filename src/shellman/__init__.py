@@ -14,4 +14,4 @@ from .templates import Template
 
 __all__ = ["DocFile", "DocStream", "Template"]
 
-# TODO: add {cvsroot} variable to output variables.
+# TODO: add {vcsroot} variable to output variables.
