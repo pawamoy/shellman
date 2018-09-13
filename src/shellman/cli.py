@@ -104,8 +104,9 @@ def get_parser():
     ## file to write to (default: stdout). You can use the
     ## following variables in the output name: {basename},
     ## {ext}, {filename} (equal to {basename}.{ext}),
-    ## {filepath}, {dirname}, {dirpath}. They will be
-    ## populated from each input file.
+    ## {filepath}, {dirname}, {dirpath}, and {vcsroot}
+    ## (git and mercurial supported).
+    ## They will be populated from each input file.
     parser.add_argument(
         "-o",
         "--output",
@@ -115,7 +116,8 @@ def get_parser():
         help="file to write to (default: stdout). "
         "You can use the following variables in the output name: "
         "{basename}, {ext}, {filename} (equal to {basename}.{ext}), "
-        "{filepath}, {dirname}, {dirpath}. "
+        "{filepath}, {dirname}, {dirpath}, and {vcsroot}"
+        "(git and mercurial supported). "
         "They will be populated from each input file.",
     )
 
@@ -191,8 +193,25 @@ def output_name_variables(doc=None):
             ext=ext,
             dirpath=dirpath,
             dirname=dirname,
+            vcsroot=get_vcs_root(dirpath)
         )
     return {}
+
+
+_vcs_root_cache = {}
+
+
+def get_vcs_root(path):
+    if path in _vcs_root_cache:
+        return _vcs_root_cache[path]
+    original_path = path
+    while not any(os.path.exists(os.path.join(path, vcs))
+                  for vcs in (".git", ".hg", ".svn")):
+        path = os.path.dirname(path)
+        if path == "/":
+            path = ""
+    _vcs_root_cache[original_path] = path
+    return path
 
 
 ## \usage shellman [-h] [-c CONTEXT [CONTEXT ...]]

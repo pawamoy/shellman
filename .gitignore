@@ -63,3 +63,4 @@ docs/_build
 .appveyor.token
 *.bak
 wiki/
+.pytest_cache/
