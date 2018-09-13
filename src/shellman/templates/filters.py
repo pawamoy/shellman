@@ -1,5 +1,8 @@
 import re
-import shutil
+try:
+    from shutil import get_terminal_size
+except ImportError:
+    from backports.shutil_get_terminal_size import get_terminal_size
 import textwrap
 from collections import defaultdict
 from itertools import groupby
@@ -76,14 +79,14 @@ def console_width(default=80):
     """
     # only solution that works with stdin redirected from file
     # https://stackoverflow.com/questions/566746
-    return shutil.get_terminal_size((default, 20)).columns
+    return get_terminal_size((default, 20)).columns
 
 
 def do_smartwrap(text, indent=4, width=None, indentfirst=True):
     if width is None or width < 0:
         c_width = console_width(default=79)
         if width is None:
-            width = c_width
+            width = c_width or 79
         else:
             width += c_width
 

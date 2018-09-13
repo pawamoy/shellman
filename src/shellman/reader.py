@@ -16,8 +16,8 @@ from collections import defaultdict
 
 from .tags import TAGS
 
-tag_value_regexp = re.compile(r"^\s*[\\@]([_a-zA-Z][\w-]*)\s+(.+)$")
-tag_no_value_regexp = re.compile(r"^\s*[\\@]([_a-zA-Z][\w-]*)\s*$")
+tag_value_regex = re.compile(r"^\s*[\\@]([_a-zA-Z][\w-]*)\s+(.+)$")
+tag_no_value_regex = re.compile(r"^\s*[\\@]([_a-zA-Z][\w-]*)\s*$")
 
 
 class DocType:
@@ -65,6 +65,10 @@ class DocBlock:
     def __bool__(self):
         return bool(self.lines)
 
+    # Python 2 compatibility
+    def __nonzero__(self):
+        return bool(self.lines)
+
     def __str__(self):
         return "\n".join([str(line) for line in self.lines])
 
@@ -93,7 +97,9 @@ class DocBlock:
 
     @property
     def tag(self):
-        return self.first_line.tag
+        if self.lines:
+            return self.first_line.tag
+        return ""
 
     @property
     def value(self):
@@ -129,15 +135,15 @@ def preprocess_stream(stream):
     name = getattr(stream, "name", "")
     for lineno, line in enumerate(stream, 1):
         line = line.lstrip(" \t").rstrip("\n")
-        if line.startswith("##"):
+        if line.startswith("## "):
             yield name, lineno, line
 
 
 def preprocess_lines(lines):
     current_block = DocBlock()
     for path, lineno, line in lines:
-        line = line.lstrip("#")
-        res = tag_value_regexp.search(line)
+        line = line[3:]
+        res = tag_value_regex.search(line)
         if res:
             tag, value = res.groups()
             if current_block and not tag.startswith(current_block.tag + "-"):
@@ -145,7 +151,7 @@ def preprocess_lines(lines):
                 current_block = DocBlock()
             current_block.append(DocLine(path, lineno, tag, value))
         else:
-            res = tag_no_value_regexp.search(line)
+            res = tag_no_value_regex.search(line)
             if res:
                 tag = res.groups()[0]
                 if current_block and not tag.startswith(current_block.tag + "-"):
@@ -153,7 +159,7 @@ def preprocess_lines(lines):
                     current_block = DocBlock()
                 current_block.append(DocLine(path, lineno, tag, ""))
             else:
-                current_block.append(DocLine(path, lineno, None, line[1:]))
+                current_block.append(DocLine(path, lineno, None, line))
     if current_block:
         yield current_block
 

@@ -5,11 +5,12 @@
 import os
 import pytest
 
+from shellman.cli import main as cli_main
 from shellman.context import (
     get_cli_context, get_context, get_env_context, update
 )
 from shellman.reader import (
-    preprocess_lines, preprocess_stream, process_blocks, merge
+    preprocess_lines, preprocess_stream, process_blocks, merge, DocBlock
 )
 from shellman.templates import filters
 
@@ -23,7 +24,10 @@ def get_fake_script(name):
 
 
 class TestCommandLine:
-    pass
+    def test_main(self):
+        assert cli_main([]) == 1
+        assert cli_main(["-c", "hello=world"]) == 0
+        assert cli_main([get_fake_script("simple.sh")]) == 0
 
 
 class TestFilters:
@@ -124,11 +128,26 @@ class TestContext:
 
 class TestReader:
     def test_preprocess_stream(self):
-        pass
+        script = get_fake_script("simple.sh")
+        with open(script) as stream:
+            assert list(preprocess_stream(stream)) == [
+                (script, 3, "## \\brief Just a demo"),
+                (script, 4, "## \\desc This script actually does nothing."),
+                (script, 8, "## \\option -h, --help"),
+                (script, 9, "## Print this help and exit."),
+                (script, 14, "## \\usage demo [-h]"),
+            ]
 
     def test_preprocess_lines(self):
-        pass
+        script = get_fake_script("simple.sh")
+        with open(script) as stream:
+            blocks = list(preprocess_lines(preprocess_stream(stream)))
+        print(blocks)
 
 
 class TestTags:
     pass
+
+
+if __name__ == "__main__":
+    pytest.main()

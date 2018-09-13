@@ -64,9 +64,7 @@ setup(
         'jinja2'
     ],
     extras_require={
-        # eg:
-        #   'rst': ['docutils>=0.11'],
-        #   ':python_version=="2.6"': ['argparse'],
+        ':python_version == "2.7"': ['backports.shutil_get_terminal_size']
     },
     entry_points={
         'console_scripts': [

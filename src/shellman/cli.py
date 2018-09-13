@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import argparse
 import os
 import re
@@ -127,7 +129,7 @@ def get_parser():
 
 
 def render(template, doc=None, **context):
-    shellman = dict()
+    shellman = {"doc": {}}
     if doc is not None:
         shellman["doc"] = doc.sections
         shellman["filename"] = doc.filename

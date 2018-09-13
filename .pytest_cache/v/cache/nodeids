@@ -1,0 +1,12 @@
+[
+  "tests/test_shellman.py::TestCommandLine::()::test_main", 
+  "tests/test_shellman.py::TestFilters::()::test_do_groffautoemphasis", 
+  "tests/test_shellman.py::TestFilters::()::test_do_groffautostrong", 
+  "tests/test_shellman.py::TestFilters::()::test_do_smartwrap", 
+  "tests/test_shellman.py::TestContext::()::test_get_cli_context", 
+  "tests/test_shellman.py::TestContext::()::test_get_env_context", 
+  "tests/test_shellman.py::TestContext::()::test_get_context", 
+  "tests/test_shellman.py::TestContext::()::test_update", 
+  "tests/test_shellman.py::TestReader::()::test_preprocess_stream", 
+  "tests/test_shellman.py::TestReader::()::test_preprocess_lines"
+]
