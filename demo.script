@@ -1,16 +1,21 @@
+# demo: charinterval=0
 workon py36
-psgit
-clear
+export PROFILE_PROMPT=psss
+c() { clear; }; export -f c
+e() { exit; }; export -f e
+c  # demo: charinterval=0.05
+
 termtosvg -g 80x20 demo.svg  # demo: sleep 2
 cat demo.bash  # demo: sleep 3
-clear
+c
 grep '##' demo.bash  # demo: sleep 3
-clear
+c
 shellman demo.bash  # demo: sleep 2
-clear
+c
 shellman demo.bash -t manpage # demo: sleep 2
-clear
+c
 man <(shellman demo.bash -t manpage) # demo: sleep 3
-qclear
+qc
 shellman demo.bash -t wikipage  # demo: sleep 3
-exit
+e  # demo: sleep 1
+
