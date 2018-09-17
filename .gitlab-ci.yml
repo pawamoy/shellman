@@ -10,16 +10,20 @@ python2.7: &tox
   script:
     - tox -e py
 
-python3.5: *tox
+python3.5:
+  <<: *tox
   image: python:3.5
 
-python3.6: *tox
+python3.6:
+  <<: *tox
   image: python:3.6
 
-python3.7: *tox
+python3.7:
+  <<: *tox
   image: python:3.7
 
-pypy: *tox
+pypy:
+  <<: *tox
   image: pypy:latest
 
 setup:
@@ -27,21 +31,25 @@ setup:
   image: python:3.5
   script:
     - tox -e setup
+
 safety:
   stage: quality
   image: python:3.5
   script:
     - tox -e safety
+
 style:
   stage: quality
   image: python:3.5
   script:
     - tox -e style
+
 docs:
   stage: quality
   image: python:3.5
   script:
     - tox -e docs
+
 spell:
   stage: quality
   before_script:
@@ -50,6 +58,7 @@ spell:
   image: python:3.5
   script:
     - tox -e spell
+
 link:
   stage: quality
   image: python:3.5
