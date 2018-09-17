@@ -1,0 +1,46 @@
+{{ indent_str }}{{ function.prototype }}
+{{ indent_str * 2 }}{{ function.brief }}
+
+{% if function.description %}
+{{ function.description|smartwrap(indent*2) }}
+
+{% endif %}
+{% if function.arguments %}
+{{ indent_str * 2 }}Arguments:
+{% with longest = function.arguments|map('firstword')|map('length')|max %}
+{% for argument in function.arguments %}
+{{ indent_str * 3 }}{{ "{a:{w}}"|format(a=argument|firstword, w=longest) }} - {{ argument|body }}
+{% endfor %}
+{% endwith %}
+
+{% endif %}
+{% if function.return_codes %}
+{{ indent_str * 2 }}Return codes:
+{% for return_code in function.return_codes %}
+{{ indent_str * 3 }}{{ return_code|firstword }} - {{ return_code|body }}
+{% endfor %}
+
+{% endif %}
+{% if function.preconditions %}
+{{ indent_str * 2 }}Pre-conditions:
+{% for precondition in function.preconditions %}
+{{ indent_str * 3 }}{{ precondition }}
+{% endfor %}
+
+{% endif %}
+{% if function.seealso %}
+{{ indent_str * 2 }}See also:
+{% for seealso in function.seealso %}
+{{ indent_str * 3 }}{{ seealso }}
+{% endfor %}
+
+{% endif %}
+{% if function.stderr %}
+
+{% endif %}
+{% if function.stdin %}
+
+{% endif %}
+{% if function.stdout %}
+
+{% endif %}

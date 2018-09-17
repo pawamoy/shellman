@@ -2,189 +2,152 @@
 
 """Main test script."""
 
+import os
 import pytest
 
-from shellman.cli import main
-from shellman.doc import Doc
-from shellman.formatter import get_formatter
-from shellman.tag import TAGS, Tag
+from shellman.cli import main as cli_main
+from shellman.context import (
+    get_cli_context, get_context, get_env_context, update
+)
+from shellman.reader import (
+    preprocess_lines, preprocess_stream, process_blocks, merge, DocBlock
+)
+from shellman.templates import filters
 
 
-class TestMain(object):
-    def test_doc_read_returns_0(self):
-        """Assert that reading a file returns 0."""
-        assert main(['tests/fakescripts/minimal.sh']) == 0
-        assert main(['tests/fakescripts/empty.sh']) == 0
-        assert main(['tests/fakescripts/complete.sh']) == 0
-        assert main(['tests/fakescripts/script_tags.sh']) == 0
-        assert main(['tests/fakescripts/function_tags.sh']) == 0
-        assert main(['tests/fakescripts/doc_breaks.sh']) == 0
-
-    def test_wrong_doc_check_fails(self):
-        assert not Doc('tests/fakescripts/wrong.sh').check(
-            nice=False, failfast=False)
-
-    def test_correctly_ignore_whitelisted_tag(self, capsys):
-        doc = Doc('tests/fakescripts/invalid.sh', whitelist={'customx': Tag()})
-        assert doc.check(nice=True, warn=True, failfast=False)
-        out, err = capsys.readouterr()
-        assert 'customx' not in err
-        assert not doc.check(nice=False, warn=True, failfast=True)
-        out, err = capsys.readouterr()
-        assert 'customy' in err
-        assert not doc.check(nice=False, warn=True, failfast=False)
-        assert doc.check(nice=True, warn=True, failfast=True)
-
-    def test_wrong_doc_check_fails_fast(self):
-        assert not Doc('tests/fakescripts/wrong.sh').check(
-            nice=False, failfast=True)
-
-    def test_empty_file_gives_empty_doc(self):
-        expected_doc = {k: None for k in TAGS.keys()}
-        expected_doc['_file'] = 'empty.sh'
-        expected_doc['_fn'] = []
-        assert Doc('tests/fakescripts/empty.sh').read() == expected_doc
+def get_fake_script(name):
+    return os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "fakescripts",
+        name
+    )
 
 
-class TestScriptTags(object):
-    fakescript = 'tests/fakescripts/script_tags.sh'
-    doc = Doc(fakescript).read()
-
-    def test_tags_correctly_read(self):
-        """Assert all tags present in script are correctly read."""
-        for name, tag in TAGS.items():
-            assert self.doc[name]
-
-    def test_multiple_tags(self):
-        """Assert that all occurrences of multiple tag are kept."""
-        for name, tag in TAGS.items():
-            if tag.occurrences == Tag.MANY:
-                assert isinstance(self.doc[name], list)
-                assert len(self.doc[name]) == 2
-                if tag.lines == Tag.MANY:
-                    assert isinstance(self.doc[name][0], list)
-                    assert isinstance(self.doc[name][1], list)
-                    assert len(self.doc[name][0]) == 2
-                    assert len(self.doc[name][1]) == 2
-                    assert self.doc[name][0] == ['first occurrence\n',
-                                                 'testing multi line\n']
-                    assert self.doc[name][1] == ['second occurrence\n',
-                                                 'testing multi line\n']
-                else:
-                    assert isinstance(self.doc[name][0], str)
-                    assert isinstance(self.doc[name][1], str)
-                    assert self.doc[name][0] == 'first occurrence'
-                    assert self.doc[name][1] == 'second occurrence'
-
-    def test_unique_tags(self):
-        """Assert that only first occurrence of unique tag is kept."""
-        for name, tag in TAGS.items():
-            if tag.occurrences == 1:
-                if tag.lines == Tag.MANY:
-                    assert isinstance(self.doc[name], list)
-                    assert len(self.doc[name]) == 2
-                    assert self.doc[name][0] == 'first occurrence\n'
-                    assert self.doc[name][1] == 'testing multi line\n'
-                else:
-                    assert isinstance(self.doc[name], str)
-                    assert self.doc[name] == 'first occurrence'
+class TestCommandLine:
+    def test_main(self):
+        assert cli_main([]) == 1
+        assert cli_main(["-c", "hello=world"]) == 0
+        assert cli_main([get_fake_script("simple.sh")]) == 0
 
 
-class TestFunctionTags(object):
-    fakescript = 'tests/fakescripts/script_tags.sh'
-    doc = Doc(fakescript).read()
+class TestFilters:
+    def test_do_groffautoemphasis(self):
+        string = "I'm SO emphaSIzed!"
+        assert filters.do_groffautoemphasis(string) == "I'm \\fISO\\fR emphaSIzed!"
 
-    def test_tags_correctly_read(self):
-        """Assert all tags present in script are correctly read."""
-        for name, tag in TAGS.items():
-            assert self.doc[name]
+    def test_do_groffautostrong(self):
+        string = "I'm -so --strong!"
+        assert filters.do_groffautostrong(string) == "I'm \\fB-so\\fR \\fB--strong\\fR!"
 
-    def test_multiple_tags(self):
-        """Assert that all occurrences of multiple tag are kept."""
-        for name, tag in TAGS.items():
-            if tag.occurrences == Tag.MANY:
-                assert isinstance(self.doc[name], list)
-                assert len(self.doc[name]) == 2
-                if tag.lines == Tag.MANY:
-                    assert isinstance(self.doc[name][0], list)
-                    assert isinstance(self.doc[name][1], list)
-                    assert len(self.doc[name][0]) == 2
-                    assert len(self.doc[name][1]) == 2
-                    assert self.doc[name][0] == ['first occurrence\n',
-                                                 'testing multi line\n']
-                    assert self.doc[name][1] == ['second occurrence\n',
-                                                 'testing multi line\n']
-                else:
-                    assert isinstance(self.doc[name][0], str)
-                    assert isinstance(self.doc[name][1], str)
-                    assert self.doc[name][0] == 'first occurrence'
-                    assert self.doc[name][1] == 'second occurrence'
+    def test_do_smartwrap(self):
+        text = (
+            "Some text.\n\n"
+            "A very long line: Lorem ipsum dolor sit amet, "
+            "consectetur adipiscing elit, sed do eiusmod tempor incididunt "
+            "ut labore et dolore magna aliqua."
+        )
+        code_blocks = (
+            "Code block:\n  hello\nEnd.\n\n  "
+            "another code block\n  with very long lines: "
+            "Lorem ipsum dolor sit amet, consectetur "
+            "adipiscing elit, sed do eiusmod tempor incididunt "
+            "ut labore et dolore magna aliqua."
+        )
 
-    def test_unique_tags(self):
-        """Assert that only first occurrence of unique tag is kept."""
-        for name, tag in TAGS.items():
-            if tag.occurrences == 1:
-                if tag.lines == Tag.MANY:
-                    assert isinstance(self.doc[name], list)
-                    assert len(self.doc[name]) == 2
-                    assert self.doc[name][0] == 'first occurrence\n'
-                    assert self.doc[name][1] == 'testing multi line\n'
-                else:
-                    assert isinstance(self.doc[name], str)
-                    assert self.doc[name] == 'first occurrence'
-
-
-class TestDocBreaks(object):
-    fakescript = 'tests/fakescripts/doc_breaks.sh'
-    doc = Doc(fakescript).read()
-
-    def test_doc_breaks_for_1_many_tag(self):
-        assert isinstance(self.doc['desc'], list)
-        assert len(self.doc['desc']) == 2
-        assert self.doc['desc'] == ['first line\n', 'second line\n']
-
-    def test_doc_breaks_for_many_many_tag(self):
-        assert isinstance(self.doc['usage'], list)
-        assert len(self.doc['usage']) == 1
-        assert isinstance(self.doc['usage'][0], list)
-        assert len(self.doc['usage'][0]) == 2
-        assert self.doc['usage'] == [['first line\n', 'second line\n']]
+        assert (
+            filters.do_smartwrap(text, width=40) == "    Some text.\n\n"
+            "    A very long line: Lorem ipsum dolor\n"
+            "    sit amet, consectetur adipiscing\n"
+            "    elit, sed do eiusmod tempor\n"
+            "    incididunt ut labore et dolore magna\n"
+            "    aliqua."
+        )
+        assert (
+            filters.do_smartwrap(code_blocks, width=40) == "    Code block:\n"
+            "      hello\n"
+            "    End.\n\n"
+            "      another code block\n"
+            "      with very long lines: Lorem ipsum dolor sit amet, "
+            "consectetur adipiscing elit, sed do eiusmod tempor incididunt "
+            "ut labore et dolore magna aliqua."
+        )
 
 
-class TestFormatter(object):
-    fakescripts = [
-        'tests/fakescripts/complete.sh',
-        'tests/fakescripts/empty.sh',
-        'tests/fakescripts/minimal.sh',
-    ]
-
-    docs = [Doc(fakescript).read() for fakescript in fakescripts]
-
-    def test_get_formatter(self):
-        with pytest.raises(ValueError) as ve:
-            get_formatter('unknown')
-        assert all(x in str(ve.value) for x in ('incorrect format', 'unknown'))
-
-    def test_text_formatter(self):
-        formatter = get_formatter('text')
-        for doc in self.docs:
-            formatter(doc).write()
-
-    def test_man_formatter(self):
-        formatter = get_formatter('man')
-        for doc in self.docs:
-            formatter(doc).write()
-
-    def test_markdown_formatter(self):
-        formatter = get_formatter('markdown')
-        for doc in self.docs:
-            formatter(doc).write()
+class TestTemplates:
+    pass
 
 
-class TestCommandLine(object):
-    def test_whitelist_option(self, capsys):
-        assert main(['tests/fakescripts/invalid.sh',
-                     '-cwi', 'customx:1+,customy']) == 0
-        out, err = capsys.readouterr()
-        assert 'invalid' not in err
-        assert 'ignored' not in err
+class TestContext:
+    def test_get_cli_context(self):
+        assert get_cli_context([]) == {}
+        assert get_cli_context([""]) == {}
+        assert get_cli_context([" "]) == {}
+
+        assert get_cli_context(
+            ["hello=world"]
+        ) == {"hello": "world"}
+        assert get_cli_context(
+            ["hello=world", "hello=universe"]
+        ) == {"hello": "universe"}
+
+        assert get_cli_context(
+            ["hello.world=universe"]
+        ) == get_cli_context(
+            ["hello=world", "hello.world=universe"]
+        ) == {"hello": {"world": "universe"}}
+        assert get_cli_context(
+            ["hello.world=universe", "hello=world"]
+        ) == {"hello": "world"}
+        assert get_cli_context(
+            ["hello.world.and.foobars=hello"]
+        ) == {"hello": {"world": {"and": {"foobars": "hello"}}}}
+
+        assert get_cli_context(
+            ['{"hello": "world", "number": [1, 2]}']
+        ) == {"hello": "world", "number": [1, 2]}
+        assert get_cli_context(
+            ['{"hello": "world"}', "hello=universe"]
+        ) == {"hello": "universe"}
+
+    def test_get_env_context(self):
+        os.environ["SHELLMAN_CONTEXT_HELLO"] = "world"
+        assert get_env_context() == {"hello": "world"}
+        del os.environ["SHELLMAN_CONTEXT_HELLO"]
+
+    def test_get_context(self):
+        from collections import namedtuple
+        args = namedtuple('args', 'context_file context')(None, None)
+        assert get_context(args) == {}
+
+    def test_update(self):
+        d1 = {"hello": {"world": "what's up?"}}
+        d2 = {"hello": {"universe": "????"}, "byebye": "universe"}
+        update(d1, d2)
+        assert d1 == {"hello": {"world": "what's up?", "universe": "????"}, "byebye": "universe"}
+
+
+class TestReader:
+    def test_preprocess_stream(self):
+        script = get_fake_script("simple.sh")
+        with open(script) as stream:
+            assert list(preprocess_stream(stream)) == [
+                (script, 3, "## \\brief Just a demo"),
+                (script, 4, "## \\desc This script actually does nothing."),
+                (script, 8, "## \\option -h, --help"),
+                (script, 9, "## Print this help and exit."),
+                (script, 14, "## \\usage demo [-h]"),
+            ]
+
+    def test_preprocess_lines(self):
+        script = get_fake_script("simple.sh")
+        with open(script) as stream:
+            blocks = list(preprocess_lines(preprocess_stream(stream)))
+        print(blocks)
+
+
+class TestTags:
+    pass
+
+
+if __name__ == "__main__":
+    pytest.main()

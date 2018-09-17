@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
-"""
-Shellman package.
+## \brief Read documentation from shell script comments and render it with templates.
 
-Shellman is a Python utility that read a file and search for special comments
-beginning with two sharps (##). It can recognize doxygen-like tags, such as
-brief, desc, fn, author, so you can write documentation in your shell scripts.
+## \desc Shellman reads specified FILEs and searches for special comments
+## beginning with two sharps (##). It extracts documentation from these comment lines,
+## and then generate a document by rendering a template. The template rendering is done
+## with Jinja2. See http://jinja.pocoo.org/docs/2.10/templates/.
 
-After having retrieved the documentation comments, shellman will be able to
-write this documentation as text, man, or markdown format on stdout.
-"""
+__version__ = "0.3.0"
 
-__version__ = '0.2.2'
+from .reader import DocFile, DocStream
+from .templates import Template
+
+__all__ = ["DocFile", "DocStream", "Template"]
