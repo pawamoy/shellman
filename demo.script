@@ -3,6 +3,7 @@ workon py36
 export PROFILE_PROMPT=psss
 c() { clear; }; export -f c
 e() { exit; }; export -f e
+shellman() { command shellman -c shellman.credits="" "$@"; }; export -f shellman
 c  # demo: charinterval=0.05
 
 termtosvg -g 80x20 demo.svg  # demo: sleep 2
