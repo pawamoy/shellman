@@ -2,8 +2,6 @@ graft src
 graft tests
 graft docs
 
-include .cookiecutterrc
-include .editorconfig
 
 include AUTHORS.rst
 include CHANGELOG.rst
@@ -11,9 +9,15 @@ include CONTRIBUTING.rst
 include LICENSE
 include README.rst
 
-include tox.ini
-
-include *.yml
+exclude .cookiecutterrc
+exclude .editorconfig
+exclude tox.ini
+exclude *.yml
+exclude .shellman.json
+exclude demo.bash
+exclude demo.script
+exclude demo.svg
+exclude logo.png
 
 recursive-include requirements *.txt
 recursive-include tests *.sh
