@@ -12,7 +12,7 @@ def get_builtin_path():
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 
-def get_env(path):
+def get_env(path):  # nosec
     return Environment(
         loader=FileSystemLoader(path),
         trim_blocks=True,
