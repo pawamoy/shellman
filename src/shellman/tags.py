@@ -292,8 +292,6 @@ class OptionTag:
                 default = line.value
             elif line.tag == "option-group":
                 group = line.value
-            elif line.tag == "option-description" and line.value:
-                description.append(line.value)
             else:
                 description.append(line.value)
         return OptionTag(
