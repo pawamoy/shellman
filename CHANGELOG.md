@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [v0.3.0](https://gitlab.com/pawamoy/shellma/tags/v0.3.0) ([compare](https://gitlab.com/pawamoy/shellma/compare/v0.2.2...v0.3.0))
+## [v0.3.0](https://gitlab.com/pawamoy/shellma/tags/v0.3.0) ([compare](https://gitlab.com/pawamoy/shellma/compare/v0.2.2...v0.3.0)) - 2018-09-17
 
 ### Added
 - Add credits in wikipage template ([e70b7c8](https://gitlab.com/pawamoy/shellma/commit/e70b7c8fa4acef2acf1bd7a0dfd96383ef50fec4)).
