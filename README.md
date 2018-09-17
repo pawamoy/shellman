@@ -79,7 +79,7 @@ by specifying them with the ``--template path:my/template`` syntax.
 
 You can also write a plugin: see [the wiki page on GitLab] or [on GitHub].
 
-[the wiki page on GitLab]: https://gitlab.com/pawamoy/shellman/wikis/plugin
+[the wiki page on GitLab]: https://gitlab.com/pawamoy/shellman/wikis/plugins
 [on GitHub]: https://github.com/pawamoy/shellman/wiki/plugins
 
 ## Installation

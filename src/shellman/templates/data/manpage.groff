@@ -5,7 +5,7 @@
 
 .TH {{ shellman.filename }} 1 "{% if shellman.doc.version -%}
 Version {{ shellman.doc.version[0].text }} - {% endif -%}
-{% if shellman.doc.date %}{{ shellman.doc.date[0].text }}{% else %}{{ shellman.today }}{% endif %}" "Shellman {{ shellman.version }}" "User Commands"
+{% if shellman.doc.date %}{{ shellman.doc.date[0].text }}{% else %}{{ shellman.today }}{% endif %}" "shellman {{ shellman.version }}" "User Commands"
 
 {% if shellman.doc.brief %}
 .SH "NAME"
