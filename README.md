@@ -69,7 +69,7 @@ You can see more examples and all the documentation in the wiki!
 - [GitHub wiki](https://github.com/pawamoy/shellman/wiki)
 
 <h2 align="center">Demo</h2>
-<p align="center"><img src="demo.svg"></p>
+<p align="center"><img src="https://gitlab.com/pawamoy/shellman/raw/master/demo.svg"></p>
 
 In the demo above we saw the three builtin templates:
 helptext, manpage and wikipage.
