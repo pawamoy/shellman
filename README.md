@@ -8,23 +8,20 @@
 
 <!-- start-badges -->
 <p align="center">
-  <a href="https://travis-ci.org/pawamoy/shellman/">
-    <img src="https://travis-ci.org/pawamoy/shellman.svg?branch=master">
+  <a href="https://gitlab.com/pawamoy/shellman/commits/master">
+    <img alt="pipeline status" src="https://gitlab.com/pawamoy/shellman/badges/master/pipeline.svg" />
   </a>
-  <a href="https://www.codacy.com/app/Pawamoy/shellman/dashboard">
-    <img src="https://api.codacy.com/project/badge/Grade/85e410da099c46d0bcf3700c563bbc2a">
-  </a>
-  <a href="https://www.codacy.com/app/pawamoy/shellman/dashboard">
-    <img src="https://api.codacy.com/project/badge/Coverage/85e410da099c46d0bcf3700c563bbc2a">
+  <a href="https://gitlab.com/pawamoy/shellman/commits/master">
+    <img alt="coverage report" src="https://gitlab.com/pawamoy/shellman/badges/master/coverage.svg" />
   </a>
   <a href="https://pypi.python.org/pypi/shellman/">
-    <img src="https://img.shields.io/pypi/v/shellman.svg?style=flat">
+    <img alt="pypi version" src="https://img.shields.io/pypi/v/shellman.svg?style=flat" />
   </a>
   <a href="https://pypi.python.org/pypi/shellman/">
-    <img src="https://img.shields.io/pypi/wheel/shellman.svg?style=flat">
+    <img alt="python wheel" src="https://img.shields.io/pypi/wheel/shellman.svg?style=flat" />
   </a>
   <a href="https://gitter.im/pawamoy/shellman">
-    <img src="https://badges.gitter.im/pawamoy/shellman.svg">
+    <img alt="gitter chat" src="https://badges.gitter.im/pawamoy/shellman.svg" />
   </a>
 </p>
 <!-- end-badges -->

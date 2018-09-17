@@ -1,0 +1,57 @@
+stages:
+  - quality
+  - test
+
+python2.7: &tox
+  stage: test
+  image: python:2.7
+  before_script:
+    - pip install tox
+  script:
+    - tox -e py
+
+python3.5: *tox
+  image: python:3.5
+
+python3.6: *tox
+  image: python:3.6
+
+python3.7: *tox
+  image: python:3.7
+
+pypy: *tox
+  image: pypy:latest
+
+setup:
+  stage: quality
+  image: python:3.5
+  script:
+    - tox -e setup
+safety:
+  stage: quality
+  image: python:3.5
+  script:
+    - tox -e safety
+style:
+  stage: quality
+  image: python:3.5
+  script:
+    - tox -e style
+docs:
+  stage: quality
+  image: python:3.5
+  script:
+    - tox -e docs
+spell:
+  stage: quality
+  before_script:
+    - apt-get update
+    - apt-get install -y libenchant-dev
+  image: python:3.5
+  script:
+    - tox -e spell
+link:
+  stage: quality
+  image: python:3.5
+  script:
+    - tox -e link
