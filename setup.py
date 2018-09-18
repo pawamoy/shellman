@@ -28,7 +28,7 @@ def read(*names, **kwargs):
 
 setup(
     name="shellman",
-    version="0.3.0",
+    version="0.3.1",
     license="ISC",
     description="Write documentation in comments and render it with templates.",
     long_description=re.compile(
