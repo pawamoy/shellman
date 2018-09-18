@@ -6,7 +6,7 @@ e() { exit; }; export -f e
 shellman() { command shellman "$@" -c shellman.credits=""; }; export -f shellman
 c  # demo: charinterval=0.05
 
-termtosvg -g 80x20 demo.svg -t window_frame_js  # demo: sleep 2
+termtosvg -g 80x20 demo.svg -t window_frame  # demo: sleep 2
 cat demo.bash  # demo: sleep 3
 c
 grep '##' demo.bash  # demo: sleep 3
