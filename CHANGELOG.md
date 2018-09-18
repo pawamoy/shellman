@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.3.1](https://gitlab.com/pawamoy/shellman/tags/v0.3.1) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.0...v0.3.1)) - 2018-09-18
+
+### Misc
+- Reduce size of package, simplify manifest ([f123b53](https://gitlab.com/pawamoy/shellman/commit/f123b53fc973e05db36f5370d48647d56c571dcf)).
+- Switch documents to markdown ([f3917e9](https://gitlab.com/pawamoy/shellman/commit/f3917e9c46566898681e075bbc45afb7151e015f)).
+
 ## [v0.3.0](https://gitlab.com/pawamoy/shellman/tags/v0.3.0) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.2.2...v0.3.0)) - 2018-09-17
 
 ### Added
