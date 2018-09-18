@@ -42,9 +42,6 @@ def valid_file(value):
 def get_parser():
     parser = argparse.ArgumentParser()
 
-    ## \option -c, --context CONTEXT [CONTEXT ...]
-    ## Context to inject when rendering the template.
-    ## You can pass JSON strings or key=value pairs.
     parser.add_argument(
         "-c",
         "--context",
@@ -55,10 +52,6 @@ def get_parser():
         "Example: `--context project=hello '{\"version\": [0, 3, 1]}'`.",
     )
 
-    ## \option --context-file
-    ## JSON file to read context from.
-    ## By default shellman will try to read the file '.shellman.json'
-    ## in the current directory.
     parser.add_argument(
         "--context-file",
         dest="context_file",
@@ -67,12 +60,6 @@ def get_parser():
         "in the current directory." % DEFAULT_JSON_FILE,
     )
 
-    ## \option -t, --template TEMPLATE
-    ## The Jinja2 template to use. Prefix with "path:" to
-    ## specify the path to a custom template. Available
-    ## templates: hello, helptext, manpage, manpage.1,
-    ## manpage.3, manpage.groff, manpage.markdown,
-    ## manpage.md, wikipage, wikipage.markdown, wikipage.md
     parser.add_argument(
         "-t",
         "--template",
@@ -86,11 +73,6 @@ def get_parser():
         "Available templates: %s" % ", ".join(templates.names()),
     )
 
-    ## \option -m, --merge [FILENAME]
-    ## With multiple input files, merge their contents in the
-    ## output instead of appending (default: False). FILENAME
-    ## will be used as the filename variable when rendering
-    ## the template (default: empty string).
     parser.add_argument(
         "-m",
         "--merge",
@@ -100,13 +82,6 @@ def get_parser():
         "instead of appending (default: %(default)s). ",
     )
 
-    ## \option -o, --output OUTPUT
-    ## file to write to (default: stdout). You can use the
-    ## following variables in the output name: {basename},
-    ## {ext}, {filename} (equal to {basename}.{ext}),
-    ## {filepath}, {dirname}, {dirpath}, and {vcsroot}
-    ## (git and mercurial supported).
-    ## They will be populated from each input file.
     parser.add_argument(
         "-o",
         "--output",
@@ -214,9 +189,6 @@ def get_vcs_root(path):
     return path
 
 
-## \usage shellman [-h] [-c CONTEXT [CONTEXT ...]]
-## [--context-file CONTEXT_FILE] [-t TEMPLATE] [-m]
-## [-o OUTPUT] [FILE [FILE ...]]
 def main(argv=None):
     """
     Main function.
