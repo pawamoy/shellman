@@ -91,7 +91,7 @@ def get_parser():
         help="file to write to (default: stdout). "
         "You can use the following variables in the output name: "
         "{basename}, {ext}, {filename} (equal to {basename}.{ext}), "
-        "{filepath}, {dirname}, {dirpath}, and {vcsroot}"
+        "{filepath}, {dirname}, {dirpath}, and {vcsroot} "
         "(git and mercurial supported). "
         "They will be populated from each input file.",
     )

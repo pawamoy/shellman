@@ -86,8 +86,22 @@ You can also write a plugin: see [the wiki page on GitLab] or [on GitHub].
 
 - [shellm](https://github.com/shellm-org) —
   A collection of scripts and libraries
-  built on its [core inclusion-system](https://github.com/shellm-org/core),
+  built on a [core inclusion-system](https://github.com/shellm-org/core),
   all installable with [basher](https://github.com/basherpm/basher).
+  Here are a few examples:
+  - [daemon](https://github.com/shellm-org/daemon) —
+    A library that facilitates the writing of daemonized scripts that consume
+    files in a watched directory.
+  - [debug](https://github.com/shellm-org/debug) —
+    A simple script that sets the verbose/dry-run/debug
+    Bash flags before running another script.
+  - [format](https://github.com/shellm-org/format) —
+    Format your output with style and color.
+  - [home](https://github.com/shellm-org/home) —
+    A home for your shell scripts! 
+  - [loop](https://github.com/shellm-org/loop) —
+    Control the flow of your loops (pause/resume/etc.).
+
 
 ## License
 Software licensed under [ISC] license.
