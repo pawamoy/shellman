@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.3.3](https://gitlab.com/pawamoy/shellman/tags/v0.3.3) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.2...v0.3.3)) - 2018-09-18
+
+### Fixed
+- Fix manifest (missing setup.py) ([62ccfaf](https://gitlab.com/pawamoy/shellman/commit/62ccfaf90c4bd301c625101763462bc0c5374567)).
+
 ## [v0.3.2](https://gitlab.com/pawamoy/shellman/tags/v0.3.2) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.1...v0.3.2)) - 2018-09-18
 
 ### Misc
