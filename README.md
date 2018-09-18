@@ -1,12 +1,11 @@
 <p align="center">
-  <img src="logo.png">
+  <img src="https://rawgit.com/pawamoy/shellman/master/logo.png">
 </p>
 
 <h1 align="center">Shell Script Documentation</h1>
 
 <p align="center">Write documentation in comments and render it with templates.</p>
 
-<!-- start-badges -->
 <p align="center">
   <a href="https://gitlab.com/pawamoy/shellman/commits/master">
     <img alt="pipeline status" src="https://gitlab.com/pawamoy/shellman/badges/master/pipeline.svg" />
@@ -24,7 +23,6 @@
     <img alt="gitter chat" src="https://badges.gitter.im/pawamoy/shellman.svg" />
   </a>
 </p>
-<!-- end-badges -->
 
 `shellman` can generate man pages, wiki pages and help text
 using documentation written in shell scripts comments.
