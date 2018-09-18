@@ -1,26 +1,15 @@
 graft src
-graft tests
-graft docs
 
+prune docs
+prune requirements
+prune scripts
+prune tests
 
-include AUTHORS.rst
-include CHANGELOG.rst
-include CONTRIBUTING.rst
+exclude * .*
+
+include CHANGELOG.md
+include CONTRIBUTING.md
 include LICENSE
-include README.rst
-
-exclude .cookiecutterrc
-exclude .editorconfig
-exclude tox.ini
-exclude *.yml
-exclude .shellman.json
-exclude demo.bash
-exclude demo.script
-exclude demo.svg
-exclude logo.png
-
-recursive-include requirements *.txt
-recursive-include tests *.sh
-recursive-include scripts *.sh
+include README.md
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib
