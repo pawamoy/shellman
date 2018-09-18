@@ -12,7 +12,6 @@ from __future__ import absolute_import, print_function
 
 import io
 import os
-import re
 from glob import glob
 
 from setuptools import find_packages, setup
@@ -31,9 +30,7 @@ setup(
     version="0.3.1",
     license="ISC",
     description="Write documentation in comments and render it with templates.",
-    long_description=re.compile(
-        "^<!-- start-badges.*^.. end-badges -->", re.M | re.S
-    ).sub("", read("README.md")) + "\n" + read("CHANGELOG.md"),
+    long_description=read("README.md") + "\n" + read("CHANGELOG.md"),
     long_description_content_type="text/markdown",
     author=u"Timothée Mazzucotelli",
     author_email="pawamoy@pm.me",

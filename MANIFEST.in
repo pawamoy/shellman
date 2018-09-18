@@ -7,6 +7,9 @@ prune tests
 
 exclude * .*
 
+include logo.png
+include demo.svg
+
 include CHANGELOG.md
 include CONTRIBUTING.md
 include LICENSE
