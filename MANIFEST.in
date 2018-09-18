@@ -7,9 +7,9 @@ prune tests
 
 exclude * .*
 
-include logo.png
-include demo.svg
-
+include setup.py
+include setup.cfg
+include MANIFEST.in
 include CHANGELOG.md
 include CONTRIBUTING.md
 include LICENSE
