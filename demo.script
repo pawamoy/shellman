@@ -3,10 +3,10 @@ workon py36
 export PROFILE_PROMPT=psss
 c() { clear; }; export -f c
 e() { exit; }; export -f e
-shellman() { command shellman -c shellman.credits="" "$@"; }; export -f shellman
+shellman() { command shellman "$@" -c shellman.credits=""; }; export -f shellman
 c  # demo: charinterval=0.05
 
-termtosvg -g 80x20 demo.svg  # demo: sleep 2
+termtosvg -g 80x20 demo.svg -t window_frame_js  # demo: sleep 2
 cat demo.bash  # demo: sleep 3
 c
 grep '##' demo.bash  # demo: sleep 3
