@@ -32,7 +32,7 @@ default_context:
     gitter:                          'yes'
     landscape:                       'no'
     package_name:                    'shellman'
-    project_name:                    'Shellman'
+    project_name:                    'shellman'
     project_short_description:       'Write doc in your shell scripts.'
     prospector:                      'yes'
     pylama:                          'no'

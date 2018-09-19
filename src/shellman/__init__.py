@@ -3,7 +3,7 @@
 """
 Read documentation from shell script comments and render it with templates.
 
-Shellman reads specified FILEs and searches for special comments
+shellman reads specified FILEs and searches for special comments
 beginning with two sharps (##).
 It extracts documentation from these comment lines,
 and then generate a document by rendering a template.

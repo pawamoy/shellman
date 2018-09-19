@@ -9,8 +9,8 @@ When [reporting a bug](https://github.com/Pawamoy/shellman/issues) please includ
 - Detailed steps to reproduce the bug.
 
 ## Documentation improvements
-Shellman could always use more documentation, whether as part of the
-official Shellman docs, in docstrings, or even on the web in blog posts,
+shellman could always use more documentation, whether as part of the
+official shellman docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 ## Feature requests and feedback
