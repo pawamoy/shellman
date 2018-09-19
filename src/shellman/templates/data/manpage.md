@@ -180,5 +180,6 @@
 {% endif %}
 
 {% if shellman.credits|default(true) %}
-<hr><small>Man page generated with <a href="https://github.com/pawamoy/shellman">shellman</a></small>
+---
+*Man page generated with [shellman](https://github.com/pawamoy/shellman).*
 {% endif %}
