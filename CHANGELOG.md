@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.3.4](https://gitlab.com/pawamoy/shellman/tags/v0.3.4) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.3...v0.3.4)) - 2018-09-22
+
+### Fixed
+- Fix writing UTF-8 contents to file for Python 2 ([9e99b23](https://gitlab.com/pawamoy/shellman/commit/9e99b232d2c1171c9e3ee3b20f0f788b82d1d634)).
+
+### Misc
+- Improve credits line ([f7a7cae](https://gitlab.com/pawamoy/shellman/commit/f7a7cae8e1bf7363a73c127b542584e348dfae5c)).
+
 ## [v0.3.3](https://gitlab.com/pawamoy/shellman/tags/v0.3.3) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.2...v0.3.3)) - 2018-09-18
 
 ### Fixed
