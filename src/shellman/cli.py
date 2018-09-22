@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import argparse
+import io
 import os
 import re
 import sys
@@ -121,7 +122,7 @@ def render(template, doc=None, **context):
 
 
 def write(contents, filepath):
-    with open(filepath, "w") as write_stream:
+    with io.open(filepath, "w", encoding="utf-8") as write_stream:
         print(contents, file=write_stream)
 
 
