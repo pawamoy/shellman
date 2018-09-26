@@ -10,4 +10,11 @@ fi
 
 export PYTHONPATH
 
-/usr/bin/env python -m shellman "$@"
+if command -v python3 &>/dev/null; then
+  /usr/bin/env python -m shellman "$@"
+elif command -v python &>/dev/null; then
+  /usr/bin/env python -m shellman "$@"
+else
+  echo "shellman: a python interpreter is needed to run this program" >&2
+  exit 1
+fi

@@ -206,6 +206,9 @@ def main(argv=None):
     """
     templates.load_plugin_templates()
 
+    if argv and argv[0] == '__main__.py':
+        argv[0] = 'shellman'
+
     parser = get_parser()
     args = parser.parse_args(argv)
 
