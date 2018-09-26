@@ -165,9 +165,13 @@ def do_groupby(environment, value, attribute, sort=True):
     return [_GroupTuple(group, grouped[group]) for group in unique_groups]
 
 
-def do_escapetextonly(value):
+def do_escape(value, except_starts_with=None):
+    if except_starts_with is not None:
+        condition = lambda l: any(l.startswith(s) for s in except_starts_with)
+    else:
+        condition = False
     return "\n".join(
-        line if line == "" or line[0] in " \t" else escape(line)
+        line if line == "" or condition(line) else escape(line)
         for line in value.split("\n")
     )
 
@@ -185,5 +189,5 @@ FILTERS = {
     "body": do_body,
     "smartwrap": do_smartwrap,
     "format": do_format,
-    "escapetextonly": do_escapetextonly,
+    "escape": do_escape,
 }

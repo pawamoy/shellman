@@ -1,3 +1,4 @@
+{% if do_not_escape_lines_that_start_with is not defined %}{% set do_not_escape_lines_that_start_with = None %}{% endif %}
 {% if shellman.doc.brief %}
 ## {{ shellman.filename }}
 {{ shellman.doc.brief[0].text|e }}
@@ -15,7 +16,7 @@
 {% if shellman.doc.desc %}
 ## Description
 {% for desc in shellman.doc.desc %}
-{{ desc.text|e }}
+{{ desc.text|escape(except_starts_with=do_not_escape_lines_that_start_with) }}
 {% if not loop.last %}{{ "\n" }}{% endif %}
 {% endfor %}
 
