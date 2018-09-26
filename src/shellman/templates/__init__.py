@@ -87,7 +87,6 @@ def parser_choices():
 
     return TemplateChoice(names())
 
-
 helptext = Template(
     builtin_env,
     "helptext",
@@ -98,8 +97,10 @@ manpage = Template(
 )
 manpage_md = Template(builtin_env, "manpage.md")
 wikipage = Template(builtin_env, "wikipage.md")
+usagetext = Template(builtin_env, "usagetext")
 
 templates = {
+    "usagetext": usagetext,
     "helptext": helptext,
     "manpage": manpage,
     "manpage.groff": manpage,

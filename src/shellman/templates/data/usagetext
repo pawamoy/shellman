@@ -1,0 +1,6 @@
+{% if shellman.doc.usage %}
+usage: {{ shellman.doc.usage[0].program }} {{ shellman.doc.usage[0].command|smartwrap(8 + shellman.doc.usage[0].program|length, indentfirst=False) }}
+{% for usage in shellman.doc.usage[1:] %}
+       {{ usage.program }} {{ usage.command|smartwrap(8 + usage.program|length, indentfirst=False) }}
+{% endfor %}
+{% endif %}
