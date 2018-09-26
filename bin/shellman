@@ -11,7 +11,7 @@ fi
 export PYTHONPATH
 
 if command -v python3 &>/dev/null; then
-  /usr/bin/env python -m shellman "$@"
+  /usr/bin/env python3 -m shellman "$@"
 elif command -v python &>/dev/null; then
   /usr/bin/env python -m shellman "$@"
 else
