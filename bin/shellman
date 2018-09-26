@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+basher_package_path="$(basher package-path pawamoy/shellman)"
+
+if [ -n "${PYTHONPATH}" ]; then
+  PYTHONPATH="${basher_package_path}/src:${PYTHONPATH}"
+else
+  PYTHONPATH="${basher_package_path}/src"
+fi
+
+export PYTHONPATH
+
+/usr/bin/env python -m shellman "$@"
