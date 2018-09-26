@@ -41,7 +41,7 @@ def valid_file(value):
 
 
 def get_parser():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog="shellman")
 
     parser.add_argument(
         "-c",
@@ -206,9 +206,6 @@ def main(argv=None):
     """
     templates.load_plugin_templates()
 
-    if argv and argv[0] == '__main__.py':
-        argv[0] = 'shellman'
-
     parser = get_parser()
     args = parser.parse_args(argv)
 
@@ -220,6 +217,7 @@ def main(argv=None):
         )
 
     if not args.FILE and args.output and is_format_string(args.output):
+        parser.print_usage(file=sys.stderr)
         print(
             "shellman: error: cannot format output name without file inputs. "
             "Please remove variables from output name, or provide file inputs",
@@ -238,6 +236,7 @@ def main(argv=None):
     # Render template with context only
     if not args.FILE:
         if not context:
+            parser.print_usage(file=sys.stderr)
             print(
                 "shellman: error: please specify "
                 "input file(s) or context",
