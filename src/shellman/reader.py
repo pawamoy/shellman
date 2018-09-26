@@ -10,6 +10,7 @@ Algorithm is as follows:
 
 """
 
+import io
 import os
 import re
 from collections import defaultdict
@@ -121,7 +122,7 @@ class DocFile:
     def __init__(self, path):
         self.filepath = path
         self.filename = os.path.basename(path)
-        with open(path) as stream:
+        with io.open(path, "r", encoding="utf-8") as stream:
             try:
                 self.sections = process_blocks(
                     preprocess_lines(preprocess_stream(stream))
@@ -135,7 +136,7 @@ def preprocess_stream(stream):
     name = getattr(stream, "name", "")
     for lineno, line in enumerate(stream, 1):
         line = line.lstrip(" \t").rstrip("\n")
-        if line.startswith("## "):
+        if line.startswith("##"):
             yield name, lineno, line
 
 
