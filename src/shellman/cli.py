@@ -160,11 +160,12 @@ def guess_filename(output, docs=None):
 def output_name_variables(doc=None):
     if doc:
         basename, ext = os.path.splitext(doc.filename)
-        dirpath = os.path.split(doc.filepath)[0]
+        abspath = os.path.abspath(doc.filepath)
+        dirpath = os.path.split(abspath)[0]
         dirname = os.path.basename(dirpath)
         return dict(
             filename=doc.filename,
-            filepath=doc.filepath,
+            filepath=abspath,
             basename=basename,
             ext=ext,
             dirpath=dirpath,
@@ -186,6 +187,7 @@ def get_vcs_root(path):
         path = os.path.dirname(path)
         if path == "/":
             path = ""
+            break
     _vcs_root_cache[original_path] = path
     return path
 
