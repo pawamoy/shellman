@@ -169,7 +169,7 @@ def do_escape(value, except_starts_with=None):
     if except_starts_with is not None:
         condition = lambda l: any(l.startswith(s) for s in except_starts_with)
     else:
-        condition = False
+        condition = lambda l: False
     return "\n".join(
         line if line == "" or condition(line) else escape(line)
         for line in value.split("\n")
