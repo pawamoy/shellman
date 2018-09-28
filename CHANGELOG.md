@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.4.0](https://gitlab.com/pawamoy/shellman/tags/v0.4.0) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.4...v0.4.0)) - 2018-09-28
+
+### Added
+- Add context variable to avoid escaping lines starting with given values ([742e023](https://gitlab.com/pawamoy/shellman/commit/742e02321de656e80944d627a6cf727cbc6e66e0)).
+- Add usagetext template ([a7c20fc](https://gitlab.com/pawamoy/shellman/commit/a7c20fc751990c229018fc1b6c01835f9da5c193)).
+
+### Fixed
+- Fix escape filter condition ([f32cd43](https://gitlab.com/pawamoy/shellman/commit/f32cd43a0b4d88f841e7e5fee9633f7f772637e8)).
+- Fix python 2 unicode decode error ([0040028](https://gitlab.com/pawamoy/shellman/commit/0040028f245586bbdffe62b14218abc31539dc85)).
+- Fix variables for output ([01155fb](https://gitlab.com/pawamoy/shellman/commit/01155fbf3fcb4c1beb3ad867a428783ae647af57)).
+
+### Misc
+- Improve error messages ([96ebb68](https://gitlab.com/pawamoy/shellman/commit/96ebb68c01b7b132666bb900d7f20f2f1c296d65)).
+
 ## [v0.3.4](https://gitlab.com/pawamoy/shellman/tags/v0.3.4) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.3...v0.3.4)) - 2018-09-22
 
 ### Fixed
