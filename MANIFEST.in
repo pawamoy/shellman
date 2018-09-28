@@ -1,6 +1,5 @@
 graft src
 
-prune bin
 prune docs
 prune requirements
 prune scripts
