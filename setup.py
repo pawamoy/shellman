@@ -27,7 +27,7 @@ def read(*names, **kwargs):
 
 setup(
     name="shellman",
-    version="0.3.4",
+    version="0.4.0",
     license="ISC",
     description="Write documentation in comments and render it with templates.",
     long_description=read("README.md") + "\n" + read("CHANGELOG.md"),
