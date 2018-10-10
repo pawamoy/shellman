@@ -3,6 +3,10 @@ try:
     from shutil import get_terminal_size
 except ImportError:
     from backports.shutil_get_terminal_size import get_terminal_size
+try:
+  basestring = basestring
+except NameError:
+  basestring = str
 import textwrap
 from collections import defaultdict
 from itertools import groupby
@@ -54,7 +58,7 @@ def do_firstword(string, delimiters=" "):
 
 
 def do_body(string_or_list, delimiter=" "):
-    if isinstance(string_or_list, str):
+    if isinstance(string_or_list, basestring):
         return string_or_list.split(delimiter, 1)[1]
     elif isinstance(string_or_list, list):
         return "\n".join(string_or_list[1:])
