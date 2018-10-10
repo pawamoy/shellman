@@ -11,7 +11,7 @@ The template rendering is done with Jinja2.
 See http://jinja.pocoo.org/docs/2.10/templates/.
 """
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 
 from .reader import DocFile, DocStream
 from .templates import Template
