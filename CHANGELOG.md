@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.4.1](https://gitlab.com/pawamoy/shellman/tags/v0.4.1) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.4.0...v0.4.1)) - 2018-10-10
+
+### Fixed
+- Fix `body` filter for Python 2 ([ce7d0ef](https://gitlab.com/pawamoy/shellman/commit/ce7d0ef1a4b6f7365580d06ff064504c38247d01)).
+
 ## [v0.4.0](https://gitlab.com/pawamoy/shellman/tags/v0.4.0) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.4...v0.4.0)) - 2018-09-28
 
 ### Added
