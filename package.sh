@@ -1,1 +1,0 @@
-BINS="bin/shellman"
