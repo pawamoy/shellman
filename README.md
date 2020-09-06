@@ -7,22 +7,17 @@
 <p align="center">Write documentation in comments and render it with templates.</p>
 
 <p align="center">
-  <a href="https://gitlab.com/pawamoy/shellman/commits/master">
-    <img alt="pipeline status" src="https://gitlab.com/pawamoy/shellman/badges/master/pipeline.svg" />
+  <a href="https://github.com/pawamoy/shellman/actions?query=workflow%3Aci">
+    <img alt="ci" src="https://github.com/pawamoy/shellman/workflows/ci/badge.svg" />
   </a>
-  <a href="https://gitlab.com/pawamoy/shellman/commits/master">
-    <img alt="coverage report" src="https://gitlab.com/pawamoy/shellman/badges/master/coverage.svg" />
+  <a href="https://pawamoy.github.io/shellman/">
+    <img alt="documentation" src="https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat" />
   </a>
-  <a href="https://pypi.python.org/pypi/shellman/">
-    <img alt="pypi version" src="https://img.shields.io/pypi/v/shellman.svg?style=flat" />
-  </a>
-  <a href="https://pypi.python.org/pypi/shellman/">
-    <img alt="python wheel" src="https://img.shields.io/pypi/wheel/shellman.svg?style=flat" />
-  </a>
-  <a href="https://gitter.im/pawamoy/shellman">
-    <img alt="gitter chat" src="https://badges.gitter.im/pawamoy/shellman.svg" />
+  <a href="https://pypi.org/project/shellman/">
+    <img alt="pypi version" src="https://img.shields.io/pypi/v/shellman.svg" />
   </a>
 </p>
+
 
 `shellman` can generate man pages, wiki pages and help text
 using documentation written in shell scripts comments.
@@ -77,10 +72,43 @@ You can also write a plugin: see [the wiki page on GitLab] or [on GitHub].
 [the wiki page on GitLab]: https://gitlab.com/pawamoy/shellman/wikis/plugins
 [on GitHub]: https://github.com/pawamoy/shellman/wiki/plugins
 
-## Installation
-`shellman` is written in Python, so you must install it with `pip`:
+## Requirements
 
-    pip install shellman
+shellman requires Python 3.6 or above.
+
+<details>
+<summary>To install Python 3.6, I recommend using <a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a>.</summary>
+
+```bash
+# install pyenv
+git clone https://github.com/pyenv/pyenv ~/.pyenv
+
+# setup pyenv (you should also put these three lines in .bashrc or similar)
+export PATH="${HOME}/.pyenv/bin:${PATH}"
+export PYENV_ROOT="${HOME}/.pyenv"
+eval "$(pyenv init -)"
+
+# install Python 3.6
+pyenv install 3.6.8
+
+# make it available globally
+pyenv global system 3.6.8
+```
+</details>
+
+## Installation
+
+With `pip`:
+```bash
+python3.6 -m pip install shellman
+```
+
+With [`pipx`](https://github.com/pipxproject/pipx):
+```bash
+python3.6 -m pip install --user pipx
+
+pipx install --python python3.6 shellman
+```
 
 ## Some projects using shellman
 
@@ -101,9 +129,3 @@ You can also write a plugin: see [the wiki page on GitLab] or [on GitHub].
     A home for your shell scripts! 
   - [loop](https://github.com/shellm-org/loop) —
     Control the flow of your loops (pause/resume/etc.).
-
-
-## License
-Software licensed under [ISC] license.
-
-[ISC]: https://www.isc.org/downloads/software-support-policy/isc-license/

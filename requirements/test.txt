@@ -1,6 +1,0 @@
--r base.txt
-
-pytest
-pytest-travis-fold
-pytest-cov
-pytest-sugar

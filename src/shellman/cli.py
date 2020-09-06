@@ -1,6 +1,15 @@
-# -*- coding: utf-8 -*-
+# Why does this file exist, and why not put this in `__main__`?
+#
+# You might be tempted to import things from `__main__` later,
+# but that will cause problems: the code will get executed twice:
+#
+# - When you run `python -m shellman` python will execute
+#   `__main__.py` as a script. That means there won't be any
+#   `shellman.__main__` in `sys.modules`.
+# - When you import `__main__` it will get executed again (as a module) because
+#   there's no `shellman.__main__` in `sys.modules`.
 
-from __future__ import print_function
+"""Module that contains the command line application."""
 
 import argparse
 import io
@@ -8,6 +17,7 @@ import os
 import re
 import sys
 from datetime import date
+from typing import List, Optional
 
 from . import __version__, templates
 from .context import DEFAULT_JSON_FILE, get_context, update
@@ -40,7 +50,13 @@ def valid_file(value):
     return value
 
 
-def get_parser():
+def get_parser() -> argparse.ArgumentParser:
+    """
+    Return the CLI argument parser.
+
+    Returns:
+        An argparse parser.
+    """
     parser = argparse.ArgumentParser(prog="shellman")
 
     parser.add_argument(
@@ -192,19 +208,21 @@ def get_vcs_root(path):
     return path
 
 
-def main(argv=None):
+def main(args: Optional[List[str]] = None) -> int:
     """
-    Main function.
+    Run the main program.
 
-    Args:
-        argv (list): options and path to file to read
-
-    Returns:
-        int: 0, unless exception
+    This function is executed when you type `shellman` or `python -m shellman`.
 
     Get the file to parse, construct a Doc object, get file's doc,
     get the according formatter class, instantiate it
     with acquired doc and write on specified file (stdout by default).
+
+    Arguments:
+        args: Arguments passed from the command line.
+
+    Returns:
+        An exit code.
     """
     templates.load_plugin_templates()
 

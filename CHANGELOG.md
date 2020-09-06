@@ -4,12 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [v0.4.1](https://gitlab.com/pawamoy/shellman/tags/v0.4.1) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.4.0...v0.4.1)) - 2018-10-10
+<!-- insertion marker -->
+## [v0.4.1](https://gitlab.com/pawamoy/shellman/tags/v0.4.1) - 2018-10-10
+
+<small>[Compare with 0.4.0](https://gitlab.com/pawamoy/shellman/compare/v0.4.0...v0.4.1)</small>
 
 ### Fixed
 - Fix `body` filter for Python 2 ([ce7d0ef](https://gitlab.com/pawamoy/shellman/commit/ce7d0ef1a4b6f7365580d06ff064504c38247d01)).
 
-## [v0.4.0](https://gitlab.com/pawamoy/shellman/tags/v0.4.0) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.4...v0.4.0)) - 2018-09-28
+## [v0.4.0](https://gitlab.com/pawamoy/shellman/tags/v0.4.0) - 2018-09-28
+
+<small>[Compare with 0.3.4](https://gitlab.com/pawamoy/shellman/compare/v0.3.4...v0.4.0)</small>
 
 ### Added
 - Add context variable to avoid escaping lines starting with given values ([742e023](https://gitlab.com/pawamoy/shellman/commit/742e02321de656e80944d627a6cf727cbc6e66e0)).
@@ -23,7 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Misc
 - Improve error messages ([96ebb68](https://gitlab.com/pawamoy/shellman/commit/96ebb68c01b7b132666bb900d7f20f2f1c296d65)).
 
-## [v0.3.4](https://gitlab.com/pawamoy/shellman/tags/v0.3.4) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.3...v0.3.4)) - 2018-09-22
+## [v0.3.4](https://gitlab.com/pawamoy/shellman/tags/v0.3.4) - 2018-09-22
+
+<small>[Compare with 0.3.3](https://gitlab.com/pawamoy/shellman/compare/v0.3.3...v0.3.4)</small>
 
 ### Fixed
 - Fix writing UTF-8 contents to file for Python 2 ([9e99b23](https://gitlab.com/pawamoy/shellman/commit/9e99b232d2c1171c9e3ee3b20f0f788b82d1d634)).
@@ -31,23 +38,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Misc
 - Improve credits line ([f7a7cae](https://gitlab.com/pawamoy/shellman/commit/f7a7cae8e1bf7363a73c127b542584e348dfae5c)).
 
-## [v0.3.3](https://gitlab.com/pawamoy/shellman/tags/v0.3.3) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.2...v0.3.3)) - 2018-09-18
+## [v0.3.3](https://gitlab.com/pawamoy/shellman/tags/v0.3.3) - 2018-09-18
+
+<small>[Compare with 0.3.2](https://gitlab.com/pawamoy/shellman/compare/v0.3.2...v0.3.3)</small>
 
 ### Fixed
 - Fix manifest (missing setup.py) ([62ccfaf](https://gitlab.com/pawamoy/shellman/commit/62ccfaf90c4bd301c625101763462bc0c5374567)).
 
-## [v0.3.2](https://gitlab.com/pawamoy/shellman/tags/v0.3.2) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.1...v0.3.2)) - 2018-09-18
+## [v0.3.2](https://gitlab.com/pawamoy/shellman/tags/v0.3.2) - 2018-09-18
+
+<small>[Compare with 0.3.1](https://gitlab.com/pawamoy/shellman/compare/v0.3.1...v0.3.2)</small>
 
 ### Misc
 - Add logo and demo.svg to fix PyPI page ([1e06662](https://gitlab.com/pawamoy/shellman/commit/1e066626e7bcfb919e4d0ce4508b9305a962551a)).
 
-## [v0.3.1](https://gitlab.com/pawamoy/shellman/tags/v0.3.1) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.3.0...v0.3.1)) - 2018-09-18
+## [v0.3.1](https://gitlab.com/pawamoy/shellman/tags/v0.3.1) - 2018-09-18
+
+<small>[Compare with 0.3.0](https://gitlab.com/pawamoy/shellman/compare/v0.3.0...v0.3.1)</small>
 
 ### Misc
 - Reduce size of package, simplify manifest ([f123b53](https://gitlab.com/pawamoy/shellman/commit/f123b53fc973e05db36f5370d48647d56c571dcf)).
 - Switch documents to markdown ([f3917e9](https://gitlab.com/pawamoy/shellman/commit/f3917e9c46566898681e075bbc45afb7151e015f)).
 
-## [v0.3.0](https://gitlab.com/pawamoy/shellman/tags/v0.3.0) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.2.2...v0.3.0)) - 2018-09-17
+## [v0.3.0](https://gitlab.com/pawamoy/shellman/tags/v0.3.0) - 2018-09-17
+
+<small>[Compare with 0.2.2](https://gitlab.com/pawamoy/shellman/compare/v0.2.2...v0.3.0)</small>
 
 ### Added
 - Add credits in wikipage template ([e70b7c8](https://gitlab.com/pawamoy/shellman/commit/e70b7c8fa4acef2acf1bd7a0dfd96383ef50fec4)).
@@ -90,7 +105,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Use GitLab-CI instead of Travis ([de662d0](https://gitlab.com/pawamoy/shellman/commit/de662d03c8b4ee7cb4a35c2b1909da6415de597d)).
 
 
-## [v0.2.2](https://gitlab.com/pawamoy/shellman/tags/v0.2.2) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.2.1...v0.2.2)) - 2017-05-02
+## [v0.2.2](https://gitlab.com/pawamoy/shellman/tags/v0.2.2) - 2017-05-02
+
+<small>[Compare with 0.2.1](https://gitlab.com/pawamoy/shellman/compare/v0.2.1...v0.2.2)</small>
 
 ### Changed
 - Change license from MPL 2.0 to ISC (no 'same license' condition) ([868b89e](https://gitlab.com/pawamoy/shellman/commit/868b89ee7df7af36fdc3e4ce424a241867e89c24)).
@@ -108,13 +125,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Use codacy instead of codecov ([c024b1c](https://gitlab.com/pawamoy/shellman/commit/c024b1ce8bfaf0aa7f0d71378d528cebd8e96c46)).
 
 
-## [v0.2.1](https://gitlab.com/pawamoy/shellman/tags/v0.2.1) ([compare](https://gitlab.com/pawamoy/shellman/compare/v0.2.0...v0.2.1)) - 2016-12-06
+## [v0.2.1](https://gitlab.com/pawamoy/shellman/tags/v0.2.1) - 2016-12-06
+
+<small>[Compare with 0.2.0](https://gitlab.com/pawamoy/shellman/compare/v0.2.0...v0.2.1)</small>
 
 ### Misc
 - Update README, fix help display ([a131b82](https://gitlab.com/pawamoy/shellman/commit/a131b82d84d68e4dfa5211cdc5dd26c930fa33c1)).
 
 
-## [v0.2.0](https://gitlab.com/pawamoy/shellman/tags/v0.2.0) ([compare](https://gitlab.com/pawamoy/shellman/compare/7c77c2bda82a2808aacc4500e01b33f082325ec5...v0.2.0)) - 2016-12-06
+## [v0.2.0](https://gitlab.com/pawamoy/shellman/tags/v0.2.0) - 2016-12-06
+
+<small>[Compare with first commit](https://gitlab.com/pawamoy/shellman/compare/7c77c2bda82a2808aacc4500e01b33f082325ec5...v0.2.0)</small>
 
 ### Added
 - Add check feature, add tests ([4916b51](https://gitlab.com/pawamoy/shellman/commit/4916b514b85fcf6a87a81fe0d3ac6ed4f8bc1011)).

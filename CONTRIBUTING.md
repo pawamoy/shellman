@@ -1,89 +1,109 @@
 # Contributing
-Contributions are welcome, and they are greatly appreciated! Every
-little bit helps, and credit will always be given.
 
-## Bug reports
-When [reporting a bug](https://github.com/Pawamoy/shellman/issues) please include:
-- Your operating system name and version.
-- Any details about your local setup that might be helpful in troubleshooting.
-- Detailed steps to reproduce the bug.
+Contributions are welcome, and they are greatly appreciated!
+Every little bit helps, and credit will always be given.
 
-## Documentation improvements
-shellman could always use more documentation, whether as part of the
-official shellman docs, in docstrings, or even on the web in blog posts,
-articles, and such.
+## Environment setup
 
-## Feature requests and feedback
-The best way to send feedback is to
-[file an issue on GitLab](https://gitlab.com/pawamoy/shellman/issues)
-or [on GitHub](https://github.com/pawamoy/shellman/issues).
+Nothing easier!
 
-If you are proposing a feature:
-- Explain in detail how it would work.
-- Keep the scope as narrow as possible, to make it easier to implement.
-- Remember that this is a volunteer-driven project, and that code contributions are welcome :)
+Fork and clone the repository, then:
+
+```bash
+cd shellman
+make setup
+```
+
+That's it!
+
+You now have the dependencies installed.
+
+You can run the application with `poetry run shellman [ARGS...]`.
+
+Run `make help` to see all the available actions!
 
 ## Development
-To set up `shellman` for local development:
 
-1. Fork shellman from GitLab or GitHub.
-2. Clone your fork locally:
-   ```
-   git clone git@gitlab.com:your_name_here/shellman.git
-   ```
-3. Create a branch for local development:
-   ```
-   git checkout -b name-of-your-bugfix-or-feature
-   ```
-   Now you can make your changes locally.
-4. When you're done making changes, run all the tests with one command:
-   ```
-   tox
-   ```
-5. Commit your changes and push your branch to GitHub:
-   ```
-   git add .
-   git commit -m "Your detailed description of your changes."
-   git push origin name-of-your-bugfix-or-feature
-   ```
-6. Submit a pull request through the GitLab website.
+As usual:
 
-### Pull Request Guidelines
-If you need some code review or feedback while you're developing the code,
-just make the pull request.
+1. create a new branch: `git checkout -b feature-or-bugfix-name`
+1. edit the code and/or the documentation
 
-For merging, you should:
+If you updated the documentation or the project dependencies:
 
-1. Include passing tests (run `tox`).
-2. Update documentation when there's new API, functionality etc.
-3. Add a note to `CHANGELOG.md` about the changes.
+1. run `make docs-regen`
+1. run `make docs-serve`,
+   go to http://localhost:8000 and check that everything looks good
 
-If you don't have all the necessary python versions
-available locally you can rely on...
-- **GitLab CI**:
-  it will [run the tests](https://gitlab.com/pawamoy/shellman/pipelines)
-  for each change you add in the pull request.
-  It will be slower though...
-- **pyenv**:
-  ```bash
-  # important libraries to compile Python
-  sudo apt install -y libssl-dev openssl zlib1g-dev sqlite3 libsqlite3-dev libbz2-dev bzip2
-  
-  git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-  export PATH="${HOME}/.pyenv/bin:${PATH}"
-  eval "$(pyenv init -)"
-  
-  pyenv install 3.5.3
-  pyenv install 3.6.0  # etc.
-  pyenv global system 3.5.3 3.6.0
-  ```
+**Before committing:**
 
-### Tips
-To run a subset of tests:
+1. run `make format` to auto-format the code
+1. run `make check` to check everything (fix any warning)
+1. run `make test` to run the tests (fix any issue)
+1. follow our [commit message convention](#commit-message-convention)
+
+If you are unsure about how to fix or ignore a warning,
+just let the continuous integration fail,
+and we will help you during review.
+
+Don't bother updating the changelog, we will take care of this.
+
+## Commit message convention
+
+Commits messages must follow the
+[Angular style](https://gist.github.com/stephenparish/9941e89d80e2bc58a153#format-of-the-commit-message):
+
 ```
-tox -e envname -- py.test -k test_myfeature
+<type>[(scope)]: Subject
+
+[Body]
 ```
-To run all the test environments in *parallel* (you need to `pip install detox`):
+
+Scope and body are optional. Type can be:
+
+- `build`: About packaging, building wheels, etc.
+- `chore`: About packaging or repo/files management.
+- `ci`: About Continuous Integration.
+- `docs`: About documentation.
+- `feat`: New feature.
+- `fix`: Bug fix.
+- `perf`: About performance.
+- `refactor`: Changes which are not features nor bug fixes.
+- `style`: A change in code style/format.
+- `tests`: About tests.
+
+**Subject (and body) must be valid Markdown.**
+If you write a body, please add issues references at the end:
+
 ```
-detox
+Body.
+
+References: #10, #11.
+Fixes #15.
 ```
+
+## Pull requests guidelines
+
+Link to any related issue in the Pull Request message.
+
+During review, we recommend using fixups:
+
+```bash
+# SHA is the SHA of the commit you want to fix
+git commit --fixup=SHA
+```
+
+Once all the changes are approved, you can squash your commits:
+
+```bash
+git rebase -i --autosquash master
+```
+
+And force-push:
+
+```bash
+git push -f
+```
+
+If this seems all too complicated, you can push or force-push each new commit,
+and we will squash them ourselves if needed, before merging.

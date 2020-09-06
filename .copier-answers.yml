@@ -1,0 +1,45 @@
+# Changes here will be overwritten by Copier
+_commit: 0a861f9
+_src_path: https://github.com/pawamoy/copier-poetry.git
+author_email: null
+author_fullname: null
+author_username: null
+codacy: 'yes'
+codeclimate: 'no'
+codecov: 'no'
+command_line_interface: plain
+command_line_interface_bin_name: shellman
+copyright_date: '2020'
+copyright_holder: None
+copyright_holder_email: None
+copyright_license: ISC License
+coveralls: 'no'
+distribution_name: shellman
+django: 'no'
+django_fake_model: 'no'
+django_versions: 1.8,1.9,1.10
+email: timothee.mazzucotelli@gmail.com
+full_name: Timothee Mazzucotelli
+github_username: Pawamoy
+gitter: 'yes'
+landscape: 'no'
+package_name: shellman
+project_description: null
+project_name: shellman
+project_short_description: Write doc in your shell scripts.
+prospector: 'yes'
+pylama: 'no'
+python_package_command_line_name: shellman
+python_package_distribution_name: shellman
+python_package_import_name: shellman
+python_versions: 2.7,3.4,3.5,3.6,3.7-dev,pypy
+pyup: 'yes'
+release_date: '2016-11-30'
+repo_name: shellman
+repository_name: shellman
+repository_namespace: None
+repository_provider: github.com
+requiresio: 'no'
+travis: 'yes'
+version: 0.1.0
+website: http://pawamoy.github.io/
