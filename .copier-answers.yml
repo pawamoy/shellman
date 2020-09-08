@@ -1,11 +1,11 @@
 # Changes here will be overwritten by Copier
-_commit: 0a861f9
+_commit: 6e49531
 _src_path: https://github.com/pawamoy/copier-poetry.git
 author_email: pawamoy@pm.me
-author_fullname: Timothée Mazzucotelli
+author_fullname: "Timoth\xE9e Mazzucotelli"
 author_username: pawamoy
 copyright_date: '2020'
-copyright_holder: Timothée Mazzucotelli
+copyright_holder: "Timoth\xE9e Mazzucotelli"
 copyright_holder_email: pawamoy@pm.me
 copyright_license: ISC License
 project_description: Write documentation in comments and render it with templates.
