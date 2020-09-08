@@ -1,8 +1,8 @@
 site_name: "shellman"
-site_description: "None"
-site_url: "https://None.github.io/shellman"
-repo_url: "https://github.com/None/shellman"
-repo_name: "None/shellman"
+site_description: "Write documentation in comments and render it with templates."
+site_url: "https://pawamoy.github.io/shellman"
+repo_url: "https://github.com/pawamoy/shellman"
+repo_name: "pawamoy/shellman"
 
 nav:
   - Overview: index.md

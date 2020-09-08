@@ -5,12 +5,12 @@ build-backend = "poetry.masonry.api"
 [tool.poetry]
 name = "shellman"
 version = "0.4.1"
-description = "Write documentation in comments and render it with templates"
+description = "Write documentation in comments and render it with templates."
 authors = ["Timothée Mazzucotelli <pawamoy@pm.me>"]
 license = "ISC License"
 readme = "README.md"
-repository = "https://github.com/None/shellman"
-homepage = "https://github.com/None/shellman"
+repository = "https://github.com/pawamoy/shellman"
+homepage = "https://github.com/pawamoy/shellman"
 keywords = []
 packages = [ { include = "shellman", from = "src" } ]
 include = [
