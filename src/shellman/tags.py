@@ -278,10 +278,7 @@ class OptionTag:
         for line in lines:
             if line.tag == "option":
                 search = re.search(
-                    r"^(?P<short>-\w)?"
-                    r"(?:, )?"
-                    r"(?P<long>--[\w-]+)? ?"
-                    r"(?P<positional>.+)?",
+                    r"^(?P<short>-\w)?" r"(?:, )?" r"(?P<long>--[\w-]+)? ?" r"(?P<positional>.+)?",
                     line.value,
                 )
                 if search:

@@ -81,20 +81,17 @@ def names():
 def parser_choices():
     class TemplateChoice(tuple):
         def __contains__(self, item):
-            return super(TemplateChoice, self).__contains__(item) or item.startswith(
-                "path:"
-            )
+            return super(TemplateChoice, self).__contains__(item) or item.startswith("path:")
 
     return TemplateChoice(names())
+
 
 helptext = Template(
     builtin_env,
     "helptext",
     context={"indent": 2, "option_padding": 22},
 )
-manpage = Template(
-    builtin_env, "manpage.groff", context={"indent": 4}
-)
+manpage = Template(builtin_env, "manpage.groff", context={"indent": 4})
 manpage_md = Template(builtin_env, "manpage.md")
 wikipage = Template(builtin_env, "wikipage.md")
 usagetext = Template(builtin_env, "usagetext")

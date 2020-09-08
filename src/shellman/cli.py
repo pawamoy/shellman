@@ -44,9 +44,7 @@ def valid_file(value):
     elif not os.path.exists(value):
         raise argparse.ArgumentTypeError("%s is not a valid file path" % value)
     elif os.path.isdir(value):
-        raise argparse.ArgumentTypeError(
-            "%s is a directory, not a regular file" % value
-        )
+        raise argparse.ArgumentTypeError("%s is a directory, not a regular file" % value)
     return value
 
 
@@ -186,7 +184,7 @@ def output_name_variables(doc=None):
             ext=ext,
             dirpath=dirpath,
             dirname=dirname,
-            vcsroot=get_vcs_root(dirpath)
+            vcsroot=get_vcs_root(dirpath),
         )
     return {}
 
@@ -198,8 +196,7 @@ def get_vcs_root(path):
     if path in _vcs_root_cache:
         return _vcs_root_cache[path]
     original_path = path
-    while not any(os.path.exists(os.path.join(path, vcs))
-                  for vcs in (".git", ".hg", ".svn")):
+    while not any(os.path.exists(os.path.join(path, vcs)) for vcs in (".git", ".hg", ".svn")):
         path = os.path.dirname(path)
         if path == "/":
             path = ""
@@ -257,11 +254,7 @@ def main(args: Optional[List[str]] = None) -> int:
     if not args.FILE:
         if not context:
             parser.print_usage(file=sys.stderr)
-            print(
-                "shellman: error: please specify "
-                "input file(s) or context",
-                file=sys.stderr
-            )
+            print("shellman: error: please specify " "input file(s) or context", file=sys.stderr)
             return 1
         contents = render(template, None, **context)
         if args.output:

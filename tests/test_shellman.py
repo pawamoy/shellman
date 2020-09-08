@@ -3,24 +3,17 @@
 """Main test script."""
 
 import os
+
 import pytest
 
 from shellman.cli import main as cli_main
-from shellman.context import (
-    get_cli_context, get_context, get_env_context, update
-)
-from shellman.reader import (
-    preprocess_lines, preprocess_stream, process_blocks, merge, DocBlock
-)
+from shellman.context import get_cli_context, get_context, get_env_context, update
+from shellman.reader import preprocess_lines, preprocess_stream
 from shellman.templates import filters
 
 
 def get_fake_script(name):
-    return os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        "fakescripts",
-        name
-    )
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "fakescripts", name)
 
 
 class TestCommandLine:
@@ -83,31 +76,19 @@ class TestContext:
         assert get_cli_context([""]) == {}
         assert get_cli_context([" "]) == {}
 
-        assert get_cli_context(
-            ["hello=world"]
-        ) == {"hello": "world"}
-        assert get_cli_context(
-            ["hello=world", "hello=universe"]
-        ) == {"hello": "universe"}
+        assert get_cli_context(["hello=world"]) == {"hello": "world"}
+        assert get_cli_context(["hello=world", "hello=universe"]) == {"hello": "universe"}
 
-        assert get_cli_context(
-            ["hello.world=universe"]
-        ) == get_cli_context(
-            ["hello=world", "hello.world=universe"]
-        ) == {"hello": {"world": "universe"}}
-        assert get_cli_context(
-            ["hello.world=universe", "hello=world"]
-        ) == {"hello": "world"}
-        assert get_cli_context(
-            ["hello.world.and.foobars=hello"]
-        ) == {"hello": {"world": {"and": {"foobars": "hello"}}}}
+        assert (
+            get_cli_context(["hello.world=universe"])
+            == get_cli_context(["hello=world", "hello.world=universe"])
+            == {"hello": {"world": "universe"}}
+        )
+        assert get_cli_context(["hello.world=universe", "hello=world"]) == {"hello": "world"}
+        assert get_cli_context(["hello.world.and.foobars=hello"]) == {"hello": {"world": {"and": {"foobars": "hello"}}}}
 
-        assert get_cli_context(
-            ['{"hello": "world", "number": [1, 2]}']
-        ) == {"hello": "world", "number": [1, 2]}
-        assert get_cli_context(
-            ['{"hello": "world"}', "hello=universe"]
-        ) == {"hello": "universe"}
+        assert get_cli_context(['{"hello": "world", "number": [1, 2]}']) == {"hello": "world", "number": [1, 2]}
+        assert get_cli_context(['{"hello": "world"}', "hello=universe"]) == {"hello": "universe"}
 
     def test_get_env_context(self):
         os.environ["SHELLMAN_CONTEXT_HELLO"] = "world"
@@ -116,7 +97,8 @@ class TestContext:
 
     def test_get_context(self):
         from collections import namedtuple
-        args = namedtuple('args', 'context_file context')(None, None)
+
+        args = namedtuple("args", "context_file context")(None, None)
         assert get_context(args) == {}
 
     def test_update(self):

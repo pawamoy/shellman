@@ -16,9 +16,9 @@ def get_cli_context(args):
                 context.update(json.loads(context_arg))
             elif "=" in context_arg:
                 name, value = context_arg.split("=", 1)
-                if '.' in name:
+                if "." in name:
                     name_dict = d = {}
-                    parts = name.split('.')
+                    parts = name.split(".")
                     for name_part in parts[1:-1]:
                         d[name_part] = d = {}
                     d[parts[-1]] = value
@@ -33,7 +33,7 @@ def get_env_context():
     context = {}
     for env_name, env_value in os.environ.items():
         if env_name.startswith(ENV_VAR_PREFIX):
-            context_var_name = env_name[len(ENV_VAR_PREFIX):].lower()
+            context_var_name = env_name[len(ENV_VAR_PREFIX) :].lower()
             context[context_var_name] = env_value
     return context
 

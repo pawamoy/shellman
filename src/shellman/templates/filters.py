@@ -1,12 +1,4 @@
 import re
-try:
-    from shutil import get_terminal_size
-except ImportError:
-    from backports.shutil_get_terminal_size import get_terminal_size
-try:
-  basestring = basestring
-except NameError:
-  basestring = str
 import textwrap
 from collections import defaultdict
 from itertools import groupby
@@ -14,15 +6,18 @@ from itertools import groupby
 from jinja2.filters import _GroupTuple, environmentfilter, make_attrgetter
 from jinja2.utils import escape
 
+try:
+    from shutil import get_terminal_size
+except ImportError:
+    from backports.shutil_get_terminal_size import get_terminal_size
+try:
+    basestring = basestring
+except NameError:
+    basestring = str
+
 
 def do_groffautoescape(string):
-    return (
-        string.replace("-", "\\-")
-        .replace("'", "\\'")
-        .replace('"', '\\"')
-        .replace(".", "\\.")
-        .replace("$", "\\f$")
-    )
+    return string.replace("-", "\\-").replace("'", "\\'").replace('"', '\\"').replace(".", "\\.").replace("$", "\\f$")
 
 
 def do_groffstrong(string):
@@ -152,10 +147,7 @@ def do_groupby(environment, value, attribute, sort=True):
 
     # Original behavior: groups are sorted
     if sort:
-        return [
-            _GroupTuple(key, list(values))
-            for key, values in groupby(sorted(value, key=expr), expr)
-        ]
+        return [_GroupTuple(key, list(values)) for key, values in groupby(sorted(value, key=expr), expr)]
 
     # Added behavior: original order of appearance is kept
     all_groups = [expr(_) for _ in value]
@@ -174,10 +166,7 @@ def do_escape(value, except_starts_with=None):
         condition = lambda l: any(l.startswith(s) for s in except_starts_with)
     else:
         condition = lambda l: False
-    return "\n".join(
-        line if line == "" or condition(line) else escape(line)
-        for line in value.split("\n")
-    )
+    return "\n".join(line if line == "" or condition(line) else escape(line) for line in value.split("\n"))
 
 
 FILTERS = {

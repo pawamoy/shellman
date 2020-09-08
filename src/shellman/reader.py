@@ -124,9 +124,7 @@ class DocFile:
         self.filename = os.path.basename(path)
         with io.open(path, "r", encoding="utf-8") as stream:
             try:
-                self.sections = process_blocks(
-                    preprocess_lines(preprocess_stream(stream))
-                )
+                self.sections = process_blocks(preprocess_lines(preprocess_stream(stream)))
             except UnicodeDecodeError:
                 print("Cannot read file %s" % path)
                 self.sections = []
