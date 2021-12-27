@@ -14,10 +14,12 @@
     <img alt="documentation" src="https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat" />
   </a>
   <a href="https://pypi.org/project/shellman/">
-    <img alt="pypi version" src="https://img.shields.io/pypi/v/shellman.svg" />
+    <img alt="pypi" src="https://img.shields.io/pypi/v/shellman.svg" />
+  </a>
+  <a href="https://gitter.im/shellman/community">
+    <img alt="gitter" src="https://badges.gitter.im/join%20chat.svg" />
   </a>
 </p>
-
 
 `shellman` can generate man pages, wiki pages and help text
 using documentation written in shell scripts comments.
