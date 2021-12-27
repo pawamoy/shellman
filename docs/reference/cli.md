@@ -1,1 +1,0 @@
-::: shellman.cli

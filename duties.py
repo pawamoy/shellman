@@ -1,19 +1,19 @@
 """Development tasks."""
 
-import inspect
+import importlib
 import os
 import re
 import sys
+import tempfile
+from contextlib import suppress
+from io import StringIO
 from pathlib import Path
-from shutil import which
 from typing import List, Optional, Pattern
+from urllib.request import urlopen
 
-import httpx
 from duty import duty
-from git_changelog.build import Changelog, Version
-from jinja2.sandbox import SandboxedEnvironment
 
-PY_SRC_PATHS = (Path(_) for _ in ("src", "tests", "duties.py", "docs/macros.py"))
+PY_SRC_PATHS = (Path(_) for _ in ("src", "tests", "duties.py", "docs"))
 PY_SRC_LIST = tuple(str(_) for _ in PY_SRC_PATHS)
 PY_SRC = " ".join(PY_SRC_LIST)
 TESTING = os.environ.get("TESTING", "0") in {"1", "true"}
@@ -22,17 +22,7 @@ WINDOWS = os.name == "nt"
 PTY = not WINDOWS and not CI
 
 
-def latest(lines: List[str], regex: Pattern) -> Optional[str]:
-    """
-    Return the last released version.
-
-    Arguments:
-        lines: Lines of the changelog file.
-        regex: A compiled regex to find version numbers.
-
-    Returns:
-        The last version.
-    """
+def _latest(lines: List[str], regex: Pattern) -> Optional[str]:
     for line in lines:
         match = regex.search(line)
         if match:
@@ -40,47 +30,11 @@ def latest(lines: List[str], regex: Pattern) -> Optional[str]:
     return None
 
 
-def unreleased(versions: List[Version], last_release: str) -> List[Version]:
-    """
-    Return the most recent versions down to latest release.
-
-    Arguments:
-        versions: All the versions (released and unreleased).
-        last_release: The latest release.
-
-    Returns:
-        A list of versions.
-    """
+def _unreleased(versions, last_release):
     for index, version in enumerate(versions):
         if version.tag == last_release:
             return versions[:index]
     return versions
-
-
-def read_changelog(filepath: str) -> List[str]:
-    """
-    Read the changelog file.
-
-    Arguments:
-        filepath: The path to the changelog file.
-
-    Returns:
-        The changelog lines.
-    """
-    with open(filepath, "r") as changelog_file:
-        return changelog_file.read().splitlines()
-
-
-def write_changelog(filepath: str, lines: List[str]) -> None:
-    """
-    Write the changelog file.
-
-    Arguments:
-        filepath: The path to the changelog file.
-        lines: The lines to write to the file.
-    """
-    with open(filepath, "w") as changelog_file:
-        changelog_file.write("\n".join(lines).rstrip("\n") + "\n")
 
 
 def update_changelog(
@@ -88,7 +42,6 @@ def update_changelog(
     marker: str,
     version_regex: str,
     template_url: str,
-    commit_style: str,
 ) -> None:
     """
     Update the given changelog file in place.
@@ -98,11 +51,16 @@ def update_changelog(
         marker: The line after which to insert new contents.
         version_regex: A regular expression to find currently documented versions in the file.
         template_url: The URL to the Jinja template used to render contents.
-        commit_style: The style of commit messages to parse.
     """
+    from git_changelog.build import Changelog
+    from git_changelog.commit import AngularStyle
+    from jinja2.sandbox import SandboxedEnvironment
+
+    AngularStyle.DEFAULT_RENDER.insert(0, AngularStyle.TYPES["build"])
     env = SandboxedEnvironment(autoescape=False)
-    template = env.from_string(httpx.get(template_url).text)
-    changelog = Changelog(".", style=commit_style)
+    template_text = urlopen(template_url).read().decode("utf8")  # noqa: S310
+    template = env.from_string(template_text)
+    changelog = Changelog(".", style="angular")
 
     if len(changelog.versions_list) == 1:
         last_version = changelog.versions_list[0]
@@ -112,13 +70,17 @@ def update_changelog(
             last_version.url += planned_tag
             last_version.compare_url = last_version.compare_url.replace("HEAD", planned_tag)
 
-    lines = read_changelog(inplace_file)
-    last_released = latest(lines, re.compile(version_regex))
+    with open(inplace_file, "r") as changelog_file:
+        lines = changelog_file.read().splitlines()
+
+    last_released = _latest(lines, re.compile(version_regex))
     if last_released:
-        changelog.versions_list = unreleased(changelog.versions_list, last_released)
+        changelog.versions_list = _unreleased(changelog.versions_list, last_released)
     rendered = template.render(changelog=changelog, inplace=True)
     lines[lines.index(marker)] = rendered
-    write_changelog(inplace_file, lines)
+
+    with open(inplace_file, "w") as changelog_file:  # noqa: WPS440
+        changelog_file.write("\n".join(lines).rstrip("\n") + "\n")
 
 
 @duty
@@ -129,21 +91,22 @@ def changelog(ctx):
     Arguments:
         ctx: The context instance (passed automatically).
     """
+    commit = "166758a98d5e544aaa94fda698128e00733497f4"
+    template_url = f"https://raw.githubusercontent.com/pawamoy/jinja-templates/{commit}/keepachangelog.md"
     ctx.run(
         update_changelog,
         kwargs={
             "inplace_file": "CHANGELOG.md",
             "marker": "<!-- insertion marker -->",
             "version_regex": r"^## \[v?(?P<version>[^\]]+)",
-            "template_url": "https://raw.githubusercontent.com/pawamoy/jinja-templates/master/keepachangelog.md",
-            "commit_style": "angular",
+            "template_url": template_url,
         },
         title="Updating changelog",
         pty=PTY,
     )
 
 
-@duty(pre=["check_code_quality", "check_types", "check_docs", "check_dependencies"])
+@duty(pre=["check_quality", "check_types", "check_docs", "check_dependencies"])
 def check(ctx):
     """
     Check it all!
@@ -154,7 +117,7 @@ def check(ctx):
 
 
 @duty
-def check_code_quality(ctx, files=PY_SRC):
+def check_quality(ctx, files=PY_SRC):
     """
     Check the code quality.
 
@@ -173,40 +136,35 @@ def check_dependencies(ctx):
     Arguments:
         ctx: The context instance (passed automatically).
     """
-    nofail = False
-    safety = which("safety")
-    if not safety:
-        pipx = which("pipx")
-        if pipx:
-            safety = f"{pipx} run safety"
-        else:
+    # undo possible patching
+    # see https://github.com/pyupio/safety/issues/348
+    for module in sys.modules:  # noqa: WPS528
+        if module.startswith("safety.") or module == "safety":
+            del sys.modules[module]  # noqa: WPS420
 
-            def safety_not_available():  # noqa: WPS430
-                print(
-                    inspect.cleandoc(  # noqa: WPS462
-                        """
-                        Please install safety or pipx to run this task:
+    importlib.invalidate_caches()
 
-                        pip install --user safety
-                        # or
-                        pip install --user pipx
-                        # and potentially
-                        pipx install safety
+    # reload original, unpatched safety
+    from safety.formatter import report
+    from safety.safety import check as safety_check
+    from safety.util import read_requirements
 
-                        See https://github.com/advisories/GHSA-7q25-qrjw-6fg2
-                        """
-                    )  # noqa: WPS355
-                )
-                return 1
-
-            ctx.run(safety_not_available, title="Checking dependencies", nofail=True)
-            return
-    ctx.run(
-        f"poetry export -f requirements.txt --without-hashes | {safety} check --stdin --full-report",
-        title="Checking dependencies",
-        pty=PTY,
-        nofail=nofail,
+    # retrieve the list of dependencies
+    requirements = ctx.run(
+        ["pdm", "export", "-f", "requirements", "--without-hashes"],
+        title="Exporting dependencies as requirements",
+        allow_overrides=False,
     )
+
+    # check using safety as a library
+    def safety():  # noqa: WPS430
+        packages = list(read_requirements(StringIO(requirements)))
+        vulns = safety_check(packages=packages, ignore_ids="", key="", db_mirror="", cached=False, proxy={})
+        output_report = report(vulns=vulns, full=True, checked_packages=len(packages))
+        if vulns:
+            print(output_report)
+
+    ctx.run(safety, title="Checking dependencies")
 
 
 @duty
@@ -217,20 +175,62 @@ def check_docs(ctx):
     Arguments:
         ctx: The context instance (passed automatically).
     """
-    Path("build/coverage").mkdir(parents=True, exist_ok=True)
-    Path("build/coverage/index.html").touch(exist_ok=True)
+    Path("htmlcov").mkdir(parents=True, exist_ok=True)
+    Path("htmlcov/index.html").touch(exist_ok=True)
     ctx.run("mkdocs build -s", title="Building documentation", pty=PTY)
 
 
-@duty
-def check_types(ctx):
+@duty  # noqa: WPS231
+def check_types(ctx):  # noqa: WPS231
     """
     Check that the code is correctly typed.
 
     Arguments:
         ctx: The context instance (passed automatically).
     """
-    ctx.run(f"mypy --config-file config/mypy.ini {PY_SRC}", title="Type-checking", pty=PTY)
+    # NOTE: the following code works around this issue:
+    # https://github.com/python/mypy/issues/10633
+
+    # compute packages directory path
+    py = f"{sys.version_info.major}.{sys.version_info.minor}"
+    pkgs_dir = Path("__pypackages__", py, "lib").resolve()
+
+    # build the list of available packages
+    packages = {}
+    for package in pkgs_dir.glob("*"):
+        if package.suffix not in {".dist-info", ".pth"} and package.name != "__pycache__":
+            packages[package.name] = package
+
+    # handle .pth files
+    for pth in pkgs_dir.glob("*.pth"):
+        with suppress(OSError):
+            for package in Path(pth.read_text().splitlines()[0]).glob("*"):  # noqa: WPS440
+                if package.suffix != ".dist-info":
+                    packages[package.name] = package
+
+    # create a temporary directory to assign to MYPYPATH
+    with tempfile.TemporaryDirectory() as tmpdir:
+
+        # symlink the stubs
+        ignore = set()
+        for stubs in (path for name, path in packages.items() if name.endswith("-stubs")):  # noqa: WPS335
+            Path(tmpdir, stubs.name).symlink_to(stubs, target_is_directory=True)
+            # try to symlink the corresponding package
+            # see https://www.python.org/dev/peps/pep-0561/#stub-only-packages
+            pkg_name = stubs.name.replace("-stubs", "")
+            if pkg_name in packages:
+                ignore.add(pkg_name)
+                Path(tmpdir, pkg_name).symlink_to(packages[pkg_name], target_is_directory=True)
+
+        # create temporary mypy config to ignore stubbed packages
+        newconfig = Path("config", "mypy.ini").read_text()
+        newconfig += "\n" + "\n\n".join(f"[mypy-{pkg}.*]\nignore_errors=true" for pkg in ignore)
+        tmpconfig = Path(tmpdir, "mypy.ini")
+        tmpconfig.write_text(newconfig)
+
+        # set MYPYPATH and run mypy
+        os.environ["MYPYPATH"] = tmpdir
+        ctx.run(f"mypy --config-file {tmpconfig} {PY_SRC}", title="Type-checking", pty=PTY)
 
 
 @duty(silent=True)
@@ -247,6 +247,7 @@ def clean(ctx):
     ctx.run("rm -rf tests/.pytest_cache")
     ctx.run("rm -rf build")
     ctx.run("rm -rf dist")
+    ctx.run("rm -rf htmlcov")
     ctx.run("rm -rf pip-wheel-metadata")
     ctx.run("rm -rf site")
     ctx.run("find . -type d -name __pycache__ | xargs rm -rf")
@@ -314,16 +315,15 @@ def release(ctx, version):
         ctx: The context instance (passed automatically).
         version: The new version number to use.
     """
-    ctx.run(f"poetry version {version}", title=f"Bumping version in pyproject.toml to {version}", pty=PTY)
     ctx.run("git add pyproject.toml CHANGELOG.md", title="Staging files", pty=PTY)
     ctx.run(["git", "commit", "-m", f"chore: Prepare release {version}"], title="Committing changes", pty=PTY)
     ctx.run(f"git tag {version}", title="Tagging commit", pty=PTY)
     if not TESTING:
         ctx.run("git push", title="Pushing commits", pty=False)
         ctx.run("git push --tags", title="Pushing tags", pty=False)
-        ctx.run("poetry build", title="Building dist/wheel", pty=PTY)
-        ctx.run("poetry publish", title="Publishing version", pty=PTY)
-        docs_deploy.run()  # type: ignore
+        ctx.run("pdm build", title="Building dist/wheel", pty=PTY)
+        ctx.run("twine upload --skip-existing dist/*", title="Publishing version", pty=PTY)
+        docs_deploy.run()
 
 
 @duty(silent=True)
@@ -334,7 +334,7 @@ def coverage(ctx):
     Arguments:
         ctx: The context instance (passed automatically).
     """
-    ctx.run("coverage combine .coverage-*", nofail=True)
+    ctx.run("coverage combine", nofail=True)
     ctx.run("coverage report --rcfile=config/coverage.ini", capture=False)
     ctx.run("coverage html --rcfile=config/coverage.ini")
 
@@ -349,7 +349,7 @@ def test(ctx, match: str = ""):
         match: A pytest expression to filter selected tests.
     """
     py_version = f"{sys.version_info.major}{sys.version_info.minor}"
-    os.environ["COVERAGE_FILE"] = f".coverage-{py_version}"
+    os.environ["COVERAGE_FILE"] = f".coverage.{py_version}"
     ctx.run(
         ["pytest", "-c", "config/pytest.ini", "-n", "auto", "-k", match, "tests"],
         title="Running tests",

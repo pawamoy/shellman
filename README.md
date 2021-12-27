@@ -16,6 +16,9 @@
   <a href="https://pypi.org/project/shellman/">
     <img alt="pypi" src="https://img.shields.io/pypi/v/shellman.svg" />
   </a>
+  <a href="https://gitpod.io/#https://github.com/pawamoy/shellman">
+    <img alt="gitpod" src="https://img.shields.io/badge/gitpod-workspace-blue.svg?style=flat" />
+  </a>
   <a href="https://gitter.im/shellman/community">
     <img alt="gitter" src="https://badges.gitter.im/join%20chat.svg" />
   </a>
@@ -76,10 +79,10 @@ You can also write a plugin: see [the wiki page on GitLab] or [on GitHub].
 
 ## Requirements
 
-shellman requires Python 3.6 or above.
+shellman requires Python 3.7 or above.
 
 <details>
-<summary>To install Python 3.6, I recommend using <a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a>.</summary>
+<summary>To install Python 3.7, I recommend using <a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a>.</summary>
 
 ```bash
 # install pyenv
@@ -90,11 +93,11 @@ export PATH="${HOME}/.pyenv/bin:${PATH}"
 export PYENV_ROOT="${HOME}/.pyenv"
 eval "$(pyenv init -)"
 
-# install Python 3.6
-pyenv install 3.6.12
+# install Python 3.7
+pyenv install 3.7.12
 
 # make it available globally
-pyenv global system 3.6.12
+pyenv global system 3.7.12
 ```
 </details>
 
@@ -102,14 +105,13 @@ pyenv global system 3.6.12
 
 With `pip`:
 ```bash
-python3.6 -m pip install shellman
+pip install shellman
 ```
 
 With [`pipx`](https://github.com/pipxproject/pipx):
 ```bash
-python3.6 -m pip install --user pipx
-
-pipx install --python python3.6 shellman
+python3.7 -m pip install --user pipx
+pipx install shellman
 ```
 
 ## Some projects using shellman
