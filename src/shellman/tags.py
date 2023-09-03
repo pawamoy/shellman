@@ -6,6 +6,8 @@ This module contains the Section class.
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
+from functools import cached_property
 from typing import TYPE_CHECKING, Sequence
 
 if TYPE_CHECKING:
@@ -14,14 +16,6 @@ if TYPE_CHECKING:
 
 class Tag:
     """Base class for tags."""
-
-    def __init__(self, text: str) -> None:
-        """Initialize the tag.
-
-        Parameters:
-            text: The tag's text.
-        """
-        self.text = text
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> Tag:
@@ -33,49 +27,29 @@ class Tag:
         Returns:
             A tag instance.
         """
+        raise NotImplementedError
+
+
+@dataclass
+class TextTag(Tag):
+    """A simple tag holding text only."""
+
+    text: str
+    """The tag's text."""
+
+    @classmethod
+    def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:  # noqa: D102
         return cls(text="\n".join(line.value for line in lines))
 
 
-class AuthorTag(Tag):
-    """A tag representing an author."""
+@dataclass
+class NameDescTag(Tag):
+    """A tag holding a name and a description."""
 
-
-class BugTag(Tag):
-    """A tag representing a bug note."""
-
-
-class BriefTag(Tag):
-    """A tag representing a summary."""
-
-
-class CaveatTag(Tag):
-    """A tag representing caveats."""
-
-
-class CopyrightTag(Tag):
-    """A tag representing copyright information."""
-
-
-class DateTag(Tag):
-    """A tag representing a date."""
-
-
-class DescTag(Tag):
-    """A tag representing a description."""
-
-
-class EnvTag(Tag):
-    """A tag representing an environment variable used by the script."""
-
-    def __init__(self, name: str, description: str) -> None:
-        """Initialize the tag.
-
-        Parameters:
-            name: The variable name.
-            description: The variable description.
-        """
-        self.name = name
-        self.description = description
+    name: str
+    """The tag name."""
+    description: str
+    """The tag description."""
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> EnvTag:  # noqa: D102
@@ -93,26 +67,63 @@ class EnvTag(Tag):
         return EnvTag(name=name, description="\n".join(description))
 
 
-class ErrorTag(Tag):
+@dataclass
+class AuthorTag(TextTag):
+    """A tag representing an author."""
+
+
+@dataclass
+class BugTag(TextTag):
+    """A tag representing a bug note."""
+
+
+@dataclass
+class BriefTag(TextTag):
+    """A tag representing a summary."""
+
+
+@dataclass
+class CaveatTag(TextTag):
+    """A tag representing caveats."""
+
+
+@dataclass
+class CopyrightTag(TextTag):
+    """A tag representing copyright information."""
+
+
+@dataclass
+class DateTag(TextTag):
+    """A tag representing a date."""
+
+
+@dataclass
+class DescTag(TextTag):
+    """A tag representing a description."""
+
+
+@dataclass
+class EnvTag(NameDescTag):
+    """A tag representing an environment variable used by the script."""
+
+
+@dataclass
+class ErrorTag(TextTag):
     """A tag representing a known error."""
 
 
+@dataclass
 class ExampleTag(Tag):
     """A tag representing a code/shell example."""
 
-    def __init__(self, brief: str, code: str, code_lang: str, description: str) -> None:
-        """Initialize the tag.
-
-        Parameters:
-            brief: The example's summary.
-            code: The example's code.
-            code_lang: The example's language.
-            description: The example's description.
-        """
-        self.brief = brief
-        self.code = code
-        self.code_lang = code_lang
-        self.description = description
+    brief: str
+    """The example's summary."""
+    code: str
+    """The example's code."""
+    code_lang: str
+    """The example's language."""
+    description: str
+    """The example's description."""
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> ExampleTag:  # noqa: D102
@@ -147,18 +158,14 @@ class ExampleTag(Tag):
         )
 
 
+@dataclass
 class ExitTag(Tag):
     """A tag representing an exit code."""
 
-    def __init__(self, code: str, description: str) -> None:
-        """Initialize the tag.
-
-        Parameters:
-            code: The exit code.
-            description: The code description.
-        """
-        self.code = code
-        self.description = description
+    code: str
+    """The exit code."""
+    description: str
+    """The code description."""
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> ExitTag:  # noqa: D102
@@ -176,75 +183,35 @@ class ExitTag(Tag):
         return ExitTag(code=code, description="\n".join(description))
 
 
-class FileTag(Tag):
+@dataclass
+class FileTag(NameDescTag):
     """A tag representing a file used by a script."""
 
-    def __init__(self, name: str, description: str) -> None:
-        """Initialize the tag.
 
-        Parameters:
-            name: The file name text.
-            description: The file description.
-        """
-        self.name = name
-        self.description = description
-
-    @classmethod
-    def from_lines(cls, lines: Sequence[DocLine]) -> FileTag:  # noqa: D102
-        name, description = "", []
-        for line in lines:
-            if line.tag == "file":
-                split = line.value.split(" ", 1)
-                if len(split) > 1:
-                    name = split[0]
-                    description.append(split[1])
-                else:
-                    name = split[0]
-            else:
-                description.append(line.value)
-        return FileTag(name=name, description="\n".join(description))
-
-
+@dataclass
 class FunctionTag(Tag):
     """A tag representing a shell function."""
 
-    def __init__(
-        self,
-        prototype: str,
-        brief: str,
-        description: str,
-        arguments: Sequence[str],
-        preconditions: Sequence[str],
-        return_codes: Sequence[str],
-        seealso: Sequence[str],
-        stderr: Sequence[str],
-        stdin: Sequence[str],
-        stdout: Sequence[str],
-    ):
-        """Initialize the tag.
-
-        Parameters:
-            prototype: The function's prototype.
-            brief: The function's summary.
-            description: The function's description.
-            arguments: The function's arguments.
-            preconditions: The function's preconditions.
-            return_codes: The function's return codes.
-            seealso: The function's "see also" information.
-            stderr: The function's standard error.
-            stdin: The function's standard input.
-            stdout: The function's standard output.
-        """
-        self.prototype = prototype
-        self.brief = brief
-        self.description = description
-        self.arguments = arguments
-        self.preconditions = preconditions
-        self.return_codes = return_codes
-        self.seealso = seealso
-        self.stderr = stderr
-        self.stdin = stdin
-        self.stdout = stdout
+    prototype: str
+    """The function's prototype."""
+    brief: str
+    """The function's summary."""
+    description: str
+    """The function's description."""
+    arguments: Sequence[str]
+    """The function's arguments."""
+    preconditions: Sequence[str]
+    """The function's preconditions."""
+    return_codes: Sequence[str]
+    """The function's return codes."""
+    seealso: Sequence[str]
+    """The function's "see also" information."""
+    stderr: Sequence[str]
+    """The function's standard error."""
+    stdin: Sequence[str]
+    """The function's standard input."""
+    stdout: Sequence[str]
+    """The function's standard output."""
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> FunctionTag:  # noqa: D102
@@ -296,45 +263,41 @@ class FunctionTag(Tag):
         )
 
 
-class HistoryTag(Tag):
+@dataclass
+class HistoryTag(TextTag):
     """A tag representing a script's history."""
 
 
-class LicenseTag(Tag):
+@dataclass
+class LicenseTag(TextTag):
     """A tag representing a license."""
 
 
-class NoteTag(Tag):
+@dataclass
+class NoteTag(TextTag):
     """A tag representing a note."""
 
 
+@dataclass
 class OptionTag(Tag):
     """A tag representing a command-line option."""
 
-    def __init__(self, short: str, long: str, positional: str, default: str, group: str, description: str) -> None:
-        """Initialize the tag.
+    short: str
+    """The option short flag."""
+    long: str
+    """The option long flag."""
+    positional: str
+    """The option positional arguments."""
+    default: str
+    """The option default value."""
+    group: str
+    """The option group."""
+    description: str
+    """The option description."""
 
-        Parameters:
-            short: The option short flag.
-            long: The option long flag.
-            positional: The option positional arguments.
-            default: The option default value.
-            group: The option group.
-            description: The option description.
-        """
-        self.short = short
-        self.long = long
-        self.positional = positional
-        self.default = default
-        self.group = group
-        self.description = description
-        self.__signature: str = None  # type: ignore[assignment]
-
-    @property
+    @cached_property
     def signature(self) -> str:
         """The signature of the option."""
-        if self.__signature is not None:
-            return self.__signature
         sign = ""
         if self.short:
             sign = self.short
@@ -348,8 +311,7 @@ class OptionTag(Tag):
             sign += self.long + " "
         if self.positional:
             sign += self.positional
-        self.__signature = sign
-        return self.__signature
+        return sign
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> OptionTag:  # noqa: D102
@@ -381,34 +343,34 @@ class OptionTag(Tag):
         )
 
 
-class SeealsoTag(Tag):
+@dataclass
+class SeealsoTag(TextTag):
     """A tag representing "See Also" information."""
 
 
-class StderrTag(Tag):
+@dataclass
+class StderrTag(TextTag):
     """A tag representing the standard error of a script/function."""
 
 
-class StdinTag(Tag):
+@dataclass
+class StdinTag(TextTag):
     """A tag representing the standard input of a script/function."""
 
 
-class StdoutTag(Tag):
+@dataclass
+class StdoutTag(TextTag):
     """A tag representing the standard output of a script/function."""
 
 
+@dataclass
 class UsageTag(Tag):
     """A tag representing the command-line usage of a script."""
 
-    def __init__(self, program: str, command: str) -> None:
-        """Initialize the tag.
-
-        Parameters:
-            program: The program name.
-            command: The command-line usage.
-        """
-        self.program = program
-        self.command = command
+    program: str
+    """The program name."""
+    command: str
+    """The command-line usage."""
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> UsageTag:  # noqa: D102
@@ -423,25 +385,13 @@ class UsageTag(Tag):
         return UsageTag(program=program, command=command)
 
 
-class VersionTag(Tag):
+@dataclass
+class VersionTag(TextTag):
     """A tag representing a version."""
-
-    def __init__(self, text: str) -> None:
-        """Initialize the tag.
-
-        Parameters:
-            text: The version text.
-        """
-        self.text = text
-
-    @classmethod
-    def from_lines(cls, lines: Sequence[DocLine]) -> VersionTag:  # noqa: D102
-        # TODO: only first line kept. Change it?
-        return VersionTag(text=lines[0].value)
 
 
 TAGS: dict[str | None, type[Tag]] = {
-    None: Tag,
+    None: TextTag,
     "author": AuthorTag,
     "bug": BugTag,
     "brief": BriefTag,
