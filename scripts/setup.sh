@@ -6,6 +6,5 @@ command -v pdm &>/dev/null || pipx install pdm
 
 pdm self list 2>/dev/null | grep -q pdm-multirun || pdm install --plugins
 
-[ -n "${PDM_MULTIRUN_VERSIONS}" ] && pdm multirun -v pdm install -G:all && exit 0
-
-pdm install -G:all
+[ -n "${PDM_MULTIRUN_VERSIONS}" ] && pdm multirun -v pdm install -G:all
+[ -z "${PDM_MULTIRUN_VERSIONS}" ] && pdm install -G:all
