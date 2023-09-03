@@ -27,23 +27,23 @@ def test_show_help(capsys: pytest.CaptureFixture) -> None:
     assert "shellman" in captured.out
 
 
-def test_main(self):
+def test_main():
     assert cli_main([]) == 1
     assert cli_main(["-c", "hello=world"]) == 0
     assert cli_main([get_fake_script("simple.sh")]) == 0
 
 
-def test_do_groffautoemphasis(self):
+def test_do_groffautoemphasis():
     string = "I'm SO emphaSIzed!"
     assert filters.do_groffautoemphasis(string) == "I'm \\fISO\\fR emphaSIzed!"
 
 
-def test_do_groffautostrong(self):
+def test_do_groffautostrong():
     string = "I'm -so --strong!"
     assert filters.do_groffautostrong(string) == "I'm \\fB-so\\fR \\fB--strong\\fR!"
 
 
-def test_do_smartwrap(self):
+def test_do_smartwrap():
     text = (
         "Some text.\n\n"
         "A very long line: Lorem ipsum dolor sit amet, "

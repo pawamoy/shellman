@@ -6,7 +6,7 @@ from shellman.reader import preprocess_lines, preprocess_stream
 from tests.conftest import get_fake_script
 
 
-def test_preprocess_stream(self):
+def test_preprocess_stream():
     script = get_fake_script("simple.sh")
     with open(script) as stream:
         assert list(preprocess_stream(stream)) == [
@@ -18,7 +18,7 @@ def test_preprocess_stream(self):
         ]
 
 
-def test_preprocess_lines(self):
+def test_preprocess_lines():
     script = get_fake_script("simple.sh")
     with open(script) as stream:
         blocks = list(preprocess_lines(preprocess_stream(stream)))

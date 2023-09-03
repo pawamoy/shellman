@@ -7,7 +7,7 @@ import os
 from shellman.context import get_cli_context, get_context, get_env_context, update
 
 
-def test_get_cli_context(self):
+def test_get_cli_context():
     assert get_cli_context([]) == {}
     assert get_cli_context([""]) == {}
     assert get_cli_context([" "]) == {}
@@ -27,20 +27,20 @@ def test_get_cli_context(self):
     assert get_cli_context(['{"hello": "world"}', "hello=universe"]) == {"hello": "universe"}
 
 
-def test_get_env_context(self):
+def test_get_env_context():
     os.environ["SHELLMAN_CONTEXT_HELLO"] = "world"
     assert get_env_context() == {"hello": "world"}
     del os.environ["SHELLMAN_CONTEXT_HELLO"]
 
 
-def test_get_context(self):
+def test_get_context():
     from collections import namedtuple
 
     args = namedtuple("args", "context_file context")(None, None)
     assert get_context(args) == {}
 
 
-def test_update(self):
+def test_update():
     d1 = {"hello": {"world": "what's up?"}}
     d2 = {"hello": {"universe": "????"}, "byebye": "universe"}
     update(d1, d2)
