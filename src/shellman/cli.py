@@ -27,7 +27,7 @@ from shellman.reader import DocFile, DocStream, merge
 def valid_file(value):
     """Check if given file exists and is a regular file.
 
-    Args:
+    Parameters:
         value (str): path to the file.
 
     Raises:
@@ -221,16 +221,16 @@ def main(args: list[str] | None = None) -> int:
     templates.load_plugin_templates()
 
     parser = get_parser()
-    args = parser.parse_args(argv)
+    opts = parser.parse_args(args)
 
     # Catch errors as early as possible
-    if args.merge and len(args.FILE) < 2:
+    if opts.merge and len(opts.FILE) < 2:
         print(
             "shellman: warning: --merge option is ignored with less than 2 inputs",
             file=sys.stderr,
         )
 
-    if not args.FILE and args.output and is_format_string(args.output):
+    if not opts.FILE and opts.output and is_format_string(opts.output):
         parser.print_usage(file=sys.stderr)
         print(
             "shellman: error: cannot format output name without file inputs. "
@@ -240,51 +240,51 @@ def main(args: list[str] | None = None) -> int:
         return 2
 
     # Immediately get the template to throw error if not found
-    if args.template.startswith("path:"):
-        template = templates.get_custom_template(args.template[5:])
+    if opts.template.startswith("path:"):
+        template = templates.get_custom_template(opts.template[5:])
     else:
-        template = templates.templates[args.template]
+        template = templates.templates[opts.template]
 
-    context = get_context(args)
+    context = get_context(opts)
 
     # Render template with context only
-    if not args.FILE:
+    if not opts.FILE:
         if not context:
             parser.print_usage(file=sys.stderr)
             print("shellman: error: please specify input file(s) or context", file=sys.stderr)
             return 1
         contents = render(template, None, **context)
-        if args.output:
-            write(contents, args.output)
+        if opts.output:
+            write(contents, opts.output)
         else:
             print(contents)
         return 0
 
     # Parse input files
     docs = []
-    for file in args.FILE:
+    for file in opts.FILE:
         if file == "-":
-            docs.append(DocStream(sys.stdin, filename=guess_filename(args.output)))
+            docs.append(DocStream(sys.stdin, filename=guess_filename(opts.output)))
         else:
             docs.append(DocFile(file))
 
     # Optionally merge the parsed contents
-    if args.merge:
-        new_filename = guess_filename(args.output, docs)
+    if opts.merge:
+        new_filename = guess_filename(opts.output, docs)
         docs = [merge(docs, new_filename)]
 
-    # If args.output contains variables, each input has its own output
-    if args.output and is_format_string(args.output):
+    # If opts.output contains variables, each input has its own output
+    if opts.output and is_format_string(opts.output):
         for doc in docs:
             write(
                 render(template, doc, **context),
-                args.output.format(**output_name_variables(doc)),
+                opts.output.format(**output_name_variables(doc)),
             )
     # Else, concatenate contents (no effect if already merged), then output to file or stdout
     else:
         contents = "\n\n\n".join(render(template, doc, **context) for doc in docs)
-        if args.output:
-            write(contents, args.output)
+        if opts.output:
+            write(contents, opts.output)
         else:
             print(contents)
 
