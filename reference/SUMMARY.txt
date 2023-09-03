@@ -1,0 +1,7 @@
+* [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> shellman](shellman/index.md)
+    * [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> cli](shellman/cli.md)
+    * [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> context](shellman/context.md)
+    * [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> reader](shellman/reader.md)
+    * [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> tags](shellman/tags.md)
+    * [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> templates](shellman/templates/index.md)
+        * [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> filters](shellman/templates/filters.md)
