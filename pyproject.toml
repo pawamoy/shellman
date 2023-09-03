@@ -60,6 +60,7 @@ duty = ["duty>=0.10"]
 ci-quality = ["shellman[duty,docs,quality,typing,security]"]
 ci-tests = ["shellman[duty,tests]"]
 docs = [
+    "lxml>=4.9",
     "black>=23.1",
     "markdown-callouts>=0.2",
     "markdown-exec>=0.5",
