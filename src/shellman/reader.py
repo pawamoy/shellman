@@ -1,11 +1,13 @@
 """Module to read a file/stream and pre-process the documentation lines.
 
 Algorithm is as follows:
+
 1. preprocess_stream: yield documentation lines.
 2. preprocess_lines: group documentation lines as blocks of documentation.
 3. process_blocks: tidy blocks by tag in a dictionary.
-
 """
+
+from __future__ import annotations
 
 import os
 import re

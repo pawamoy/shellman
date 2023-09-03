@@ -7,7 +7,7 @@ beginning with two sharps (##).
 It extracts documentation from these comment lines,
 and then generate a document by rendering a template.
 The template rendering is done with Jinja2.
-See http://jinja.pocoo.org/docs/2.10/templates/.
+See https://jinja.palletsprojects.com/en/3.1.x/.
 """
 
 from __future__ import annotations

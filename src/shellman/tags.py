@@ -3,6 +3,8 @@
 This module contains the Section class.
 """
 
+from __future__ import annotations
+
 import re
 
 

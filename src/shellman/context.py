@@ -1,4 +1,9 @@
+"""Jinja-context related utilities."""
+
+from __future__ import annotations
+
 import collections
+import contextlib
 import json
 import os
 
@@ -49,10 +54,8 @@ def get_context(args):
     if args.context_file:
         context.update(get_file_context(args.context_file))
     else:
-        try:
+        with contextlib.suppress(OSError):
             context.update(get_file_context(DEFAULT_JSON_FILE))
-        except OSError:
-            pass
 
     update(context, get_env_context())
     update(context, get_cli_context(args.context))
