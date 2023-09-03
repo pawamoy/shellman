@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import collections
 import contextlib
 import json
 import os
@@ -65,7 +64,7 @@ def get_context(args):
 
 def update(d, u):
     for k, v in u.items():
-        if isinstance(v, collections.Mapping):
+        if isinstance(v, dict):
             d[k] = update(d.get(k, {}), v)
         else:
             d[k] = v

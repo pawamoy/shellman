@@ -1,11 +1,17 @@
 import os
 from copy import deepcopy
 
-import pkg_resources
+import sys
+from importlib.metadata import entry_points
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import TemplateNotFound
 
 from shellman.templates.filters import FILTERS
+
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 
 def get_builtin_path():
@@ -64,7 +70,7 @@ def get_custom_template(base_template_path):
 
 
 def load_plugin_templates():
-    for entry_point in pkg_resources.iter_entry_points(group="shellman"):
+    for entry_point in entry_points(group="shellman"):
         obj = entry_point.load()
         if isinstance(obj, Template):
             templates[entry_point.name] = obj

@@ -3,17 +3,10 @@ import textwrap
 from collections import defaultdict
 from itertools import groupby
 
-from jinja2.filters import _GroupTuple, environmentfilter, make_attrgetter
-from jinja2.utils import escape
+from jinja2.filters import _GroupTuple, pass_environment, make_attrgetter
+from markupsafe import escape
 
-try:
-    from shutil import get_terminal_size
-except ImportError:
-    from backports.shutil_get_terminal_size import get_terminal_size
-try:
-    basestring = basestring
-except NameError:
-    basestring = str
+from shutil import get_terminal_size
 
 
 def do_groffautoescape(string):
@@ -53,7 +46,7 @@ def do_firstword(string, delimiters=" "):
 
 
 def do_body(string_or_list, delimiter=" "):
-    if isinstance(string_or_list, basestring):
+    if isinstance(string_or_list, str):
         return string_or_list.split(delimiter, 1)[1]
     elif isinstance(string_or_list, list):
         return "\n".join(string_or_list[1:])
@@ -142,7 +135,7 @@ def do_format(s, *args, **kwargs):
 
 
 # Override Jinja2's groupby filter to add un(sort) option
-@environmentfilter
+@pass_environment
 def do_groupby(environment, value, attribute, sort=True):
     expr = make_attrgetter(environment, attribute)
 
