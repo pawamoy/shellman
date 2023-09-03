@@ -1,18 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/sh
 set -e
 
-if ! command -v pdm &>/dev/null; then
-    if ! command -v pipx &>/dev/null; then
-        python3 -m pip install --user pipx
-    fi
-    pipx install pdm
-fi
-if ! pdm self list 2>/dev/null | grep -q pdm-multirun; then
-    pdm install --plugins
-fi
+command -v pipx &>/dev/null || python3 -m pip install --user pipx
+command -v pdm &>/dev/null || pipx install pdm
 
-if [ -n "${PDM_MULTIRUN_VERSIONS}" ]; then
-    pdm multirun -v pdm install -G:all
-else
-    pdm install -G:all
-fi
+pdm self list 2>/dev/null | grep -q pdm-multirun || pdm install --plugins
+
+[ -n "${PDM_MULTIRUN_VERSIONS}" ] && pdm multirun -v pdm install -G:all && exit 0
+
+pdm install -G:all
