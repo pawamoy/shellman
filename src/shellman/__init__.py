@@ -12,8 +12,8 @@ See http://jinja.pocoo.org/docs/2.10/templates/.
 
 from __future__ import annotations
 
-from .reader import DocFile, DocStream
-from .templates import Template
+from shellman.reader import DocFile, DocStream
+from shellman.templates import Template
 
 __all__: list[str] = ["DocFile", "DocStream", "Template"]
 __version__ = "0.4.1"

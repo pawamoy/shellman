@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
-"""
-Module to read a file/stream and pre-process the documentation lines.
+"""Module to read a file/stream and pre-process the documentation lines.
 
 Algorithm is as follows:
 1. preprocess_stream: yield documentation lines.
@@ -10,12 +7,11 @@ Algorithm is as follows:
 
 """
 
-import io
 import os
 import re
 from collections import defaultdict
 
-from .tags import TAGS
+from shellman.tags import TAGS
 
 tag_value_regex = re.compile(r"^\s*[\\@]([_a-zA-Z][\w-]*)\s+(.+)$")
 tag_no_value_regex = re.compile(r"^\s*[\\@]([_a-zA-Z][\w-]*)\s*$")
@@ -38,14 +34,14 @@ class DocLine:
     def __str__(self):
         doc_type = self.doc_type()
         if doc_type == DocType.TAG_VALUE:
-            s = '%s, "%s"' % (self.tag, self.value)
+            s = f'{self.tag}, "{self.value}"'
         elif doc_type == DocType.TAG:
             s = self.tag
         elif doc_type == DocType.VALUE:
             s = '"%s"' % self.value
         else:
             s = "invalid"
-        return "%s:%s: %s: %s" % (self.path, self.lineno, doc_type, s)
+        return f"{self.path}:{self.lineno}: {doc_type}: {s}"
 
     def doc_type(self):
         if self.tag:
@@ -122,7 +118,7 @@ class DocFile:
     def __init__(self, path):
         self.filepath = path
         self.filename = os.path.basename(path)
-        with io.open(path, "r", encoding="utf-8") as stream:
+        with open(path, encoding="utf-8") as stream:
             try:
                 self.sections = process_blocks(preprocess_lines(preprocess_stream(stream)))
             except UnicodeDecodeError:

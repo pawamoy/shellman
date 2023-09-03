@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING, Any
 from duty import duty
 from duty.callables import black, blacken_docs, coverage, lazy, mkdocs, mypy, pytest, ruff, safety
 
-
 if TYPE_CHECKING:
     from duty.context import Context
 

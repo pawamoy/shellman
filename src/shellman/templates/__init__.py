@@ -5,7 +5,7 @@ import pkg_resources
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import TemplateNotFound
 
-from .filters import FILTERS
+from shellman.templates.filters import FILTERS
 
 
 def get_builtin_path():
@@ -81,7 +81,7 @@ def names():
 def parser_choices():
     class TemplateChoice(tuple):
         def __contains__(self, item):
-            return super(TemplateChoice, self).__contains__(item) or item.startswith("path:")
+            return super().__contains__(item) or item.startswith("path:")
 
     return TemplateChoice(names())
 

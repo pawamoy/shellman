@@ -14,20 +14,18 @@
 from __future__ import annotations
 
 import argparse
-import io
 import os
 import re
 import sys
 from datetime import date
 
-from . import __version__, templates
-from .context import DEFAULT_JSON_FILE, get_context, update
-from .reader import DocFile, DocStream, merge
+from shellman import __version__, templates
+from shellman.context import DEFAULT_JSON_FILE, get_context, update
+from shellman.reader import DocFile, DocStream, merge
 
 
 def valid_file(value):
-    """
-    Check if given file exists and is a regular file.
+    """Check if given file exists and is a regular file.
 
     Args:
         value (str): path to the file.
@@ -136,7 +134,7 @@ def render(template, doc=None, **context):
 
 
 def write(contents, filepath):
-    with io.open(filepath, "w", encoding="utf-8") as write_stream:
+    with open(filepath, "w", encoding="utf-8") as write_stream:
         print(contents, file=write_stream)
 
 
@@ -177,15 +175,15 @@ def output_name_variables(doc=None):
         abspath = os.path.abspath(doc.filepath)
         dirpath = os.path.split(abspath)[0]
         dirname = os.path.basename(dirpath)
-        return dict(
-            filename=doc.filename,
-            filepath=abspath,
-            basename=basename,
-            ext=ext,
-            dirpath=dirpath,
-            dirname=dirname,
-            vcsroot=get_vcs_root(dirpath),
-        )
+        return {
+            "filename": doc.filename,
+            "filepath": abspath,
+            "basename": basename,
+            "ext": ext,
+            "dirpath": dirpath,
+            "dirname": dirname,
+            "vcsroot": get_vcs_root(dirpath),
+        }
     return {}
 
 
@@ -253,7 +251,7 @@ def main(args: list[str] | None = None) -> int:
     if not args.FILE:
         if not context:
             parser.print_usage(file=sys.stderr)
-            print("shellman: error: please specify " "input file(s) or context", file=sys.stderr)
+            print("shellman: error: please specify input file(s) or context", file=sys.stderr)
             return 1
         contents = render(template, None, **context)
         if args.output:

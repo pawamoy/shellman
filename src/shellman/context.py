@@ -51,7 +51,7 @@ def get_context(args):
     else:
         try:
             context.update(get_file_context(DEFAULT_JSON_FILE))
-        except IOError:  # compatible python 2-3
+        except OSError:
             pass
 
     update(context, get_env_context())

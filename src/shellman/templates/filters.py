@@ -57,6 +57,7 @@ def do_body(string_or_list, delimiter=" "):
         return string_or_list.split(delimiter, 1)[1]
     elif isinstance(string_or_list, list):
         return "\n".join(string_or_list[1:])
+    return None
 
 
 def do_firstline(string_or_list):
@@ -64,11 +65,11 @@ def do_firstline(string_or_list):
         return string_or_list.split("\n", 1)[0]
     elif isinstance(string_or_list, list):
         return string_or_list[0]
+    return None
 
 
 def console_width(default=80):
-    """
-    Return current console width.
+    """Return current console width.
 
     Args:
         default (int): default value if width cannot be retrieved.
@@ -162,10 +163,11 @@ def do_groupby(environment, value, attribute, sort=True):
 
 
 def do_escape(value, except_starts_with=None):
-    if except_starts_with is not None:
-        condition = lambda l: any(l.startswith(s) for s in except_starts_with)
-    else:
-        condition = lambda l: False
+    condition = (
+        (lambda l: any(l.startswith(s) for s in except_starts_with))
+        if except_starts_with is not None
+        else lambda l: False
+    )
     return "\n".join(line if line == "" or condition(line) else escape(line) for line in value.split("\n"))
 
 

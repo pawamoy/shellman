@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
-"""
-Section module.
+"""Section module.
 
 This module contains the Section class.
 """
@@ -278,7 +275,7 @@ class OptionTag:
         for line in lines:
             if line.tag == "option":
                 search = re.search(
-                    r"^(?P<short>-\w)?" r"(?:, )?" r"(?P<long>--[\w-]+)? ?" r"(?P<positional>.+)?",
+                    r"^(?P<short>-\w)?(?:, )?(?P<long>--[\w-]+)? ?(?P<positional>.+)?",
                     line.value,
                 )
                 if search:
