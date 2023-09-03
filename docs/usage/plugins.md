@@ -37,14 +37,7 @@ In `setup.py`, we then add a `shellman` entrypoint pointing to that template:
 
 from setuptools import setup
 
-setup(
-    ...,
-    entrypoints={
-        "shellman": [
-            "my_template_name = package_name:my_template"
-        ]
-    }
-)
+setup(..., entrypoints={"shellman": ["my_template_name = package_name:my_template"]})
 ```
 
 Instead of pointing to an instance of Template, you can also point to
@@ -73,14 +66,7 @@ template_dict = {
 
 from setuptools import setup
 
-setup(
-    ...,
-    entrypoints={
-        "shellman": [
-            "unused_dict_name = package_name:template_dict"
-        ]
-    }
-)
+setup(..., entrypoints={"shellman": ["unused_dict_name = package_name:template_dict"]})
 ```
 
 Similarly, you could do it with entrypoints only:
@@ -96,9 +82,9 @@ setup(
         "shellman": [
             "my_template = package_name:my_template",
             "my_template.md = package_name:my_template",
-            "my_template.markdown = package_name:my_template"
+            "my_template.markdown = package_name:my_template",
         ]
-    }
+    },
 )
 ```
 
@@ -118,18 +104,10 @@ to use within your template:
 
 ```python
 def do_url(obj):
-  return "https://{}/{}/{}".format(obj.domain, obj.namespace, obj.name)
+    return "https://{}/{}/{}".format(obj.domain, obj.namespace, obj.name)
 
 
-my_template = Template(
-    data_path,
-    "my_template",
-    context={
-        "indent": 4
-    },
-    filters={
-        "url": do_url
-    })
+my_template = Template(data_path, "my_template", context={"indent": 4}, filters={"url": do_url})
 ```
 
 In your template, you will then have access to the `{{ my_object|url }}` filter,
