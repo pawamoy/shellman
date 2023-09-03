@@ -1,10 +1,64 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [1.0.0](https://github.com/pawamoy/shellman/releases/tag/1.0.0) - 2023-09-03
+
+<small>[Compare with 0.4.1](https://github.com/pawamoy/shellman/compare/0.4.1...1.0.0)</small>
+
+It has been a long time since the last release, and the last time I worked on this project.
+I've updated the project with my latest template. Support for Python 2 is dropped.
+I took the opportunity to privatize most of the API. I'll see in a later version
+if there is a need to expose a main `parse` function or similar, to extract
+information from a given file.
+
+### Breaking Changes
+
+- `shellman.reader.DocLine.doc_type`: Public object points to a different kind of object: function -> attribute
+- `shellman.reader.preprocess_stream`: Public object was removed
+- `shellman.reader.preprocess_lines`: Public object was removed
+- `shellman.reader.process_blocks`: Public object was removed
+- `shellman.reader.merge`: Public object was removed
+- `shellman.context.get_cli_context`: Public object was removed
+- `shellman.context.get_env_context`: Public object was removed
+- `shellman.context.get_file_context`: Public object was removed
+- `shellman.context.get_context`: Public object was removed
+- `shellman.context.update`: Public object was removed
+- `shellman.cli.get_context`: Public object was removed
+- `shellman.cli.update`: Public object was removed
+- `shellman.cli.merge`: Public object was removed
+- `shellman.cli.valid_file`: Public object was removed
+- `shellman.cli.render`: Public object was removed
+- `shellman.cli.write`: Public object was removed
+- `shellman.cli.common_ancestor`: Public object was removed
+- `shellman.cli.is_format_string`: Public object was removed
+- `shellman.cli.guess_filename`: Public object was removed
+- `shellman.cli.output_name_variables`: Public object was removed
+- `shellman.cli.get_vcs_root`: Public object was removed
+- `shellman.cli.main(argv)`: Parameter was removed
+- `shellman.templates.get_builtin_path`: Public object was removed
+- `shellman.templates.get_env`: Public object was removed
+- `shellman.templates.get_custom_template`: Public object was removed
+- `shellman.templates.load_plugin_templates`: Public object was removed
+- `shellman.templates.names`: Public object was removed
+- `shellman.templates.parser_choices`: Public object was removed
+- `shellman.templates.filters.do_groffauto(escape)`: Parameter kind was changed: positional or keyword -> keyword-only
+- `shellman.templates.filters.do_smartwrap(indentfirst)`: Parameter kind was changed: positional or keyword -> keyword-only
+- `shellman.templates.filters.do_format(string)`: Parameter was added as required
+- `shellman.templates.filters.do_groupby(sort)`: Parameter kind was changed: positional or keyword -> keyword-only
+
+### Bug Fixes
+
+- Update for Python 3 and new versions of dependencies ([e16c46f](https://github.com/pawamoy/shellman/commit/e16c46f0a72c8161d745851182379a53f78f242e) by Timothée Mazzucotelli).
+
+### Code Refactoring
+
+- Rewrite tag classes as dataclasses ([f1780d4](https://github.com/pawamoy/shellman/commit/f1780d473ae9a25b52e49614cfc8a866024bcaf7) by Timothée Mazzucotelli).
+
 ## [0.4.1](https://github.com/pawamoy/shellman/tags/0.4.1) - 2018-10-10
 
 <small>[Compare with 0.4.0](https://github.com/pawamoy/shellman/compare/0.4.0...0.4.1)</small>
@@ -152,5 +206,3 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Implement new structure ([40b4806](https://github.com/pawamoy/shellman/commit/40b48063b02b5cae1c7074f0921b411fb2aed9f6)).
 - Setup tests ([5d50692](https://github.com/pawamoy/shellman/commit/5d50692ab5c49644039eab74d467335fded253c0)).
 - Write doc ([1a8e0e4](https://github.com/pawamoy/shellman/commit/1a8e0e4d4624d8ca0eeb66dd78eb3d8b65a11f45)).
-
-
