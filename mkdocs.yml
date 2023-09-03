@@ -19,6 +19,12 @@ nav:
   - Changelog: changelog.md
   - Credits: credits.md
   - License: license.md
+  - Todo: todo.md
+- Usage: 
+  - usage/index.md
+  - Syntax: usage/syntax.md
+  - Tags: usage/tags.md
+  - Plugins: usage/plugins.md
 # defer to gen-files + literate-nav
 - API reference:
   - shellman: reference/
@@ -109,11 +115,14 @@ plugins:
       python:
         import:
         - https://docs.python.org/3/objects.inv
+        paths: [src]
         options:
           docstring_options:
             ignore_init_summary: true
           docstring_section_style: list
+          filters: ["!^_"]
           heading_level: 1
+          inherited_members: true
           merge_init_into_class: true
           separate_signature: true
           show_root_heading: true
@@ -122,6 +131,7 @@ plugins:
           show_symbol_type_heading: true
           show_symbol_type_toc: true
           signature_crossrefs: true
+          summary: true
 - git-committers:
     enabled: !ENV [DEPLOY, false]
     repository: pawamoy/shellman

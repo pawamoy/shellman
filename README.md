@@ -58,10 +58,7 @@ Options:
   -h, --help            Print this help and exit.
 ```
 
-You can see more examples and all the documentation in the wiki!
-
-- [GitLab wiki](https://gitlab.com/pawamoy/shellman/wikis)
-- [GitHub wiki](https://github.com/pawamoy/shellman/wiki)
+You can see more examples in the documentation: https://pawamoy.github.io/shellman/.
 
 <h2 align="center">Demo</h2>
 <p align="center"><img src="https://rawgit.com/pawamoy/shellman/master/demo.svg"></p>
@@ -72,10 +69,7 @@ helptext, manpage and wikipage.
 You can use your own templates
 by specifying them with the ``--template path:my/template`` syntax.
 
-You can also write a plugin: see [the wiki page on GitLab] or [on GitHub].
-
-[the wiki page on GitLab]: https://gitlab.com/pawamoy/shellman/wikis/plugins
-[on GitHub]: https://github.com/pawamoy/shellman/wiki/plugins
+You can also write a plugin, see the docs: https://pawamoy.github.io/shellman/plugins.
 
 ## Installation
 
