@@ -17,32 +17,25 @@ import argparse
 import os
 import re
 import sys
-from datetime import date
+from datetime import datetime, timezone
+from typing import TYPE_CHECKING, Any, Sequence
 
 from shellman import __version__, templates
-from shellman.context import DEFAULT_JSON_FILE, get_context, update
-from shellman.reader import DocFile, DocStream, merge
+from shellman.context import DEFAULT_JSON_FILE, _get_context, _update
+from shellman.reader import DocFile, DocStream, _merge
+
+if TYPE_CHECKING:
+    from shellman.templates import Template
 
 
-def valid_file(value):
-    """Check if given file exists and is a regular file.
-
-    Parameters:
-        value (str): path to the file.
-
-    Raises:
-        argparse.ArgumentTypeError: if not valid.
-
-    Returns:
-        str: original value argument.
-    """
+def _valid_file(value: str) -> str:
     if value == "-":
         return value
     if not value:
         raise argparse.ArgumentTypeError("'' is not a valid file path")
-    elif not os.path.exists(value):
+    if not os.path.exists(value):
         raise argparse.ArgumentTypeError("%s is not a valid file path" % value)
-    elif os.path.isdir(value):
+    if os.path.isdir(value):
         raise argparse.ArgumentTypeError("%s is a directory, not a regular file" % value)
     return value
 
@@ -77,13 +70,13 @@ def get_parser() -> argparse.ArgumentParser:
         "-t",
         "--template",
         metavar="TEMPLATE",
-        choices=templates.parser_choices(),
+        choices=templates._parser_choices(),
         default="helptext",
         dest="template",
         help="the Jinja2 template to use. "
         'Prefix with "path:" to specify the path '
         "to a custom template. "
-        "Available templates: %s" % ", ".join(templates.names()),
+        "Available templates: %s" % ", ".join(templates._names()),
     )
 
     parser.add_argument(
@@ -111,35 +104,35 @@ def get_parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "FILE",
-        type=valid_file,
+        type=_valid_file,
         nargs="*",
         help="path to the file(s) to read. Use - to read on standard input.",
     )
     return parser
 
 
-def render(template, doc=None, **context):
-    shellman = {"doc": {}}
+def _render(template: Template, doc: DocFile | DocStream | None = None, **context: dict) -> str:
+    shellman: dict[str, Any] = {"doc": {}}
     if doc is not None:
         shellman["doc"] = doc.sections
         shellman["filename"] = doc.filename
         shellman["filepath"] = doc.filepath
-    shellman["today"] = date.today()
+    shellman["today"] = datetime.now(tz=timezone.utc).date()
     shellman["version"] = __version__
 
     if "shellman" in context:
-        update(shellman, context.pop("shellman"))
+        _update(shellman, context.pop("shellman"))
 
     return template.render(shellman=shellman, **context)
 
 
-def write(contents, filepath):
+def _write(contents: str, filepath: str) -> None:
     with open(filepath, "w", encoding="utf-8") as write_stream:
         print(contents, file=write_stream)
 
 
-def common_ancestor(docs):
-    splits = [os.path.split(doc.filepath) for doc in docs]
+def _common_ancestor(docs: Sequence[DocFile | DocStream]) -> str:
+    splits: list[tuple[str, str]] = [os.path.split(doc.filepath) for doc in docs if doc.filepath]
     vertical = []
     depth = 1
     while True:
@@ -148,32 +141,32 @@ def common_ancestor(docs):
         vertical.append([s[depth - 1] for s in splits])
         depth += 1
     common = ""
-    for v in vertical:
-        if v.count(v[0]) != len(v):
+    for vert in vertical:
+        if vert.count(vert[0]) != len(vert):
             break
-        common = v[0]
+        common = vert[0]
     return common or "<VARIOUS_INPUTS>"
 
 
-def is_format_string(s):
-    if re.search(r"{[a-zA-Z_][\w]*}", s):
+def _is_format_string(string: str) -> bool:
+    if re.search(r"{[a-zA-Z_][\w]*}", string):
         return True
     return False
 
 
-def guess_filename(output, docs=None):
-    if output and not is_format_string(output):
+def _guess_filename(output: str, docs: Sequence[DocFile | DocStream] | None = None) -> str:
+    if output and not _is_format_string(output):
         return os.path.basename(output)
     if docs:
-        return common_ancestor(docs)
+        return _common_ancestor(docs)
     return ""
 
 
-def output_name_variables(doc=None):
+def _output_name_variables(doc: DocFile | DocStream | None = None) -> dict:
     if doc:
         basename, ext = os.path.splitext(doc.filename)
-        abspath = os.path.abspath(doc.filepath)
-        dirpath = os.path.split(abspath)[0]
+        abspath = os.path.abspath(doc.filepath or doc.filename)
+        dirpath = os.path.split(abspath)[0] or "."
         dirname = os.path.basename(dirpath)
         return {
             "filename": doc.filename,
@@ -182,15 +175,15 @@ def output_name_variables(doc=None):
             "ext": ext,
             "dirpath": dirpath,
             "dirname": dirname,
-            "vcsroot": get_vcs_root(dirpath),
+            "vcsroot": _get_vcs_root(dirpath),
         }
     return {}
 
 
-_vcs_root_cache = {}
+_vcs_root_cache: dict[str, str] = {}
 
 
-def get_vcs_root(path):
+def _get_vcs_root(path: str) -> str:
     if path in _vcs_root_cache:
         return _vcs_root_cache[path]
     original_path = path
@@ -218,19 +211,19 @@ def main(args: list[str] | None = None) -> int:
     Returns:
         An exit code.
     """
-    templates.load_plugin_templates()
+    templates._load_plugin_templates()
 
     parser = get_parser()
     opts = parser.parse_args(args)
 
     # Catch errors as early as possible
-    if opts.merge and len(opts.FILE) < 2:
+    if opts.merge and len(opts.FILE) < 2:  # noqa: PLR2004
         print(
             "shellman: warning: --merge option is ignored with less than 2 inputs",
             file=sys.stderr,
         )
 
-    if not opts.FILE and opts.output and is_format_string(opts.output):
+    if not opts.FILE and opts.output and _is_format_string(opts.output):
         parser.print_usage(file=sys.stderr)
         print(
             "shellman: error: cannot format output name without file inputs. "
@@ -241,11 +234,11 @@ def main(args: list[str] | None = None) -> int:
 
     # Immediately get the template to throw error if not found
     if opts.template.startswith("path:"):
-        template = templates.get_custom_template(opts.template[5:])
+        template = templates._get_custom_template(opts.template[5:])
     else:
         template = templates.templates[opts.template]
 
-    context = get_context(opts)
+    context = _get_context(opts)
 
     # Render template with context only
     if not opts.FILE:
@@ -253,38 +246,38 @@ def main(args: list[str] | None = None) -> int:
             parser.print_usage(file=sys.stderr)
             print("shellman: error: please specify input file(s) or context", file=sys.stderr)
             return 1
-        contents = render(template, None, **context)
+        contents = _render(template, None, **context)
         if opts.output:
-            write(contents, opts.output)
+            _write(contents, opts.output)
         else:
             print(contents)
         return 0
 
     # Parse input files
-    docs = []
+    docs: list[DocFile | DocStream] = []
     for file in opts.FILE:
         if file == "-":
-            docs.append(DocStream(sys.stdin, filename=guess_filename(opts.output)))
+            docs.append(DocStream(sys.stdin, filename=_guess_filename(opts.output)))
         else:
             docs.append(DocFile(file))
 
     # Optionally merge the parsed contents
     if opts.merge:
-        new_filename = guess_filename(opts.output, docs)
-        docs = [merge(docs, new_filename)]
+        new_filename = _guess_filename(opts.output, docs)
+        docs = [_merge(docs, new_filename)]
 
     # If opts.output contains variables, each input has its own output
-    if opts.output and is_format_string(opts.output):
+    if opts.output and _is_format_string(opts.output):
         for doc in docs:
-            write(
-                render(template, doc, **context),
-                opts.output.format(**output_name_variables(doc)),
+            _write(
+                _render(template, doc, **context),
+                opts.output.format(**_output_name_variables(doc)),
             )
     # Else, concatenate contents (no effect if already merged), then output to file or stdout
     else:
-        contents = "\n\n\n".join(render(template, doc, **context) for doc in docs)
+        contents = "\n\n\n".join(_render(template, doc, **context) for doc in docs)
         if opts.output:
-            write(contents, opts.output)
+            _write(contents, opts.output)
         else:
             print(contents)
 

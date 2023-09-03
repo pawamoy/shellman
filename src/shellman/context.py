@@ -5,13 +5,17 @@ from __future__ import annotations
 import contextlib
 import json
 import os
+from typing import TYPE_CHECKING, Any, Sequence
+
+if TYPE_CHECKING:
+    import argparse
 
 ENV_VAR_PREFIX = "SHELLMAN_CONTEXT_"
 DEFAULT_JSON_FILE = ".shellman.json"
 
 
-def get_cli_context(args):
-    context = {}
+def _get_cli_context(args: Sequence[str]) -> dict:
+    context: dict[str, Any] = {}
     if args:
         for context_arg in args:
             if not context_arg:
@@ -21,7 +25,8 @@ def get_cli_context(args):
             elif "=" in context_arg:
                 name, value = context_arg.split("=", 1)
                 if "." in name:
-                    name_dict = d = {}
+                    name_dict: dict[str, Any] = {}
+                    d = name_dict
                     parts = name.split(".")
                     for name_part in parts[1:-1]:
                         d[name_part] = d = {}
@@ -33,7 +38,7 @@ def get_cli_context(args):
     return context
 
 
-def get_env_context():
+def _get_env_context() -> dict:
     context = {}
     for env_name, env_value in os.environ.items():
         if env_name.startswith(ENV_VAR_PREFIX):
@@ -42,30 +47,30 @@ def get_env_context():
     return context
 
 
-def get_file_context(file):
+def _get_file_context(file: str) -> dict:
     with open(file) as stream:
         return json.load(stream)
 
 
-def get_context(args):
+def _get_context(args: argparse.Namespace) -> dict:
     context = {}
 
     if args.context_file:
-        context.update(get_file_context(args.context_file))
+        context.update(_get_file_context(args.context_file))
     else:
         with contextlib.suppress(OSError):
-            context.update(get_file_context(DEFAULT_JSON_FILE))
+            context.update(_get_file_context(DEFAULT_JSON_FILE))
 
-    update(context, get_env_context())
-    update(context, get_cli_context(args.context))
+    _update(context, _get_env_context())
+    _update(context, _get_cli_context(args.context))
 
     return context
 
 
-def update(d, u):
-    for k, v in u.items():
-        if isinstance(v, dict):
-            d[k] = update(d.get(k, {}), v)
+def _update(base: dict, added: dict) -> dict:
+    for key, value in added.items():
+        if isinstance(value, dict):
+            base[key] = _update(base.get(key, {}), value)
         else:
-            d[k] = v
-    return d
+            base[key] = value
+    return base

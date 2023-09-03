@@ -9,32 +9,55 @@ Algorithm is as follows:
 
 from __future__ import annotations
 
+import logging
 import os
 import re
 from collections import defaultdict
+from typing import Iterable, Iterator, Sequence
 
-from shellman.tags import TAGS
+from shellman.tags import TAGS, Tag
+
+logger = logging.getLogger(__name__)
 
 tag_value_regex = re.compile(r"^\s*[\\@]([_a-zA-Z][\w-]*)\s+(.+)$")
 tag_no_value_regex = re.compile(r"^\s*[\\@]([_a-zA-Z][\w-]*)\s*$")
 
 
 class DocType:
+    """Enumeration of the possible types of documentation."""
+
     TAG = "T"
+    """A tag."""
+
     TAG_VALUE = "TV"
+    """A tag its value."""
+
     VALUE = "V"
+    """A value."""
+
     INVALID = "I"
+    """Invalid type."""
 
 
 class DocLine:
-    def __init__(self, path, lineno, tag, value):
+    """A documentation line."""
+
+    def __init__(self, path: str, lineno: int, tag: str | None, value: str) -> None:
+        """Initialize the doc line.
+
+        Parameters:
+            path: The origin file path.
+            lineno: The line number in the file.
+            tag: The line's tag, if any.
+            value: The line's value.
+        """
         self.path = path
         self.lineno = lineno
-        self.tag = tag
+        self.tag = tag or ""
         self.value = value
 
-    def __str__(self):
-        doc_type = self.doc_type()
+    def __str__(self) -> str:
+        doc_type = self.doc_type
         if doc_type == DocType.TAG_VALUE:
             s = f'{self.tag}, "{self.value}"'
         elif doc_type == DocType.TAG:
@@ -45,7 +68,9 @@ class DocLine:
             s = "invalid"
         return f"{self.path}:{self.lineno}: {doc_type}: {s}"
 
-    def doc_type(self):
+    @property
+    def doc_type(self) -> str:
+        """The line's doc type."""
         if self.tag:
             if self.value:
                 return DocType.TAG_VALUE
@@ -56,90 +81,121 @@ class DocLine:
 
 
 class DocBlock:
-    def __init__(self, lines=None):
+    """A documentation block."""
+
+    def __init__(self, lines: list[DocLine] | None = None) -> None:
+        """Initialize the doc block.
+
+        Parameters:
+            lines: The block's doc lines.
+        """
         if lines is None:
             lines = []
         self.lines = lines
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return bool(self.lines)
 
-    # Python 2 compatibility
-    def __nonzero__(self):
-        return bool(self.lines)
-
-    def __str__(self):
+    def __str__(self) -> str:
         return "\n".join([str(line) for line in self.lines])
 
-    def append(self, line):
+    def append(self, line: DocLine) -> None:
+        """Append a line to the block.
+
+        Parameters:
+            line: The doc line to append.
+        """
         self.lines.append(line)
 
     @property
-    def doc_type(self):
-        return self.lines[0].doc_type()
+    def doc_type(self) -> str:
+        """The block type."""
+        return self.lines[0].doc_type
 
     @property
-    def first_line(self):
+    def first_line(self) -> DocLine:
+        """The block's first doc line."""
         return self.lines[0]
 
     @property
-    def lines_number(self):
+    def lines_number(self) -> int:
+        """The number of lines in the block."""
         return len(self.lines)
 
     @property
-    def path(self):
+    def path(self) -> str:
+        """The block's origin file path."""
         return self.first_line.path
 
     @property
-    def lineno(self):
+    def lineno(self) -> int:
+        """The block's first line number."""
         return self.first_line.lineno
 
     @property
-    def tag(self):
+    def tag(self) -> str:
+        """The block's tag."""
         if self.lines:
             return self.first_line.tag
         return ""
 
     @property
-    def value(self):
+    def value(self) -> str:
+        """The block's first line."""
         return self.first_line.value
 
     @property
-    def values(self):
+    def values(self) -> list[str]:
+        """The block's lines."""
         return [line.value for line in self.lines]
 
 
 class DocStream:
-    def __init__(self, stream, filename=""):
+    """A stream of shell code or documentation."""
+
+    def __init__(self, stream: Iterable[str], filename: str = "") -> None:
+        """Initialize the documentation file.
+
+        Parameters:
+            stream: A text stream.
+            filename: An optional file name.
+        """
         self.filepath = None
         self.filename = filename
-        self.sections = process_blocks(preprocess_lines(preprocess_stream(stream)))
+        self.sections = _process_blocks(_preprocess_lines(_preprocess_stream(stream)))
 
 
 class DocFile:
-    def __init__(self, path):
+    """A shell script or documentation file."""
+
+    def __init__(self, path: str) -> None:
+        """Initialize the documentation file.
+
+        Parameters:
+            path: The path to the file.
+        """
         self.filepath = path
         self.filename = os.path.basename(path)
         with open(path, encoding="utf-8") as stream:
             try:
-                self.sections = process_blocks(preprocess_lines(preprocess_stream(stream)))
+                self.sections = _process_blocks(_preprocess_lines(_preprocess_stream(stream)))
             except UnicodeDecodeError:
-                print("Cannot read file %s" % path)
-                self.sections = []
+                logger.error(f"Cannot read file {path}")  # noqa: TRY400
+                self.sections = {}
 
 
-def preprocess_stream(stream):
+def _preprocess_stream(stream: Iterable[str]) -> Iterator[tuple[str, int, str]]:
     name = getattr(stream, "name", "")
     for lineno, line in enumerate(stream, 1):
-        line = line.lstrip(" \t").rstrip("\n")
+        line = line.lstrip(" \t").rstrip("\n")  # noqa: PLW2901
         if line.startswith("##"):
             yield name, lineno, line
 
 
-def preprocess_lines(lines):
+def _preprocess_lines(lines: Iterable[tuple[str, int, str]]) -> Iterator[DocBlock]:
     current_block = DocBlock()
     for path, lineno, line in lines:
-        line = line[3:]
+        line = line[3:]  # noqa: PLW2901
         res = tag_value_regex.search(line)
         if res:
             tag, value = res.groups()
@@ -161,15 +217,15 @@ def preprocess_lines(lines):
         yield current_block
 
 
-def process_blocks(blocks):
-    sections = defaultdict(list)
+def _process_blocks(blocks: Iterable[DocBlock]) -> dict[str, list[Tag]]:
+    sections: dict[str, list[Tag]] = defaultdict(list)
     for block in blocks:
         tag_class = TAGS.get(block.tag, TAGS[None])
         sections[block.tag].append(tag_class.from_lines(block.lines))
     return dict(sections)
 
 
-def merge(docs, filename):
+def _merge(docs: Sequence[DocStream | DocFile], filename: str) -> DocStream:
     final_doc = DocStream(stream=[], filename=filename)
     for doc in docs:
         for section, values in doc.sections.items():

@@ -1,35 +1,91 @@
+"""This module contains Jinja filters."""
+
+from __future__ import annotations
+
 import re
 import textwrap
 from collections import defaultdict
 from itertools import groupby
+from shutil import get_terminal_size
+from typing import TYPE_CHECKING, Any, Sequence
 
-from jinja2.filters import _GroupTuple, pass_environment, make_attrgetter
+from jinja2.filters import _GroupTuple, make_attrgetter, pass_environment
 from markupsafe import escape
 
-from shutil import get_terminal_size
+if TYPE_CHECKING:
+    from jinja2 import Environment
 
 
-def do_groffautoescape(string):
+def do_groffautoescape(string: str) -> str:
+    """Automatically Groff-escape dashes, single/double quotes, dots and dollar signs in a string.
+
+    Parameters:
+        string: The string to escape.
+
+    Returns:
+        The escaped string.
+    """
     return string.replace("-", "\\-").replace("'", "\\'").replace('"', '\\"').replace(".", "\\.").replace("$", "\\f$")
 
 
-def do_groffstrong(string):
+def do_groffstrong(string: str) -> str:
+    """Mark a string as Groff strong.
+
+    Parameters:
+        string: The string to convert.
+
+    Returns:
+        The updated string.
+    """
     return "\\fB" + string + "\\fR"
 
 
-def do_groffemphasis(string):
+def do_groffemphasis(string: str) -> str:
+    """Mark a string as Groff emphasis.
+
+    Parameters:
+        string: The string to convert
+
+    Returns:
+        The updated string.
+    """
     return "\\fI" + string + "\\fR"
 
 
-def do_groffautoemphasis(string):
+def do_groffautoemphasis(string: str) -> str:
+    """Automatically mark uppercase words as Groff emphasis.
+
+    Parameters:
+        string: The string to convert.
+
+    Returns:
+        The updated string.
+    """
     return re.sub(r"(\b[A-Z_0-9]{2,}\b)", r"\\fI\1\\fR", string)
 
 
-def do_groffautostrong(string):
+def do_groffautostrong(string: str) -> str:
+    """Automatically mark words starting with `-` or `--` as Groff strong.
+
+    Parameters:
+        string: The string to convert.
+
+    Returns:
+        The updated string.
+    """
     return re.sub(r"(--?[\w-]+=?)", r"\\fB\1\\fR", string)
 
 
-def do_groffauto(string, escape=True):
+def do_groffauto(string: str, *, escape: bool = True) -> str:
+    """Convert a string to the Groff format.
+
+    Parameters:
+        string: The string to convert.
+        escape: Whether to escape the result.
+
+    Returns:
+        A Groff string.
+    """
     string = do_groffautoemphasis(string)
     string = do_groffautostrong(string)
     if escape:
@@ -37,7 +93,17 @@ def do_groffauto(string, escape=True):
     return string
 
 
-def do_firstword(string, delimiters=" "):
+def do_firstword(string: str, delimiters: str = " ") -> str:
+    """Get the first word of a string.
+
+    Parameters:
+        string: The string.
+        delimiters: The delimiter characters.
+
+
+    Returns:
+        The string's first word.
+    """
     # FIXME: maybe use a regex instead: ^[\w_]+
     for i, char in enumerate(string):
         if char in delimiters:
@@ -45,37 +111,66 @@ def do_firstword(string, delimiters=" "):
     return string
 
 
-def do_body(string_or_list, delimiter=" "):
+def do_body(string_or_list: str | Sequence[str], delimiter: str = " ") -> str | None:
+    """Get the body of a text.
+
+    Parameters:
+        string_or_list: Given text.
+
+
+    Returns:
+        The text's body.
+    """
     if isinstance(string_or_list, str):
         return string_or_list.split(delimiter, 1)[1]
-    elif isinstance(string_or_list, list):
+    if isinstance(string_or_list, list):
         return "\n".join(string_or_list[1:])
     return None
 
 
-def do_firstline(string_or_list):
+def do_firstline(string_or_list: str | Sequence[str]) -> str | None:
+    """Get the first line of a text.
+
+    Parameters:
+        string_or_list: Given text.
+
+
+    Returns:
+        The text's first line.
+    """
     if isinstance(string_or_list, str):
         return string_or_list.split("\n", 1)[0]
-    elif isinstance(string_or_list, list):
+    if isinstance(string_or_list, list):
         return string_or_list[0]
     return None
 
 
-def console_width(default=80):
+def console_width(default: int = 80) -> int:
     """Return current console width.
 
-    Args:
-        default (int): default value if width cannot be retrieved.
+    Parameters:
+        default: The default value if width cannot be retrieved.
 
     Returns:
-        int: console width.
+        The console width.
     """
     # only solution that works with stdin redirected from file
     # https://stackoverflow.com/questions/566746
     return get_terminal_size((default, 20)).columns
 
 
-def do_smartwrap(text, indent=4, width=None, indentfirst=True):
+def do_smartwrap(text: str, indent: int = 4, width: int | None = None, *, indentfirst: bool = True) -> str:
+    """Smartly wrap the given text.
+
+    Parameters:
+        text: The text to wrap.
+        indent: The indentation to use (number of spaces).
+        width: The desired text width.
+        indentfirst: Whether to indent the first line too.
+
+    Returns:
+        The wrapped text.
+    """
     if width is None or width < 0:
         c_width = console_width(default=79)
         if width is None:
@@ -129,14 +224,39 @@ def do_smartwrap(text, indent=4, width=None, indentfirst=True):
     return "\n".join(wrap_indented_text_lines)
 
 
-# Override Jinja2's format filter to use format method instead of % operator
-def do_format(s, *args, **kwargs):
-    return s.format(*args, **kwargs)
+def do_format(string: str, *args: Any, **kwargs: Any) -> str:
+    """Override Jinja's format filter to use format method instead of % operator.
+
+    Parameters:
+        string: The string to format.
+        *args: Arguments passed to `str.format`.
+        **kwargs: Keyword arguments passed to `str.format`.
 
 
-# Override Jinja2's groupby filter to add un(sort) option
+    Returns:
+        The formatted string.
+    """
+    return string.format(*args, **kwargs)
+
+
 @pass_environment
-def do_groupby(environment, value, attribute, sort=True):
+def do_groupby(
+    environment: Environment,
+    value: Sequence[Any],
+    attribute: str,
+    *,
+    sort: bool = True,
+) -> list[tuple[str, list[Any]]]:
+    """Override Jinja's groupby filter to add un(sort) option.
+
+    Parameters:
+        environment: Passed by Jinja.
+        value: The value to group.
+        attribute: The attribute to use for grouping/sorting.
+
+    Returns:
+        The value grouped by the given attribute.
+    """
     expr = make_attrgetter(environment, attribute)
 
     # Original behavior: groups are sorted
@@ -155,13 +275,22 @@ def do_groupby(environment, value, attribute, sort=True):
     return [_GroupTuple(group, grouped[group]) for group in unique_groups]
 
 
-def do_escape(value, except_starts_with=None):
-    condition = (
-        (lambda l: any(l.startswith(s) for s in except_starts_with))
+def do_escape(value: str, except_starts_with: list[str] | None = None) -> str:
+    """Escape (HTML) given text.
+
+    Parameters:
+        except_starts_with: Each line starting with at least one of the prefixes
+            listed in this parameter will not be escaped.
+
+    Returns:
+        The escaped text.
+    """
+    predicate = (
+        (lambda line: any(line.startswith(string) for string in except_starts_with))
         if except_starts_with is not None
-        else lambda l: False
+        else lambda line: False
     )
-    return "\n".join(line if line == "" or condition(line) else escape(line) for line in value.split("\n"))
+    return "\n".join(line if line == "" or predicate(line) else escape(line) for line in value.split("\n"))
 
 
 FILTERS = {
