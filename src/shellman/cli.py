@@ -1,3 +1,5 @@
+"""Module that contains the command line application."""
+
 # Why does this file exist, and why not put this in `__main__`?
 #
 # You might be tempted to import things from `__main__` later,
@@ -9,7 +11,7 @@
 # - When you import `__main__` it will get executed again (as a module) because
 #   there's no `shellman.__main__` in `sys.modules`.
 
-"""Module that contains the command line application."""
+from __future__ import annotations
 
 import argparse
 import io
@@ -17,7 +19,6 @@ import os
 import re
 import sys
 from datetime import date
-from typing import List, Optional
 
 from . import __version__, templates
 from .context import DEFAULT_JSON_FILE, get_context, update
@@ -49,8 +50,7 @@ def valid_file(value):
 
 
 def get_parser() -> argparse.ArgumentParser:
-    """
-    Return the CLI argument parser.
+    """Return the CLI argument parser.
 
     Returns:
         An argparse parser.
@@ -205,9 +205,8 @@ def get_vcs_root(path):
     return path
 
 
-def main(args: Optional[List[str]] = None) -> int:
-    """
-    Run the main program.
+def main(args: list[str] | None = None) -> int:
+    """Run the main program.
 
     This function is executed when you type `shellman` or `python -m shellman`.
 
@@ -215,7 +214,7 @@ def main(args: Optional[List[str]] = None) -> int:
     get the according formatter class, instantiate it
     with acquired doc and write on specified file (stdout by default).
 
-    Arguments:
+    Parameters:
         args: Arguments passed from the command line.
 
     Returns:

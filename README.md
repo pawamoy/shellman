@@ -77,30 +77,6 @@ You can also write a plugin: see [the wiki page on GitLab] or [on GitHub].
 [the wiki page on GitLab]: https://gitlab.com/pawamoy/shellman/wikis/plugins
 [on GitHub]: https://github.com/pawamoy/shellman/wiki/plugins
 
-## Requirements
-
-shellman requires Python 3.7 or above.
-
-<details>
-<summary>To install Python 3.7, I recommend using <a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a>.</summary>
-
-```bash
-# install pyenv
-git clone https://github.com/pyenv/pyenv ~/.pyenv
-
-# setup pyenv (you should also put these three lines in .bashrc or similar)
-export PATH="${HOME}/.pyenv/bin:${PATH}"
-export PYENV_ROOT="${HOME}/.pyenv"
-eval "$(pyenv init -)"
-
-# install Python 3.7
-pyenv install 3.7.12
-
-# make it available globally
-pyenv global system 3.7.12
-```
-</details>
-
 ## Installation
 
 With `pip`:
@@ -110,7 +86,7 @@ pip install shellman
 
 With [`pipx`](https://github.com/pipxproject/pipx):
 ```bash
-python3.7 -m pip install --user pipx
+python3.8 -m pip install --user pipx
 pipx install shellman
 ```
 

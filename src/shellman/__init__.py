@@ -1,5 +1,4 @@
-"""
-shellman package.
+"""shellman package.
 
 Read documentation from shell script comments and render it with templates.
 
@@ -11,10 +10,10 @@ The template rendering is done with Jinja2.
 See http://jinja.pocoo.org/docs/2.10/templates/.
 """
 
-from typing import List
+from __future__ import annotations
 
 from .reader import DocFile, DocStream
 from .templates import Template
 
-__all__: List[str] = ["DocFile", "DocStream", "Template"]  # noqa: WPS410
-__version__ = "0.4.1"  # noqa: WPS410 (the only __variables__ we use)
+__all__: list[str] = ["DocFile", "DocStream", "Template"]
+__version__ = "0.4.1"
