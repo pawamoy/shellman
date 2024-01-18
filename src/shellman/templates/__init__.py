@@ -14,7 +14,7 @@ from jinja2.exceptions import TemplateNotFound
 from shellman.templates.filters import FILTERS
 
 if sys.version_info < (3, 10):
-    from importlib_metadata import entry_points  # type: ignore[assignment]  # noqa: F811
+    from importlib_metadata import entry_points  # type: ignore[assignment]
 else:
     from importlib.metadata import entry_points
 

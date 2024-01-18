@@ -26,6 +26,16 @@ from shellman.reader import DocFile, DocStream, _merge
 
 if TYPE_CHECKING:
     from shellman.templates import Template
+from shellman import debug
+
+
+class _DebugInfo(argparse.Action):
+    def __init__(self, nargs: int | str | None = 0, **kwargs: Any) -> None:
+        super().__init__(nargs=nargs, **kwargs)
+
+    def __call__(self, *args: Any, **kwargs: Any) -> None:  # noqa: ARG002
+        debug.print_debug_info()
+        sys.exit(0)
 
 
 def _valid_file(value: str) -> str:
@@ -101,6 +111,8 @@ def get_parser() -> argparse.ArgumentParser:
         "(git and mercurial supported). "
         "They will be populated from each input file.",
     )
+    parser.add_argument("-V", "--version", action="version", version=f"%(prog)s {debug.get_version()}")
+    parser.add_argument("--debug-info", action=_DebugInfo, help="Print debug information.")
 
     parser.add_argument(
         "FILE",
