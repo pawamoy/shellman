@@ -7,12 +7,14 @@ import textwrap
 from collections import defaultdict
 from itertools import groupby
 from shutil import get_terminal_size
-from typing import TYPE_CHECKING, Any, Sequence
+from typing import TYPE_CHECKING, Any
 
 from jinja2.filters import _GroupTuple, make_attrgetter, pass_environment
 from markupsafe import escape
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from jinja2 import Environment
 
 

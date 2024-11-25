@@ -18,15 +18,16 @@ import os
 import re
 import sys
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Sequence
+from typing import TYPE_CHECKING, Any
 
-from shellman import __version__, templates
+from shellman import __version__, debug, templates
 from shellman.context import DEFAULT_JSON_FILE, _get_context, _update
 from shellman.reader import DocFile, DocStream, _merge
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from shellman.templates import Template
-from shellman import debug
 
 
 class _DebugInfo(argparse.Action):
@@ -44,9 +45,9 @@ def _valid_file(value: str) -> str:
     if not value:
         raise argparse.ArgumentTypeError("'' is not a valid file path")
     if not os.path.exists(value):
-        raise argparse.ArgumentTypeError("%s is not a valid file path" % value)
+        raise argparse.ArgumentTypeError(f"{value} is not a valid file path")
     if os.path.isdir(value):
-        raise argparse.ArgumentTypeError("%s is a directory, not a regular file" % value)
+        raise argparse.ArgumentTypeError(f"{value} is a directory, not a regular file")
     return value
 
 
@@ -72,8 +73,8 @@ def get_parser() -> argparse.ArgumentParser:
         "--context-file",
         dest="context_file",
         help="JSON file to read context from. "
-        "By default shellman will try to read the file '%s' "
-        "in the current directory." % DEFAULT_JSON_FILE,
+        f"By default shellman will try to read the file '{DEFAULT_JSON_FILE}' "
+        "in the current directory.",
     )
 
     parser.add_argument(
@@ -86,7 +87,7 @@ def get_parser() -> argparse.ArgumentParser:
         help="the Jinja2 template to use. "
         'Prefix with "path:" to specify the path '
         "to a custom template. "
-        "Available templates: %s" % ", ".join(templates._names()),
+        f"Available templates: {', '.join(templates._names())}",
     )
 
     parser.add_argument(
@@ -161,9 +162,7 @@ def _common_ancestor(docs: Sequence[DocFile | DocStream]) -> str:
 
 
 def _is_format_string(string: str) -> bool:
-    if re.search(r"{[a-zA-Z_][\w]*}", string):
-        return True
-    return False
+    return bool(re.search(r"{[a-zA-Z_][\w]*}", string))
 
 
 def _guess_filename(output: str, docs: Sequence[DocFile | DocStream] | None = None) -> str:

@@ -13,9 +13,12 @@ import logging
 import os
 import re
 from collections import defaultdict
-from typing import Iterable, Iterator, Sequence
+from typing import TYPE_CHECKING
 
 from shellman.tags import TAGS, Tag
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Iterator, Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +66,7 @@ class DocLine:
         elif doc_type == DocType.TAG:
             s = self.tag
         elif doc_type == DocType.VALUE:
-            s = '"%s"' % self.value
+            s = f'"{self.value}"'
         else:
             s = "invalid"
         return f"{self.path}:{self.lineno}: {doc_type}: {s}"

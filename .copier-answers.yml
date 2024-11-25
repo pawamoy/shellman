@@ -1,12 +1,12 @@
 # Changes here will be overwritten by Copier
-_commit: 0.1.0
+_commit: 1.5.4
 _src_path: gh:pawamoy/copier-uv
-author_email: pawamoy@pm.me
+author_email: dev@pawamoy.fr
 author_fullname: Timothée Mazzucotelli
 author_username: pawamoy
 copyright_date: '2020'
 copyright_holder: Timothée Mazzucotelli
-copyright_holder_email: pawamoy@pm.me
+copyright_holder_email: dev@pawamoy.fr
 copyright_license: ISC License
 insiders: false
 project_description: Write documentation in comments and render it with templates.

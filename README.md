@@ -73,17 +73,14 @@ You can also write a plugin, see the docs: https://pawamoy.github.io/shellman/pl
 
 ## Installation
 
-With `pip`:
-
 ```bash
 pip install shellman
 ```
 
-With [`pipx`](https://github.com/pipxproject/pipx):
+With [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-python3.8 -m pip install --user pipx
-pipx install shellman
+uv tool install shellman
 ```
 
 ## Some projects using shellman

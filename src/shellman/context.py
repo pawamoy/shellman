@@ -5,10 +5,11 @@ from __future__ import annotations
 import contextlib
 import json
 import os
-from typing import TYPE_CHECKING, Any, Sequence
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     import argparse
+    from collections.abc import Sequence
 
 ENV_VAR_PREFIX = "SHELLMAN_CONTEXT_"
 DEFAULT_JSON_FILE = ".shellman.json"
