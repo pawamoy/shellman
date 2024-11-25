@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [1.0.1](https://github.com/pawamoy/shellman/releases/tag/1.0.1) - 2024-11-25
+
+<small>[Compare with 1.0.0](https://github.com/pawamoy/shellman/compare/1.0.0...1.0.1)</small>
+
+### Build
+
+- Drop support for Python 3.8 ([3675ff8](https://github.com/pawamoy/shellman/commit/3675ff8649f3925c60714e20e114e63e3230cc2c) by Timothée Mazzucotelli).
+
+### Bug Fixes
+
+- Add missing rendering of functions stdin/stdout/stderr ([d7fc017](https://github.com/pawamoy/shellman/commit/d7fc0177396858f5078c58f25ceedc849053fc5d) by Timothée Mazzucotelli). [Issue-37](https://github.com/pawamoy/shellman/issues/37)
+
 ## [1.0.0](https://github.com/pawamoy/shellman/releases/tag/1.0.0) - 2023-09-03
 
 <small>[Compare with 0.4.1](https://github.com/pawamoy/shellman/compare/0.4.1...1.0.0)</small>
