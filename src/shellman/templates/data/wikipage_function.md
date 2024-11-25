@@ -33,12 +33,24 @@
 {% endfor %}
 
 {% endif %}
-{% if function.stderr %}
-
-{% endif %}
 {% if function.stdin %}
+#### Standard input
+{% for stdin in function.stdin %}
+- {{ stdin }}
+{% endfor %}
 
 {% endif %}
 {% if function.stdout %}
+#### Standard output
+{% for stdout in function.stdout %}
+- {{ stdout }}
+{% endfor %}
+
+{% endif %}
+{% if function.stderr %}
+#### Standard error
+{% for stderr in function.stderr %}
+- {{ stderr }}
+{% endfor %}
 
 {% endif %}

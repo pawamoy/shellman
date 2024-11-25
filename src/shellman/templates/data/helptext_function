@@ -35,12 +35,24 @@
 {% endfor %}
 
 {% endif %}
-{% if function.stderr %}
-
-{% endif %}
 {% if function.stdin %}
+{{ indent_str * 2 }}Standard input:
+{% for stdin in function.stdin %}
+{{ indent_str * 3 }}{{ stdin }}
+{% endfor %}
 
 {% endif %}
 {% if function.stdout %}
+{{ indent_str * 2 }}Standard output:
+{% for stdout in function.stdout %}
+{{ indent_str * 3 }}{{ stdout }}
+{% endfor %}
+
+{% endif %}
+{% if function.stderr %}
+{{ indent_str * 2 }}Standard error:
+{% for stderr in function.stderr %}
+{{ indent_str * 3 }}{{ stderr }}
+{% endfor %}
 
 {% endif %}
