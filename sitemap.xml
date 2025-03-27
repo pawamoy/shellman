@@ -2,86 +2,54 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://pawamoy.github.io/shellman/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/changelog/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/code_of_conduct/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/contributing/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/credits/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/license/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/todo/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
-         <loc>https://pawamoy.github.io/shellman/reference/SUMMARY/</loc>
-         <lastmod>2024-11-25</lastmod>
-    </url>
-    <url>
-         <loc>https://pawamoy.github.io/shellman/reference/shellman/</loc>
-         <lastmod>2024-11-25</lastmod>
-    </url>
-    <url>
-         <loc>https://pawamoy.github.io/shellman/reference/shellman/cli/</loc>
-         <lastmod>2024-11-25</lastmod>
-    </url>
-    <url>
-         <loc>https://pawamoy.github.io/shellman/reference/shellman/context/</loc>
-         <lastmod>2024-11-25</lastmod>
-    </url>
-    <url>
-         <loc>https://pawamoy.github.io/shellman/reference/shellman/debug/</loc>
-         <lastmod>2024-11-25</lastmod>
-    </url>
-    <url>
-         <loc>https://pawamoy.github.io/shellman/reference/shellman/reader/</loc>
-         <lastmod>2024-11-25</lastmod>
-    </url>
-    <url>
-         <loc>https://pawamoy.github.io/shellman/reference/shellman/tags/</loc>
-         <lastmod>2024-11-25</lastmod>
-    </url>
-    <url>
-         <loc>https://pawamoy.github.io/shellman/reference/shellman/templates/</loc>
-         <lastmod>2024-11-25</lastmod>
-    </url>
-    <url>
-         <loc>https://pawamoy.github.io/shellman/reference/shellman/templates/filters/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <loc>https://pawamoy.github.io/shellman/reference/api/</loc>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/usage/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/usage/plugins/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/usage/syntax/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/usage/tags/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
     <url>
          <loc>https://pawamoy.github.io/shellman/coverage/</loc>
-         <lastmod>2024-11-25</lastmod>
+         <lastmod>2025-03-27</lastmod>
     </url>
 </urlset>

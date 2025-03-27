@@ -1,0 +1,3632 @@
+# Shell Script Documentation
+
+Write documentation in comments and render it with templates.
+
+`shellman` can generate man pages, wiki pages and help text using documentation written in shell scripts comments.
+
+For example:
+
+```
+#!/bin/bash
+
+## \brief Just a demo
+## \desc This script actually does nothing.
+
+main() {
+  case "$1" in
+    ## \option -h, --help
+    ## Print this help and exit.
+    -h|--help) shellman "$0"; exit 0 ;;
+  esac
+}
+
+## \usage demo [-h]
+main "$@"
+
+```
+
+Output when calling `./demo -h`:
+
+```
+Usage: demo [-h]
+
+This script actually does nothing.
+
+Options:
+  -h, --help            Print this help and exit.
+
+```
+
+You can see more examples in the documentation: <https://pawamoy.github.io/shellman/>.
+
+## Demo
+
+In the demo above we saw the three builtin templates: helptext, manpage and wikipage.
+
+You can use your own templates by specifying them with the `--template path:my/template` syntax.
+
+You can also write a plugin, see the docs: <https://pawamoy.github.io/shellman/plugins>.
+
+## Installation
+
+```
+pip install shellman
+
+```
+
+With [`uv`](https://docs.astral.sh/uv/):
+
+```
+uv tool install shellman
+
+```
+
+## Some projects using shellman
+
+- [shellm](https://github.com/shellm-org) — A collection of scripts and libraries built on a [core inclusion-system](https://github.com/shellm-org/core), all installable with [basher](https://github.com/basherpm/basher). Here are a few examples:
+- [daemon](https://github.com/shellm-org/daemon) — A library that facilitates the writing of daemonized scripts that consume files in a watched directory.
+- [debug](https://github.com/shellm-org/debug) — A simple script that sets the verbose/dry-run/debug Bash flags before running another script.
+- [format](https://github.com/shellm-org/format) — Format your output with style and color.
+- [home](https://github.com/shellm-org/home) — A home for your shell scripts!
+- [loop](https://github.com/shellm-org/loop) — Control the flow of your loops (pause/resume/etc.).
+
+# shellman
+
+shellman package.
+
+Read documentation from shell script comments and render it with templates.
+
+shellman reads specified FILEs and searches for special comments beginning with two sharps (##). It extracts documentation from these comment lines, and then generate a document by rendering a template. The template rendering is done with Jinja2. See <https://jinja.palletsprojects.com/en/3.1.x/>.
+
+Modules:
+
+- **`cli`** – Deprecated. Import directly from shellman instead.
+- **`context`** – Deprecated. Import directly from shellman instead.
+- **`reader`** – Deprecated. Import directly from shellman instead.
+- **`tags`** – Deprecated. Import directly from shellman instead.
+- **`templates`** – Deprecated. Import directly from shellman instead.
+
+Classes:
+
+- **`AuthorTag`** – A tag representing an author.
+- **`BriefTag`** – A tag representing a summary.
+- **`BugTag`** – A tag representing a bug note.
+- **`CaveatTag`** – A tag representing caveats.
+- **`CopyrightTag`** – A tag representing copyright information.
+- **`DateTag`** – A tag representing a date.
+- **`DescTag`** – A tag representing a description.
+- **`DocBlock`** – A documentation block.
+- **`DocFile`** – A shell script or documentation file.
+- **`DocLine`** – A documentation line.
+- **`DocStream`** – A stream of shell code or documentation.
+- **`DocType`** – Enumeration of the possible types of documentation.
+- **`EnvTag`** – A tag representing an environment variable used by the script.
+- **`ErrorTag`** – A tag representing a known error.
+- **`ExampleTag`** – A tag representing a code/shell example.
+- **`ExitTag`** – A tag representing an exit code.
+- **`FileTag`** – A tag representing a file used by a script.
+- **`FunctionTag`** – A tag representing a shell function.
+- **`HistoryTag`** – A tag representing a script's history.
+- **`LicenseTag`** – A tag representing a license.
+- **`NoteTag`** – A tag representing a note.
+- **`OptionTag`** – A tag representing a command-line option.
+- **`SeealsoTag`** – A tag representing "See Also" information.
+- **`StderrTag`** – A tag representing the standard error of a script/function.
+- **`StdinTag`** – A tag representing the standard input of a script/function.
+- **`StdoutTag`** – A tag representing the standard output of a script/function.
+- **`Tag`** – Base class for tags.
+- **`Template`** – Shellman templates.
+- **`TextTag`** – A simple tag holding text only.
+- **`UsageTag`** – A tag representing the command-line usage of a script.
+- **`ValueDescTag`** – A tag holding a value and a description.
+- **`VersionTag`** – A tag representing a version.
+
+Functions:
+
+- **`console_width`** – Return current console width.
+- **`do_body`** – Get the body of a text.
+- **`do_escape`** – Escape (HTML) given text.
+- **`do_firstline`** – Get the first line of a text.
+- **`do_firstword`** – Get the first word of a string.
+- **`do_format`** – Override Jinja's format filter to use format method instead of % operator.
+- **`do_groffauto`** – Convert a string to the Groff format.
+- **`do_groffautoemphasis`** – Automatically mark uppercase words as Groff emphasis.
+- **`do_groffautoescape`** – Automatically Groff-escape dashes, single/double quotes, dots and dollar signs in a string.
+- **`do_groffautostrong`** – Automatically mark words starting with - or -- as Groff strong.
+- **`do_groffemphasis`** – Mark a string as Groff emphasis.
+- **`do_groffstrong`** – Mark a string as Groff strong.
+- **`do_groupby`** – Override Jinja's groupby filter to add un(sort) option.
+- **`do_smartwrap`** – Smartly wrap the given text.
+- **`get_parser`** – Return the CLI argument parser.
+- **`main`** – Run the main program.
+
+Attributes:
+
+- **`DEFAULT_JSON_FILE`** – The default JSON file to read context from.
+- **`ENV_VAR_PREFIX`** – The prefix for environment variables that will be used as context.
+- **`FILTERS`** – The Jinja filters.
+- **`TAGS`** (`dict[str | None, type[Tag]]`) – A dictionary of tag names and their corresponding tag classes.
+- **`builtin_env`** – The built-in Jinja environment.
+- **`helptext`** – Template for help text.
+- **`manpage`** – Template for manpages.
+- **`manpage_md`** – Template for manpages in Markdown format.
+- **`tag_no_value_regex`** – Regex to match a tag without a value.
+- **`tag_value_regex`** – Regex to match a tag and its value.
+- **`usagetext`** – Template for usage text.
+- **`wikipage`** – Template for wiki pages.
+
+## DEFAULT_JSON_FILE
+
+```
+DEFAULT_JSON_FILE = '.shellman.json'
+
+```
+
+The default JSON file to read context from.
+
+## ENV_VAR_PREFIX
+
+```
+ENV_VAR_PREFIX = 'SHELLMAN_CONTEXT_'
+
+```
+
+The prefix for environment variables that will be used as context.
+
+## FILTERS
+
+```
+FILTERS = {
+    "groffstrong": do_groffstrong,
+    "groffemphasis": do_groffemphasis,
+    "groffautostrong": do_groffautostrong,
+    "groffautoemphasis": do_groffautoemphasis,
+    "groffautoescape": do_groffautoescape,
+    "groffauto": do_groffauto,
+    "groupby": do_groupby,
+    "firstword": do_firstword,
+    "firstline": do_firstline,
+    "body": do_body,
+    "smartwrap": do_smartwrap,
+    "format": do_format,
+    "escape": do_escape,
+}
+
+```
+
+The Jinja filters.
+
+## TAGS
+
+```
+TAGS: dict[str | None, type[Tag]] = {
+    None: TextTag,
+    "author": AuthorTag,
+    "bug": BugTag,
+    "brief": BriefTag,
+    "caveat": CaveatTag,
+    "copyright": CopyrightTag,
+    "date": DateTag,
+    "desc": DescTag,
+    "env": EnvTag,
+    "error": ErrorTag,
+    "example": ExampleTag,
+    "exit": ExitTag,
+    "file": FileTag,
+    "function": FunctionTag,
+    "history": HistoryTag,
+    "license": LicenseTag,
+    "note": NoteTag,
+    "option": OptionTag,
+    "seealso": SeealsoTag,
+    "stderr": StderrTag,
+    "stdin": StdinTag,
+    "stdout": StdoutTag,
+    "usage": UsageTag,
+    "version": VersionTag,
+}
+
+```
+
+A dictionary of tag names and their corresponding tag classes.
+
+## builtin_env
+
+```
+builtin_env = _get_env(_get_builtin_path())
+
+```
+
+The built-in Jinja environment.
+
+## helptext
+
+```
+helptext = Template(
+    builtin_env,
+    "helptext",
+    context={"indent": 2, "option_padding": 22},
+)
+
+```
+
+Template for help text.
+
+## manpage
+
+```
+manpage = Template(
+    builtin_env, "manpage.groff", context={"indent": 4}
+)
+
+```
+
+Template for manpages.
+
+## manpage_md
+
+```
+manpage_md = Template(builtin_env, 'manpage.md')
+
+```
+
+Template for manpages in Markdown format.
+
+## tag_no_value_regex
+
+```
+tag_no_value_regex = compile(
+    "^\\s*[\\\\@]([_a-zA-Z][\\w-]*)\\s*$"
+)
+
+```
+
+Regex to match a tag without a value.
+
+## tag_value_regex
+
+```
+tag_value_regex = compile(
+    "^\\s*[\\\\@]([_a-zA-Z][\\w-]*)\\s+(.+)$"
+)
+
+```
+
+Regex to match a tag and its value.
+
+## usagetext
+
+```
+usagetext = Template(builtin_env, 'usagetext')
+
+```
+
+Template for usage text.
+
+## wikipage
+
+```
+wikipage = Template(builtin_env, 'wikipage.md')
+
+```
+
+Template for wiki pages.
+
+## AuthorTag
+
+```
+AuthorTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing an author.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## BriefTag
+
+```
+BriefTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing a summary.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## BugTag
+
+```
+BugTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing a bug note.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## CaveatTag
+
+```
+CaveatTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing caveats.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## CopyrightTag
+
+```
+CopyrightTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing copyright information.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## DateTag
+
+```
+DateTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing a date.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## DescTag
+
+```
+DescTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing a description.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## DocBlock
+
+```
+DocBlock(lines: list[DocLine] | None = None)
+
+```
+
+A documentation block.
+
+Parameters:
+
+- **`lines`** (`list[DocLine] | None`, default: `None` ) – The block's doc lines.
+
+Methods:
+
+- **`__bool__`** – True if the block has lines.
+- **`append`** – Append a line to the block.
+
+Attributes:
+
+- **`doc_type`** (`str`) – The block type.
+- **`first_line`** (`DocLine`) – The block's first doc line.
+- **`lineno`** (`int`) – The block's first line number.
+- **`lines`** – The block's doc lines.
+- **`lines_number`** (`int`) – The number of lines in the block.
+- **`path`** (`str`) – The block's origin file path.
+- **`tag`** (`str`) – The block's tag.
+- **`value`** (`str`) – The block's first line.
+- **`values`** (`list[str]`) – The block's lines.
+
+Source code in `src/shellman/_internal/reader.py`
+
+```
+def __init__(self, lines: list[DocLine] | None = None) -> None:
+    """Initialize the doc block.
+
+    Parameters:
+        lines: The block's doc lines.
+    """
+    self.lines = lines if lines is not None else []
+    """The block's doc lines."""
+
+```
+
+### doc_type
+
+```
+doc_type: str
+
+```
+
+The block type.
+
+### first_line
+
+```
+first_line: DocLine
+
+```
+
+The block's first doc line.
+
+### lineno
+
+```
+lineno: int
+
+```
+
+The block's first line number.
+
+### lines
+
+```
+lines = lines if lines is not None else []
+
+```
+
+The block's doc lines.
+
+### lines_number
+
+```
+lines_number: int
+
+```
+
+The number of lines in the block.
+
+### path
+
+```
+path: str
+
+```
+
+The block's origin file path.
+
+### tag
+
+```
+tag: str
+
+```
+
+The block's tag.
+
+### value
+
+```
+value: str
+
+```
+
+The block's first line.
+
+### values
+
+```
+values: list[str]
+
+```
+
+The block's lines.
+
+### __bool__
+
+```
+__bool__() -> bool
+
+```
+
+True if the block has lines.
+
+Source code in `src/shellman/_internal/reader.py`
+
+```
+def __bool__(self) -> bool:
+    """True if the block has lines."""
+    return bool(self.lines)
+
+```
+
+### append
+
+```
+append(line: DocLine) -> None
+
+```
+
+Append a line to the block.
+
+Parameters:
+
+- **`line`** (`DocLine`) – The doc line to append.
+
+Source code in `src/shellman/_internal/reader.py`
+
+```
+def append(self, line: DocLine) -> None:
+    """Append a line to the block.
+
+    Parameters:
+        line: The doc line to append.
+    """
+    self.lines.append(line)
+
+```
+
+## DocFile
+
+```
+DocFile(path: str)
+
+```
+
+A shell script or documentation file.
+
+Parameters:
+
+- **`path`** (`str`) – The path to the file.
+
+Attributes:
+
+- **`filename`** – The file name.
+- **`filepath`** – The file path.
+- **`sections`** (`dict[str, list[Tag]]`) – The documentation sections.
+
+Source code in `src/shellman/_internal/reader.py`
+
+```
+def __init__(self, path: str) -> None:
+    """Initialize the documentation file.
+
+    Parameters:
+        path: The path to the file.
+    """
+    self.filepath = path
+    """The file path."""
+    self.filename = os.path.basename(path)
+    """The file name."""
+    self.sections: dict[str, list[Tag]] = {}
+    """The documentation sections."""
+
+    with open(path, encoding="utf-8") as stream:
+        try:
+            self.sections = _process_blocks(_preprocess_lines(_preprocess_stream(stream)))
+        except UnicodeDecodeError:
+            _logger.error(f"Cannot read file {path}")  # noqa: TRY400
+            self.sections = {}
+
+```
+
+### filename
+
+```
+filename = basename(path)
+
+```
+
+The file name.
+
+### filepath
+
+```
+filepath = path
+
+```
+
+The file path.
+
+### sections
+
+```
+sections: dict[str, list[Tag]] = _process_blocks(
+    _preprocess_lines(_preprocess_stream(stream))
+)
+
+```
+
+The documentation sections.
+
+## DocLine
+
+```
+DocLine(
+    path: str, lineno: int, tag: str | None, value: str
+)
+
+```
+
+A documentation line.
+
+Parameters:
+
+- **`path`** (`str`) – The origin file path.
+- **`lineno`** (`int`) – The line number in the file.
+- **`tag`** (`str | None`) – The line's tag, if any.
+- **`value`** (`str`) – The line's value.
+
+Attributes:
+
+- **`doc_type`** (`str`) – The line's doc type.
+- **`lineno`** – The line number in the file.
+- **`path`** – The origin file path.
+- **`tag`** – The line's tag.
+- **`value`** – The line's value.
+
+Source code in `src/shellman/_internal/reader.py`
+
+```
+def __init__(self, path: str, lineno: int, tag: str | None, value: str) -> None:
+    """Initialize the doc line.
+
+    Parameters:
+        path: The origin file path.
+        lineno: The line number in the file.
+        tag: The line's tag, if any.
+        value: The line's value.
+    """
+    self.path = path
+    """The origin file path."""
+    self.lineno = lineno
+    """The line number in the file."""
+    self.tag = tag or ""
+    """The line's tag."""
+    self.value = value
+    """The line's value."""
+
+```
+
+### doc_type
+
+```
+doc_type: str
+
+```
+
+The line's doc type.
+
+### lineno
+
+```
+lineno = lineno
+
+```
+
+The line number in the file.
+
+### path
+
+```
+path = path
+
+```
+
+The origin file path.
+
+### tag
+
+```
+tag = tag or ''
+
+```
+
+The line's tag.
+
+### value
+
+```
+value = value
+
+```
+
+The line's value.
+
+## DocStream
+
+```
+DocStream(stream: Iterable[str], filename: str = '')
+
+```
+
+A stream of shell code or documentation.
+
+Parameters:
+
+- **`stream`** (`Iterable[str]`) – A text stream.
+- **`filename`** (`str`, default: `''` ) – An optional file name.
+
+Attributes:
+
+- **`filename`** – The file name.
+- **`filepath`** – The file path.
+- **`sections`** – The documentation sections.
+
+Source code in `src/shellman/_internal/reader.py`
+
+```
+def __init__(self, stream: Iterable[str], filename: str = "") -> None:
+    """Initialize the documentation file.
+
+    Parameters:
+        stream: A text stream.
+        filename: An optional file name.
+    """
+    self.filepath = None
+    """The file path."""
+    self.filename = filename
+    """The file name."""
+    self.sections = _process_blocks(_preprocess_lines(_preprocess_stream(stream)))
+    """The documentation sections."""
+
+```
+
+### filename
+
+```
+filename = filename
+
+```
+
+The file name.
+
+### filepath
+
+```
+filepath = None
+
+```
+
+The file path.
+
+### sections
+
+```
+sections = _process_blocks(
+    _preprocess_lines(_preprocess_stream(stream))
+)
+
+```
+
+The documentation sections.
+
+## DocType
+
+Enumeration of the possible types of documentation.
+
+Attributes:
+
+- **`INVALID`** – Invalid type.
+- **`TAG`** – A tag.
+- **`TAG_VALUE`** – A tag its value.
+- **`VALUE`** – A value.
+
+### INVALID
+
+```
+INVALID = 'I'
+
+```
+
+Invalid type.
+
+### TAG
+
+```
+TAG = 'T'
+
+```
+
+A tag.
+
+### TAG_VALUE
+
+```
+TAG_VALUE = 'TV'
+
+```
+
+A tag its value.
+
+### VALUE
+
+```
+VALUE = 'V'
+
+```
+
+A value.
+
+## EnvTag
+
+```
+EnvTag(name: str, description: str)
+
+```
+
+Bases: `ValueDescTag`
+
+A tag representing an environment variable used by the script.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`description`** (`str`) – The environment variable description.
+- **`description_field_name`** (`str`) – The name of the field containing the description.
+- **`name`** (`str`) – The environment variable name.
+- **`tag`** (`str`) – The tag name.
+- **`value_field_name`** (`str`) – The name of the field containing the value.
+
+### description
+
+```
+description: str
+
+```
+
+The environment variable description.
+
+### description_field_name
+
+```
+description_field_name: str = 'description'
+
+```
+
+The name of the field containing the description.
+
+### name
+
+```
+name: str
+
+```
+
+The environment variable name.
+
+### tag
+
+```
+tag: str = 'env'
+
+```
+
+The tag name.
+
+### value_field_name
+
+```
+value_field_name: str = 'name'
+
+```
+
+The name of the field containing the value.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> Self
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> Self:
+    value, description = "", []
+    for line in lines:
+        if line.tag == cls.tag:
+            split = line.value.split(" ", 1)
+            if len(split) > 1:
+                value = split[0]
+                description.append(split[1])
+            else:
+                value = split[0]
+        else:
+            description.append(line.value)
+    return cls(**{cls.value_field_name: value, cls.description_field_name: "\n".join(description)})
+
+```
+
+## ErrorTag
+
+```
+ErrorTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing a known error.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## ExampleTag
+
+```
+ExampleTag(
+    brief: str, code: str, code_lang: str, description: str
+)
+
+```
+
+Bases: `Tag`
+
+A tag representing a code/shell example.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`brief`** (`str`) – The example's summary.
+- **`code`** (`str`) – The example's code.
+- **`code_lang`** (`str`) – The example's language.
+- **`description`** (`str`) – The example's description.
+
+### brief
+
+```
+brief: str
+
+```
+
+The example's summary.
+
+### code
+
+```
+code: str
+
+```
+
+The example's code.
+
+### code_lang
+
+```
+code_lang: str
+
+```
+
+The example's language.
+
+### description
+
+```
+description: str
+
+```
+
+The example's description.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> ExampleTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> ExampleTag:
+    brief, code, description = [], [], []
+    code_lang = ""
+    current = None
+    for line in lines:
+        if line.tag == "example":
+            if line.value:
+                brief.append(line.value)
+            current = "brief"
+        elif line.tag == "example-code":
+            if line.value:
+                code_lang = line.value
+            current = "code"
+        elif line.tag == "example-description":
+            if line.value:
+                description.append(line.value)
+            current = "description"
+        elif current == "brief":
+            brief.append(line.value)
+        elif current == "code":
+            code.append(line.value)
+        elif current == "description":
+            description.append(line.value)
+
+    return ExampleTag(
+        brief="\n".join(brief),
+        code="\n".join(code),
+        code_lang=code_lang,
+        description="\n".join(description),
+    )
+
+```
+
+## ExitTag
+
+```
+ExitTag(code: str, description: str)
+
+```
+
+Bases: `ValueDescTag`
+
+A tag representing an exit code.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`code`** (`str`) – The exit code value.
+- **`description`** (`str`) – The exit code description.
+- **`description_field_name`** (`str`) – The name of the field containing the description.
+- **`tag`** (`str`) – The tag name.
+- **`value_field_name`** (`str`) – The name of the field containing the value.
+
+### code
+
+```
+code: str
+
+```
+
+The exit code value.
+
+### description
+
+```
+description: str
+
+```
+
+The exit code description.
+
+### description_field_name
+
+```
+description_field_name: str = 'description'
+
+```
+
+The name of the field containing the description.
+
+### tag
+
+```
+tag: str = 'exit'
+
+```
+
+The tag name.
+
+### value_field_name
+
+```
+value_field_name: str = 'code'
+
+```
+
+The name of the field containing the value.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> Self
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> Self:
+    value, description = "", []
+    for line in lines:
+        if line.tag == cls.tag:
+            split = line.value.split(" ", 1)
+            if len(split) > 1:
+                value = split[0]
+                description.append(split[1])
+            else:
+                value = split[0]
+        else:
+            description.append(line.value)
+    return cls(**{cls.value_field_name: value, cls.description_field_name: "\n".join(description)})
+
+```
+
+## FileTag
+
+```
+FileTag(name: str, description: str)
+
+```
+
+Bases: `ValueDescTag`
+
+A tag representing a file used by a script.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`description`** (`str`) – The file description.
+- **`description_field_name`** (`str`) – The name of the field containing the description.
+- **`name`** (`str`) – The file name/path.
+- **`tag`** (`str`) – The tag name.
+- **`value_field_name`** (`str`) – The name of the field containing the value.
+
+### description
+
+```
+description: str
+
+```
+
+The file description.
+
+### description_field_name
+
+```
+description_field_name: str = 'description'
+
+```
+
+The name of the field containing the description.
+
+### name
+
+```
+name: str
+
+```
+
+The file name/path.
+
+### tag
+
+```
+tag: str = 'file'
+
+```
+
+The tag name.
+
+### value_field_name
+
+```
+value_field_name: str = 'name'
+
+```
+
+The name of the field containing the value.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> Self
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> Self:
+    value, description = "", []
+    for line in lines:
+        if line.tag == cls.tag:
+            split = line.value.split(" ", 1)
+            if len(split) > 1:
+                value = split[0]
+                description.append(split[1])
+            else:
+                value = split[0]
+        else:
+            description.append(line.value)
+    return cls(**{cls.value_field_name: value, cls.description_field_name: "\n".join(description)})
+
+```
+
+## FunctionTag
+
+```
+FunctionTag(
+    prototype: str,
+    brief: str,
+    description: str,
+    arguments: Sequence[str],
+    preconditions: Sequence[str],
+    return_codes: Sequence[str],
+    seealso: Sequence[str],
+    stderr: Sequence[str],
+    stdin: Sequence[str],
+    stdout: Sequence[str],
+)
+
+```
+
+Bases: `Tag`
+
+A tag representing a shell function.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`arguments`** (`Sequence[str]`) – The function's arguments.
+- **`brief`** (`str`) – The function's summary.
+- **`description`** (`str`) – The function's description.
+- **`preconditions`** (`Sequence[str]`) – The function's preconditions.
+- **`prototype`** (`str`) – The function's prototype.
+- **`return_codes`** (`Sequence[str]`) – The function's return codes.
+- **`seealso`** (`Sequence[str]`) – The function's "see also" information.
+- **`stderr`** (`Sequence[str]`) – The function's standard error.
+- **`stdin`** (`Sequence[str]`) – The function's standard input.
+- **`stdout`** (`Sequence[str]`) – The function's standard output.
+
+### arguments
+
+```
+arguments: Sequence[str]
+
+```
+
+The function's arguments.
+
+### brief
+
+```
+brief: str
+
+```
+
+The function's summary.
+
+### description
+
+```
+description: str
+
+```
+
+The function's description.
+
+### preconditions
+
+```
+preconditions: Sequence[str]
+
+```
+
+The function's preconditions.
+
+### prototype
+
+```
+prototype: str
+
+```
+
+The function's prototype.
+
+### return_codes
+
+```
+return_codes: Sequence[str]
+
+```
+
+The function's return codes.
+
+### seealso
+
+```
+seealso: Sequence[str]
+
+```
+
+The function's "see also" information.
+
+### stderr
+
+```
+stderr: Sequence[str]
+
+```
+
+The function's standard error.
+
+### stdin
+
+```
+stdin: Sequence[str]
+
+```
+
+The function's standard input.
+
+### stdout
+
+```
+stdout: Sequence[str]
+
+```
+
+The function's standard output.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> FunctionTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> FunctionTag:
+    brief = ""
+    prototype = ""
+    description = []
+    arguments = []
+    return_codes = []
+    preconditions = []
+    seealso = []
+    stderr = []
+    stdin = []
+    stdout = []
+    for line in lines:
+        if line.tag == "function":
+            prototype = line.value
+        elif line.tag == "function-brief":
+            brief = line.value
+        elif line.tag == "function-description":
+            description.append(line.value)
+        elif line.tag == "function-argument":
+            arguments.append(line.value)
+        elif line.tag == "function-precondition":
+            preconditions.append(line.value)
+        elif line.tag == "function-return":
+            return_codes.append(line.value)
+        elif line.tag == "function-seealso":
+            seealso.append(line.value)
+        elif line.tag == "function-stderr":
+            stderr.append(line.value)
+        elif line.tag == "function-stdin":
+            stdin.append(line.value)
+        elif line.tag == "function-stdout":
+            stdout.append(line.value)
+        else:
+            description.append(line.value)
+
+    return FunctionTag(
+        prototype=prototype,
+        brief=brief,
+        description="\n".join(description),
+        arguments=arguments,
+        preconditions=preconditions,
+        return_codes=return_codes,
+        seealso=seealso,
+        stderr=stderr,
+        stdin=stdin,
+        stdout=stdout,
+    )
+
+```
+
+## HistoryTag
+
+```
+HistoryTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing a script's history.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## LicenseTag
+
+```
+LicenseTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing a license.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## NoteTag
+
+```
+NoteTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing a note.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## OptionTag
+
+```
+OptionTag(
+    short: str,
+    long: str,
+    positional: str,
+    default: str,
+    group: str,
+    description: str,
+)
+
+```
+
+Bases: `Tag`
+
+A tag representing a command-line option.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`default`** (`str`) – The option default value.
+- **`description`** (`str`) – The option description.
+- **`group`** (`str`) – The option group.
+- **`long`** (`str`) – The option long flag.
+- **`positional`** (`str`) – The option positional arguments.
+- **`short`** (`str`) – The option short flag.
+- **`signature`** (`str`) – The signature of the option.
+
+### default
+
+```
+default: str
+
+```
+
+The option default value.
+
+### description
+
+```
+description: str
+
+```
+
+The option description.
+
+### group
+
+```
+group: str
+
+```
+
+The option group.
+
+### long
+
+```
+long: str
+
+```
+
+The option long flag.
+
+### positional
+
+```
+positional: str
+
+```
+
+The option positional arguments.
+
+### short
+
+```
+short: str
+
+```
+
+The option short flag.
+
+### signature
+
+```
+signature: str
+
+```
+
+The signature of the option.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> OptionTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> OptionTag:
+    short, long, positional, default, group = "", "", "", "", ""
+    description = []
+    for line in lines:
+        if line.tag == "option":
+            search = re.search(
+                r"^(?P-\w)?(?:, )?(?P--[\w-]+)? ?(?P.+)?",
+                line.value,
+            )
+            if search:
+                short, long, positional = search.groups(default="")
+            else:
+                positional = line.value
+        elif line.tag == "option-default":
+            default = line.value
+        elif line.tag == "option-group":
+            group = line.value
+        else:
+            description.append(line.value)
+    return OptionTag(
+        short=short,
+        long=long,
+        positional=positional,
+        default=default,
+        group=group,
+        description="\n".join(description),
+    )
+
+```
+
+## SeealsoTag
+
+```
+SeealsoTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing "See Also" information.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## StderrTag
+
+```
+StderrTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing the standard error of a script/function.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## StdinTag
+
+```
+StdinTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing the standard input of a script/function.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## StdoutTag
+
+```
+StdoutTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing the standard output of a script/function.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## Tag
+
+Base class for tags.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> Tag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> Tag:
+    """Parse a sequence of lines into a tag instance.
+
+    Parameters:
+        lines: The sequence of lines to parse.
+
+    Returns:
+        A tag instance.
+    """
+    raise NotImplementedError
+
+```
+
+## Template
+
+```
+Template(
+    env_or_directory: str | Environment,
+    base_template: str,
+    context: dict[str, Any] | None = None,
+    filters: dict[str, Any] | None = None,
+)
+
+```
+
+Shellman templates.
+
+Parameters:
+
+- **`env_or_directory`** (`str | Environment`) – Jinja environment or directory to load environment from.
+- **`base_template`** (`str`) – The template file to use.
+- **`context`** (`dict[str, Any] | None`, default: `None` ) – Base context to render with.
+- **`filters`** (`dict[str, Any] | None`, default: `None` ) – Base filters to add to the environment.
+
+Methods:
+
+- **`render`** – Render the template.
+
+Attributes:
+
+- **`base_template`** – The base template file.
+- **`context`** – The base context.
+- **`env`** (`Environment`) – The Jinja environment.
+- **`template`** (`Template`) – The corresponding Jinja template.
+
+Source code in `src/shellman/_internal/templates/__init__.py`
+
+```
+def __init__(
+    self,
+    env_or_directory: str | Environment,
+    base_template: str,
+    context: dict[str, Any] | None = None,
+    filters: dict[str, Any] | None = None,
+):
+    """Initialize the template.
+
+    Parameters:
+        env_or_directory: Jinja environment or directory to load environment from.
+        base_template: The template file to use.
+        context: Base context to render with.
+        filters: Base filters to add to the environment.
+    """
+    self.env: Environment
+    """The Jinja environment."""
+
+    if isinstance(env_or_directory, Environment):
+        self.env = env_or_directory
+    elif isinstance(env_or_directory, str):
+        self.env = _get_env(env_or_directory)
+    else:
+        raise TypeError(env_or_directory)
+
+    if filters is None:
+        filters = {}
+
+    self.env.filters.update(FILTERS)
+    self.env.filters.update(filters)
+
+    self.base_template = base_template
+    """The base template file."""
+    self.context = context or {}
+    """The base context."""
+    self.__template: Template = None  # type: ignore[assignment]
+
+```
+
+### base_template
+
+```
+base_template = base_template
+
+```
+
+The base template file.
+
+### context
+
+```
+context = context or {}
+
+```
+
+The base context.
+
+### env
+
+```
+env: Environment
+
+```
+
+The Jinja environment.
+
+### template
+
+```
+template: Template
+
+```
+
+The corresponding Jinja template.
+
+### render
+
+```
+render(**kwargs: Any) -> str
+
+```
+
+Render the template.
+
+Parameters:
+
+- **`**kwargs`** (`Any`, default: `{}` ) – Keyword arguments passed to Jinja's render method.
+
+Returns:
+
+- `str` – The rendered text.
+
+Source code in `src/shellman/_internal/templates/__init__.py`
+
+```
+def render(self, **kwargs: Any) -> str:
+    """Render the template.
+
+    Parameters:
+        **kwargs: Keyword arguments passed to Jinja's render method.
+
+
+    Returns:
+        The rendered text.
+    """
+    context = deepcopy(self.context)
+    context.update(kwargs)
+    return self.template.render(**context).rstrip("\n")
+
+```
+
+## TextTag
+
+```
+TextTag(text: str)
+
+```
+
+Bases: `Tag`
+
+A simple tag holding text only.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## UsageTag
+
+```
+UsageTag(program: str, command: str)
+
+```
+
+Bases: `Tag`
+
+A tag representing the command-line usage of a script.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`command`** (`str`) – The command-line usage.
+- **`program`** (`str`) – The program name.
+
+### command
+
+```
+command: str
+
+```
+
+The command-line usage.
+
+### program
+
+```
+program: str
+
+```
+
+The program name.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> UsageTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> UsageTag:
+    program, command = "", ""
+    split = lines[0].value.split(" ", 1)
+    if len(split) > 1:
+        program, command = split
+    else:
+        program = split[0]
+    if len(lines) > 1:
+        command = command + "\n" + "\n".join(line.value for line in lines[1:])
+    return UsageTag(program=program, command=command)
+
+```
+
+## ValueDescTag
+
+```
+ValueDescTag()
+
+```
+
+Bases: `Tag`
+
+A tag holding a value and a description.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`description_field_name`** (`str`) – The name of the field containing the description.
+- **`tag`** (`str`) – The tag name.
+- **`value_field_name`** (`str`) – The name of the field containing the value.
+
+### description_field_name
+
+```
+description_field_name: str = 'description'
+
+```
+
+The name of the field containing the description.
+
+### tag
+
+```
+tag: str
+
+```
+
+The tag name.
+
+### value_field_name
+
+```
+value_field_name: str = 'name'
+
+```
+
+The name of the field containing the value.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> Self
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> Self:
+    value, description = "", []
+    for line in lines:
+        if line.tag == cls.tag:
+            split = line.value.split(" ", 1)
+            if len(split) > 1:
+                value = split[0]
+                description.append(split[1])
+            else:
+                value = split[0]
+        else:
+            description.append(line.value)
+    return cls(**{cls.value_field_name: value, cls.description_field_name: "\n".join(description)})
+
+```
+
+## VersionTag
+
+```
+VersionTag(text: str)
+
+```
+
+Bases: `TextTag`
+
+A tag representing a version.
+
+Methods:
+
+- **`from_lines`** – Parse a sequence of lines into a tag instance.
+
+Attributes:
+
+- **`text`** (`str`) – The tag's text.
+
+### text
+
+```
+text: str
+
+```
+
+The tag's text.
+
+### from_lines
+
+```
+from_lines(lines: Sequence[DocLine]) -> TextTag
+
+```
+
+Parse a sequence of lines into a tag instance.
+
+Parameters:
+
+- **`lines`** (`Sequence[DocLine]`) – The sequence of lines to parse.
+
+Returns:
+
+- `Tag` – A tag instance.
+
+Source code in `src/shellman/_internal/tags.py`
+
+```
+@classmethod
+def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+    return cls(text="\n".join(line.value for line in lines))
+
+```
+
+## console_width
+
+```
+console_width(default: int = 80) -> int
+
+```
+
+Return current console width.
+
+Parameters:
+
+- **`default`** (`int`, default: `80` ) – The default value if width cannot be retrieved.
+
+Returns:
+
+- `int` – The console width.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def console_width(default: int = 80) -> int:
+    """Return current console width.
+
+    Parameters:
+        default: The default value if width cannot be retrieved.
+
+    Returns:
+        The console width.
+    """
+    # only solution that works with stdin redirected from file
+    # https://stackoverflow.com/questions/566746
+    return get_terminal_size((default, 20)).columns
+
+```
+
+## do_body
+
+```
+do_body(
+    string_or_list: str | Sequence[str],
+    delimiter: str = " ",
+) -> str | None
+
+```
+
+Get the body of a text.
+
+Parameters:
+
+- **`string_or_list`** (`str | Sequence[str]`) – Given text.
+
+Returns:
+
+- `str | None` – The text's body.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_body(string_or_list: str | Sequence[str], delimiter: str = " ") -> str | None:
+    """Get the body of a text.
+
+    Parameters:
+        string_or_list: Given text.
+
+
+    Returns:
+        The text's body.
+    """
+    if isinstance(string_or_list, str):
+        return string_or_list.split(delimiter, 1)[1]
+    if isinstance(string_or_list, list):
+        return "\n".join(string_or_list[1:])
+    return None
+
+```
+
+## do_escape
+
+```
+do_escape(
+    value: str, except_starts_with: list[str] | None = None
+) -> str
+
+```
+
+Escape (HTML) given text.
+
+Parameters:
+
+- **`except_starts_with`** (`list[str] | None`, default: `None` ) – Each line starting with at least one of the prefixes listed in this parameter will not be escaped.
+
+Returns:
+
+- `str` – The escaped text.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_escape(value: str, except_starts_with: list[str] | None = None) -> str:
+    """Escape (HTML) given text.
+
+    Parameters:
+        except_starts_with: Each line starting with at least one of the prefixes
+            listed in this parameter will not be escaped.
+
+    Returns:
+        The escaped text.
+    """
+    predicate = (
+        (lambda line: any(line.startswith(string) for string in except_starts_with))
+        if except_starts_with is not None
+        else lambda line: False
+    )
+    return "\n".join(line if line == "" or predicate(line) else escape(line) for line in value.split("\n"))
+
+```
+
+## do_firstline
+
+```
+do_firstline(
+    string_or_list: str | Sequence[str],
+) -> str | None
+
+```
+
+Get the first line of a text.
+
+Parameters:
+
+- **`string_or_list`** (`str | Sequence[str]`) – Given text.
+
+Returns:
+
+- `str | None` – The text's first line.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_firstline(string_or_list: str | Sequence[str]) -> str | None:
+    """Get the first line of a text.
+
+    Parameters:
+        string_or_list: Given text.
+
+
+    Returns:
+        The text's first line.
+    """
+    if isinstance(string_or_list, str):
+        return string_or_list.split("\n", 1)[0]
+    if isinstance(string_or_list, list):
+        return string_or_list[0]
+    return None
+
+```
+
+## do_firstword
+
+```
+do_firstword(string: str, delimiters: str = ' ') -> str
+
+```
+
+Get the first word of a string.
+
+Parameters:
+
+- **`string`** (`str`) – The string.
+- **`delimiters`** (`str`, default: `' '` ) – The delimiter characters.
+
+Returns:
+
+- `str` – The string's first word.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_firstword(string: str, delimiters: str = " ") -> str:
+    """Get the first word of a string.
+
+    Parameters:
+        string: The string.
+        delimiters: The delimiter characters.
+
+
+    Returns:
+        The string's first word.
+    """
+    # FIXME: maybe use a regex instead: ^[\w_]+
+    for i, char in enumerate(string):
+        if char in delimiters:
+            return string[:i]
+    return string
+
+```
+
+## do_format
+
+```
+do_format(string: str, *args: Any, **kwargs: Any) -> str
+
+```
+
+Override Jinja's format filter to use format method instead of % operator.
+
+Parameters:
+
+- **`string`** (`str`) – The string to format.
+- **`*args`** (`Any`, default: `()` ) – Arguments passed to str.format.
+- **`**kwargs`** (`Any`, default: `{}` ) – Keyword arguments passed to str.format.
+
+Returns:
+
+- `str` – The formatted string.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_format(string: str, *args: Any, **kwargs: Any) -> str:
+    """Override Jinja's format filter to use format method instead of % operator.
+
+    Parameters:
+        string: The string to format.
+        *args: Arguments passed to `str.format`.
+        **kwargs: Keyword arguments passed to `str.format`.
+
+
+    Returns:
+        The formatted string.
+    """
+    return string.format(*args, **kwargs)
+
+```
+
+## do_groffauto
+
+```
+do_groffauto(string: str, *, escape: bool = True) -> str
+
+```
+
+Convert a string to the Groff format.
+
+Parameters:
+
+- **`string`** (`str`) – The string to convert.
+- **`escape`** (`bool`, default: `True` ) – Whether to escape the result.
+
+Returns:
+
+- `str` – A Groff string.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_groffauto(string: str, *, escape: bool = True) -> str:
+    """Convert a string to the Groff format.
+
+    Parameters:
+        string: The string to convert.
+        escape: Whether to escape the result.
+
+    Returns:
+        A Groff string.
+    """
+    string = do_groffautoemphasis(string)
+    string = do_groffautostrong(string)
+    if escape:
+        string = do_groffautoescape(string)
+    return string
+
+```
+
+## do_groffautoemphasis
+
+```
+do_groffautoemphasis(string: str) -> str
+
+```
+
+Automatically mark uppercase words as Groff emphasis.
+
+Parameters:
+
+- **`string`** (`str`) – The string to convert.
+
+Returns:
+
+- `str` – The updated string.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_groffautoemphasis(string: str) -> str:
+    """Automatically mark uppercase words as Groff emphasis.
+
+    Parameters:
+        string: The string to convert.
+
+    Returns:
+        The updated string.
+    """
+    return re.sub(r"(\b[A-Z_0-9]{2,}\b)", r"\\fI\1\\fR", string)
+
+```
+
+## do_groffautoescape
+
+```
+do_groffautoescape(string: str) -> str
+
+```
+
+Automatically Groff-escape dashes, single/double quotes, dots and dollar signs in a string.
+
+Parameters:
+
+- **`string`** (`str`) – The string to escape.
+
+Returns:
+
+- `str` – The escaped string.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_groffautoescape(string: str) -> str:
+    """Automatically Groff-escape dashes, single/double quotes, dots and dollar signs in a string.
+
+    Parameters:
+        string: The string to escape.
+
+    Returns:
+        The escaped string.
+    """
+    return string.replace("-", "\\-").replace("'", "\\'").replace('"', '\\"').replace(".", "\\.").replace("$", "\\f$")
+
+```
+
+## do_groffautostrong
+
+```
+do_groffautostrong(string: str) -> str
+
+```
+
+Automatically mark words starting with `-` or `--` as Groff strong.
+
+Parameters:
+
+- **`string`** (`str`) – The string to convert.
+
+Returns:
+
+- `str` – The updated string.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_groffautostrong(string: str) -> str:
+    """Automatically mark words starting with `-` or `--` as Groff strong.
+
+    Parameters:
+        string: The string to convert.
+
+    Returns:
+        The updated string.
+    """
+    return re.sub(r"(--?[\w-]+=?)", r"\\fB\1\\fR", string)
+
+```
+
+## do_groffemphasis
+
+```
+do_groffemphasis(string: str) -> str
+
+```
+
+Mark a string as Groff emphasis.
+
+Parameters:
+
+- **`string`** (`str`) – The string to convert
+
+Returns:
+
+- `str` – The updated string.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_groffemphasis(string: str) -> str:
+    """Mark a string as Groff emphasis.
+
+    Parameters:
+        string: The string to convert
+
+    Returns:
+        The updated string.
+    """
+    return "\\fI" + string + "\\fR"
+
+```
+
+## do_groffstrong
+
+```
+do_groffstrong(string: str) -> str
+
+```
+
+Mark a string as Groff strong.
+
+Parameters:
+
+- **`string`** (`str`) – The string to convert.
+
+Returns:
+
+- `str` – The updated string.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_groffstrong(string: str) -> str:
+    """Mark a string as Groff strong.
+
+    Parameters:
+        string: The string to convert.
+
+    Returns:
+        The updated string.
+    """
+    return "\\fB" + string + "\\fR"
+
+```
+
+## do_groupby
+
+```
+do_groupby(
+    environment: Environment,
+    value: Sequence[Any],
+    attribute: str,
+    *,
+    sort: bool = True,
+) -> list[tuple[str, list[Any]]]
+
+```
+
+Override Jinja's groupby filter to add un(sort) option.
+
+Parameters:
+
+- **`environment`** (`Environment`) – Passed by Jinja.
+- **`value`** (`Sequence[Any]`) – The value to group.
+- **`attribute`** (`str`) – The attribute to use for grouping/sorting.
+
+Returns:
+
+- `list[tuple[str, list[Any]]]` – The value grouped by the given attribute.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+@pass_environment
+def do_groupby(
+    environment: Environment,
+    value: Sequence[Any],
+    attribute: str,
+    *,
+    sort: bool = True,
+) -> list[tuple[str, list[Any]]]:
+    """Override Jinja's groupby filter to add un(sort) option.
+
+    Parameters:
+        environment: Passed by Jinja.
+        value: The value to group.
+        attribute: The attribute to use for grouping/sorting.
+
+    Returns:
+        The value grouped by the given attribute.
+    """
+    expr = make_attrgetter(environment, attribute)
+
+    # Original behavior: groups are sorted
+    if sort:
+        return [_GroupTuple(key, list(values)) for key, values in groupby(sorted(value, key=expr), expr)]
+
+    # Added behavior: original order of appearance is kept
+    all_groups = [expr(_) for _ in value]
+    group_set = set()
+    unique_groups = []
+    for group in all_groups:
+        if group not in group_set:
+            unique_groups.append(group)
+            group_set.add(group)
+    grouped = {k: list(v) for k, v in groupby(sorted(value, key=expr), expr)}
+    return [_GroupTuple(group, grouped[group]) for group in unique_groups]
+
+```
+
+## do_smartwrap
+
+```
+do_smartwrap(
+    text: str,
+    indent: int = 4,
+    width: int | None = None,
+    *,
+    indentfirst: bool = True,
+) -> str
+
+```
+
+Smartly wrap the given text.
+
+Parameters:
+
+- **`text`** (`str`) – The text to wrap.
+- **`indent`** (`int`, default: `4` ) – The indentation to use (number of spaces).
+- **`width`** (`int | None`, default: `None` ) – The desired text width.
+- **`indentfirst`** (`bool`, default: `True` ) – Whether to indent the first line too.
+
+Returns:
+
+- `str` – The wrapped text.
+
+Source code in `src/shellman/_internal/templates/filters.py`
+
+```
+def do_smartwrap(text: str, indent: int = 4, width: int | None = None, *, indentfirst: bool = True) -> str:
+    """Smartly wrap the given text.
+
+    Parameters:
+        text: The text to wrap.
+        indent: The indentation to use (number of spaces).
+        width: The desired text width.
+        indentfirst: Whether to indent the first line too.
+
+    Returns:
+        The wrapped text.
+    """
+    if width is None or width < 0:
+        c_width = console_width(default=79)
+        if width is None:
+            width = c_width or 79
+        else:
+            width += c_width
+
+    indent_str = indent * " "
+    to_join = defaultdict(lambda: False)
+    lines = text.split("\n")
+    previous = True
+    for i, line in enumerate(lines):
+        if not (line == "" or line[0] in (" ", "\t")):
+            if previous:
+                to_join[i] = True
+            previous = True
+        else:
+            previous = False
+    joined_lines = [lines[0]]
+    for i in range(1, len(lines)):
+        if to_join[i]:
+            joined_lines.append(" " + lines[i])
+        else:
+            joined_lines.append("\n" + lines[i])
+    new_text = "".join(joined_lines)
+    new_text_lines = new_text.split("\n")
+    wrapper = textwrap.TextWrapper(subsequent_indent=indent_str)
+    wrap_indented_text_lines = []
+    first_line = new_text_lines[0]
+    if not (first_line == "" or first_line[0] in (" ", "\t")):
+        if indentfirst:
+            wrapper.width = width
+            wrapper.initial_indent = indent_str
+        else:
+            wrapper.width = width - indent
+            wrapper.initial_indent = ""
+        wrap_indented_text_lines.append(wrapper.fill(first_line))
+    elif first_line:
+        wrap_indented_text_lines.append(indent_str + first_line)
+    else:
+        wrap_indented_text_lines.append("")
+    wrapper.width = width
+    wrapper.initial_indent = indent_str
+    for line in new_text_lines[1:]:
+        if not (line == "" or line[0] in (" ", "\t")):
+            wrap_indented_text_lines.append(wrapper.fill(line))
+        elif line:
+            wrap_indented_text_lines.append(indent_str + line)
+        else:
+            wrap_indented_text_lines.append("")
+    return "\n".join(wrap_indented_text_lines)
+
+```
+
+## get_parser
+
+```
+get_parser() -> ArgumentParser
+
+```
+
+Return the CLI argument parser.
+
+Returns:
+
+- `ArgumentParser` – An argparse parser.
+
+Source code in `src/shellman/_internal/cli.py`
+
+```
+def get_parser() -> argparse.ArgumentParser:
+    """Return the CLI argument parser.
+
+    Returns:
+        An argparse parser.
+    """
+    parser = argparse.ArgumentParser(prog="shellman")
+
+    parser.add_argument(
+        "-c",
+        "--context",
+        dest="context",
+        nargs="+",
+        help="context to inject when rendering the template. "
+        "You can pass JSON strings or key=value pairs. "
+        "Example: `--context project=hello '{\"version\": [0, 3, 1]}'`.",
+    )
+
+    parser.add_argument(
+        "--context-file",
+        dest="context_file",
+        help="JSON file to read context from. "
+        f"By default shellman will try to read the file '{DEFAULT_JSON_FILE}' "
+        "in the current directory.",
+    )
+
+    parser.add_argument(
+        "-t",
+        "--template",
+        metavar="TEMPLATE",
+        choices=templates._parser_choices(),
+        default="helptext",
+        dest="template",
+        help="the Jinja2 template to use. "
+        'Prefix with "path:" to specify the path '
+        "to a custom template. "
+        f"Available templates: {', '.join(templates._names())}",
+    )
+
+    parser.add_argument(
+        "-m",
+        "--merge",
+        dest="merge",
+        action="store_true",
+        help="with multiple input files, merge their contents in the output "
+        "instead of appending (default: %(default)s). ",
+    )
+
+    parser.add_argument(
+        "-o",
+        "--output",
+        action="store",
+        dest="output",
+        default=None,
+        help="file to write to (default: stdout). "
+        "You can use the following variables in the output name: "
+        "{basename}, {ext}, {filename} (equal to {basename}.{ext}), "
+        "{filepath}, {dirname}, {dirpath}, and {vcsroot} "
+        "(git and mercurial supported). "
+        "They will be populated from each input file.",
+    )
+    parser.add_argument("-V", "--version", action="version", version=f"%(prog)s {debug._get_version()}")
+    parser.add_argument("--debug-info", action=_DebugInfo, help="Print debug information.")
+
+    parser.add_argument(
+        "FILE",
+        type=_valid_file,
+        nargs="*",
+        help="path to the file(s) to read. Use - to read on standard input.",
+    )
+    return parser
+
+```
+
+## main
+
+```
+main(args: list[str] | None = None) -> int
+
+```
+
+Run the main program.
+
+This function is executed when you type `shellman` or `python -m shellman`.
+
+Get the file to parse, construct a Doc object, get file's doc, get the according formatter class, instantiate it with acquired doc and write on specified file (stdout by default).
+
+Parameters:
+
+- **`args`** (`list[str] | None`, default: `None` ) – Arguments passed from the command line.
+
+Returns:
+
+- `int` – An exit code.
+
+Source code in `src/shellman/_internal/cli.py`
+
+```
+def main(args: list[str] | None = None) -> int:
+    """Run the main program.
+
+    This function is executed when you type `shellman` or `python -m shellman`.
+
+    Get the file to parse, construct a Doc object, get file's doc,
+    get the according formatter class, instantiate it
+    with acquired doc and write on specified file (stdout by default).
+
+    Parameters:
+        args: Arguments passed from the command line.
+
+    Returns:
+        An exit code.
+    """
+    templates._load_plugin_templates()
+
+    parser = get_parser()
+    opts = parser.parse_args(args)
+
+    # Catch errors as early as possible
+    if opts.merge and len(opts.FILE) < 2:  # noqa: PLR2004
+        print(
+            "shellman: warning: --merge option is ignored with less than 2 inputs",
+            file=sys.stderr,
+        )
+
+    if not opts.FILE and opts.output and _is_format_string(opts.output):
+        parser.print_usage(file=sys.stderr)
+        print(
+            "shellman: error: cannot format output name without file inputs. "
+            "Please remove variables from output name, or provide file inputs",
+            file=sys.stderr,
+        )
+        return 2
+
+    # Immediately get the template to throw error if not found
+    if opts.template.startswith("path:"):
+        template = templates._get_custom_template(opts.template[5:])
+    else:
+        template = templates.templates[opts.template]
+
+    context = _get_context(opts)
+
+    # Render template with context only
+    if not opts.FILE:
+        if not context:
+            parser.print_usage(file=sys.stderr)
+            print("shellman: error: please specify input file(s) or context", file=sys.stderr)
+            return 1
+        contents = _render(template, None, **context)
+        if opts.output:
+            _write(contents, opts.output)
+        else:
+            print(contents)
+        return 0
+
+    # Parse input files
+    docs: list[DocFile | DocStream] = []
+    for file in opts.FILE:
+        if file == "-":
+            docs.append(DocStream(sys.stdin, filename=_guess_filename(opts.output)))
+        else:
+            docs.append(DocFile(file))
+
+    # Optionally merge the parsed contents
+    if opts.merge:
+        new_filename = _guess_filename(opts.output, docs)
+        docs = [_merge(docs, new_filename)]
+
+    # If opts.output contains variables, each input has its own output
+    if opts.output and _is_format_string(opts.output):
+        for doc in docs:
+            _write(
+                _render(template, doc, **context),
+                opts.output.format(**_output_name_variables(doc)),
+            )
+    # Else, concatenate contents (no effect if already merged), then output to file or stdout
+    else:
+        contents = "\n\n\n".join(_render(template, doc, **context) for doc in docs)
+        if opts.output:
+            _write(contents, opts.output)
+        else:
+            print(contents)
+
+    return 0
+
+```
+
+## cli
+
+Deprecated. Import directly from `shellman` instead.
+
+## context
+
+Deprecated. Import directly from `shellman` instead.
+
+## reader
+
+Deprecated. Import directly from `shellman` instead.
+
+## tags
+
+Deprecated. Import directly from `shellman` instead.
+
+## templates
+
+Deprecated. Import directly from `shellman` instead.
+
+Modules:
+
+- **`filters`** – Deprecated. Import directly from shellman instead.
+
+### filters
+
+Deprecated. Import directly from `shellman` instead.
