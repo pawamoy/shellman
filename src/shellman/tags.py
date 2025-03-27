@@ -6,14 +6,30 @@ This module contains the Section class.
 from __future__ import annotations
 
 import re
+import sys
+import warnings
 from dataclasses import dataclass
 from functools import cached_property
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, ClassVar
+
+# YORE: EOL 3.10: Replace block with line 4.
+if sys.version_info < (3, 11):
+    from typing_extensions import Self
+else:
+    from typing import Self
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from shellman.reader import DocLine
+
+
+# YORE: Bump 2: Remove block.
+def __getattr__(name: str) -> Any:
+    if name == "NameDescTag":
+        warnings.warn("NameDescTag is deprecated, use ValueDescTag instead.", DeprecationWarning, stacklevel=2)
+        return ValueDescTag
+    raise AttributeError(f"module {__name__} has no attribute {name}")
 
 
 class Tag:
@@ -45,28 +61,32 @@ class TextTag(Tag):
 
 
 @dataclass
-class NameDescTag(Tag):
-    """A tag holding a name and a description."""
+class ValueDescTag(Tag):
+    """A tag holding a value and a description."""
 
-    name: str
+    tag: ClassVar[str]
     """The tag name."""
-    description: str
-    """The tag description."""
+
+    value_field_name: ClassVar[str] = "name"
+    """The name of the field containing the value."""
+
+    description_field_name: ClassVar[str] = "description"
+    """The name of the field containing the description."""
 
     @classmethod
-    def from_lines(cls, lines: Sequence[DocLine]) -> EnvTag:  # noqa: D102
-        name, description = "", []
+    def from_lines(cls, lines: Sequence[DocLine]) -> Self:  # noqa: D102
+        value, description = "", []
         for line in lines:
-            if line.tag == "env":
+            if line.tag == cls.tag:
                 split = line.value.split(" ", 1)
                 if len(split) > 1:
-                    name = split[0]
+                    value = split[0]
                     description.append(split[1])
                 else:
-                    name = split[0]
+                    value = split[0]
             else:
                 description.append(line.value)
-        return EnvTag(name=name, description="\n".join(description))
+        return cls(**{cls.value_field_name: value, cls.description_field_name: "\n".join(description)})
 
 
 @dataclass
@@ -105,8 +125,15 @@ class DescTag(TextTag):
 
 
 @dataclass
-class EnvTag(NameDescTag):
+class EnvTag(ValueDescTag):
     """A tag representing an environment variable used by the script."""
+
+    tag: ClassVar[str] = "env"
+
+    name: str
+    """The environment variable name."""
+    description: str
+    """The environment variable description."""
 
 
 @dataclass
@@ -161,33 +188,28 @@ class ExampleTag(Tag):
 
 
 @dataclass
-class ExitTag(Tag):
+class ExitTag(ValueDescTag):
     """A tag representing an exit code."""
 
-    code: str
-    """The exit code."""
-    description: str
-    """The code description."""
+    tag: ClassVar[str] = "exit"
+    value_field_name: ClassVar[str] = "code"
 
-    @classmethod
-    def from_lines(cls, lines: Sequence[DocLine]) -> ExitTag:  # noqa: D102
-        code, description = "", []
-        for line in lines:
-            if line.tag == "exit":
-                split = line.value.split(" ", 1)
-                if len(split) > 1:
-                    code = split[0]
-                    description.append(split[1])
-                else:
-                    code = split[0]
-            else:
-                description.append(line.value)
-        return ExitTag(code=code, description="\n".join(description))
+    code: str
+    """The exit code value."""
+    description: str
+    """The exit code description."""
 
 
 @dataclass
-class FileTag(NameDescTag):
+class FileTag(ValueDescTag):
     """A tag representing a file used by a script."""
+
+    tag: ClassVar[str] = "file"
+
+    name: str
+    """The file name/path."""
+    description: str
+    """The file description."""
 
 
 @dataclass
