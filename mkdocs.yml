@@ -123,6 +123,7 @@ plugins:
           docstring_section_style: list
           extensions:
           - griffe_inherited_docstrings
+          filters: public
           heading_level: 1
           inherited_members: true
           merge_init_into_class: true

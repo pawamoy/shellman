@@ -152,7 +152,21 @@ def test_inventory_matches_api(
     not_in_api = []
     public_api_paths = {obj.path for obj in public_objects}
     public_api_paths.add("shellman")
+    # YORE: Bump 2: Remove block.
+    ignore = (
+        "shellman.cli",
+        "shellman.context",
+        "shellman.reader",
+        "shellman.tags",
+        "shellman.templates",
+        "shellman.templates.filters",
+    )
+
     for item in inventory.values():
+        # YORE: Bump 2: Remove line.
+        if item.name.startswith(ignore):
+            # YORE: Bump 2: Remove line.
+            continue
         if (
             item.domain == "py"
             and "(" not in item.name

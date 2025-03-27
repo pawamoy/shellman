@@ -5,3 +5,5 @@ hide:
 ---
 
 # ::: shellman
+    options:
+        show_submodules: true
