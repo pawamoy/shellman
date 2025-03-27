@@ -1,4 +1,4 @@
-"""This module contains our definitions of templates."""
+# This module contains our definitions of templates.
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from typing import Any
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import TemplateNotFound
 
-from shellman.templates.filters import FILTERS
+from shellman._internal.templates.filters import FILTERS
 
 if sys.version_info < (3, 10):
     from importlib_metadata import entry_points  # type: ignore[assignment]
@@ -34,6 +34,7 @@ def _get_env(path: str) -> Environment:
 
 
 builtin_env = _get_env(_get_builtin_path())
+"""The built-in Jinja environment."""
 
 
 class Template:
@@ -54,6 +55,9 @@ class Template:
             context: Base context to render with.
             filters: Base filters to add to the environment.
         """
+        self.env: Environment
+        """The Jinja environment."""
+
         if isinstance(env_or_directory, Environment):
             self.env = env_or_directory
         elif isinstance(env_or_directory, str):
@@ -66,8 +70,11 @@ class Template:
 
         self.env.filters.update(FILTERS)
         self.env.filters.update(filters)
+
         self.base_template = base_template
+        """The base template file."""
         self.context = context or {}
+        """The base context."""
         self.__template: Template = None  # type: ignore[assignment]
 
     @property
@@ -128,10 +135,15 @@ helptext = Template(
     "helptext",
     context={"indent": 2, "option_padding": 22},
 )
+"""Template for help text."""
 manpage = Template(builtin_env, "manpage.groff", context={"indent": 4})
+"""Template for manpages."""
 manpage_md = Template(builtin_env, "manpage.md")
+"""Template for manpages in Markdown format."""
 wikipage = Template(builtin_env, "wikipage.md")
+"""Template for wiki pages."""
 usagetext = Template(builtin_env, "usagetext")
+"""Template for usage text."""
 
 templates = {
     "usagetext": usagetext,
@@ -146,3 +158,4 @@ templates = {
     "wikipage.md": wikipage,
     "wikipage.markdown": wikipage,
 }
+"""The available templates."""

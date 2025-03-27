@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from collections import namedtuple
 
-from shellman.context import _get_cli_context, _get_context, _get_env_context, _update
+from shellman._internal.context import _get_cli_context, _get_context, _get_env_context, _update
 
 
 def test_get_cli_context() -> None:

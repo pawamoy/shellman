@@ -1,4 +1,4 @@
-"""Jinja-context related utilities."""
+# Jinja-context related utilities.
 
 from __future__ import annotations
 
@@ -12,7 +12,9 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
 ENV_VAR_PREFIX = "SHELLMAN_CONTEXT_"
+"""The prefix for environment variables that will be used as context."""
 DEFAULT_JSON_FILE = ".shellman.json"
+"""The default JSON file to read context from."""
 
 
 def _get_cli_context(args: Sequence[str]) -> dict:

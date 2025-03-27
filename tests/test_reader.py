@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from shellman.reader import _preprocess_lines, _preprocess_stream
+from shellman._internal.reader import _preprocess_lines, _preprocess_stream
 from tests.conftest import get_fake_script
 
 

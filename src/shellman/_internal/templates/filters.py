@@ -1,4 +1,4 @@
-"""This module contains Jinja filters."""
+# This module contains Jinja filters.
 
 from __future__ import annotations
 
@@ -310,3 +310,4 @@ FILTERS = {
     "format": do_format,
     "escape": do_escape,
 }
+"""The Jinja filters."""

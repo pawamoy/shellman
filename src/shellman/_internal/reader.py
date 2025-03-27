@@ -1,11 +1,11 @@
-"""Module to read a file/stream and pre-process the documentation lines.
+# Module to read a file/stream and pre-process the documentation lines.
+#
+# Algorithm is as follows:
+#
+# 1. preprocess_stream: yield documentation lines.
+# 2. preprocess_lines: group documentation lines as blocks of documentation.
+# 3. process_blocks: tidy blocks by tag in a dictionary.
 
-Algorithm is as follows:
-
-1. preprocess_stream: yield documentation lines.
-2. preprocess_lines: group documentation lines as blocks of documentation.
-3. process_blocks: tidy blocks by tag in a dictionary.
-"""
 
 from __future__ import annotations
 
@@ -15,15 +15,17 @@ import re
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
-from shellman.tags import TAGS, Tag
+from shellman._internal.tags import TAGS, Tag
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator, Sequence
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 tag_value_regex = re.compile(r"^\s*[\\@]([_a-zA-Z][\w-]*)\s+(.+)$")
+"""Regex to match a tag and its value."""
 tag_no_value_regex = re.compile(r"^\s*[\\@]([_a-zA-Z][\w-]*)\s*$")
+"""Regex to match a tag without a value."""
 
 
 class DocType:
@@ -55,9 +57,13 @@ class DocLine:
             value: The line's value.
         """
         self.path = path
+        """The origin file path."""
         self.lineno = lineno
+        """The line number in the file."""
         self.tag = tag or ""
+        """The line's tag."""
         self.value = value
+        """The line's value."""
 
     def __str__(self) -> str:
         doc_type = self.doc_type
@@ -92,11 +98,11 @@ class DocBlock:
         Parameters:
             lines: The block's doc lines.
         """
-        if lines is None:
-            lines = []
-        self.lines = lines
+        self.lines = lines if lines is not None else []
+        """The block's doc lines."""
 
     def __bool__(self) -> bool:
+        """True if the block has lines."""
         return bool(self.lines)
 
     def __str__(self) -> str:
@@ -164,8 +170,11 @@ class DocStream:
             filename: An optional file name.
         """
         self.filepath = None
+        """The file path."""
         self.filename = filename
+        """The file name."""
         self.sections = _process_blocks(_preprocess_lines(_preprocess_stream(stream)))
+        """The documentation sections."""
 
 
 class DocFile:
@@ -178,12 +187,17 @@ class DocFile:
             path: The path to the file.
         """
         self.filepath = path
+        """The file path."""
         self.filename = os.path.basename(path)
+        """The file name."""
+        self.sections: dict[str, list[Tag]] = {}
+        """The documentation sections."""
+
         with open(path, encoding="utf-8") as stream:
             try:
                 self.sections = _process_blocks(_preprocess_lines(_preprocess_stream(stream)))
             except UnicodeDecodeError:
-                logger.error(f"Cannot read file {path}")  # noqa: TRY400
+                _logger.error(f"Cannot read file {path}")  # noqa: TRY400
                 self.sections = {}
 
 

@@ -1,7 +1,4 @@
-"""Section module.
-
-This module contains the Section class.
-"""
+# All tags are defined here.
 
 from __future__ import annotations
 
@@ -21,7 +18,7 @@ else:
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from shellman.reader import DocLine
+    from shellman._internal.reader import DocLine
 
 
 # YORE: Bump 2: Remove block.
@@ -56,7 +53,7 @@ class TextTag(Tag):
     """The tag's text."""
 
     @classmethod
-    def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:  # noqa: D102
+    def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
         return cls(text="\n".join(line.value for line in lines))
 
 
@@ -74,7 +71,7 @@ class ValueDescTag(Tag):
     """The name of the field containing the description."""
 
     @classmethod
-    def from_lines(cls, lines: Sequence[DocLine]) -> Self:  # noqa: D102
+    def from_lines(cls, lines: Sequence[DocLine]) -> Self:
         value, description = "", []
         for line in lines:
             if line.tag == cls.tag:
@@ -155,7 +152,7 @@ class ExampleTag(Tag):
     """The example's description."""
 
     @classmethod
-    def from_lines(cls, lines: Sequence[DocLine]) -> ExampleTag:  # noqa: D102
+    def from_lines(cls, lines: Sequence[DocLine]) -> ExampleTag:
         brief, code, description = [], [], []
         code_lang = ""
         current = None
@@ -238,7 +235,7 @@ class FunctionTag(Tag):
     """The function's standard output."""
 
     @classmethod
-    def from_lines(cls, lines: Sequence[DocLine]) -> FunctionTag:  # noqa: D102
+    def from_lines(cls, lines: Sequence[DocLine]) -> FunctionTag:
         brief = ""
         prototype = ""
         description = []
@@ -338,7 +335,7 @@ class OptionTag(Tag):
         return sign
 
     @classmethod
-    def from_lines(cls, lines: Sequence[DocLine]) -> OptionTag:  # noqa: D102
+    def from_lines(cls, lines: Sequence[DocLine]) -> OptionTag:
         short, long, positional, default, group = "", "", "", "", ""
         description = []
         for line in lines:
@@ -397,7 +394,7 @@ class UsageTag(Tag):
     """The command-line usage."""
 
     @classmethod
-    def from_lines(cls, lines: Sequence[DocLine]) -> UsageTag:  # noqa: D102
+    def from_lines(cls, lines: Sequence[DocLine]) -> UsageTag:
         program, command = "", ""
         split = lines[0].value.split(" ", 1)
         if len(split) > 1:
@@ -440,3 +437,4 @@ TAGS: dict[str | None, type[Tag]] = {
     "usage": UsageTag,
     "version": VersionTag,
 }
+"""A dictionary of tag names and their corresponding tag classes."""

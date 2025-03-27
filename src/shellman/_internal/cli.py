@@ -1,5 +1,3 @@
-"""Module that contains the command line application."""
-
 # Why does this file exist, and why not put this in `__main__`?
 #
 # You might be tempted to import things from `__main__` later,
@@ -20,14 +18,14 @@ import sys
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any
 
-from shellman import __version__, debug, templates
-from shellman.context import DEFAULT_JSON_FILE, _get_context, _update
-from shellman.reader import DocFile, DocStream, _merge
+from shellman._internal import debug, templates
+from shellman._internal.context import DEFAULT_JSON_FILE, _get_context, _update
+from shellman._internal.reader import DocFile, DocStream, _merge
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from shellman.templates import Template
+    from shellman._internal.templates import Template
 
 
 class _DebugInfo(argparse.Action):
@@ -35,7 +33,7 @@ class _DebugInfo(argparse.Action):
         super().__init__(nargs=nargs, **kwargs)
 
     def __call__(self, *args: Any, **kwargs: Any) -> None:  # noqa: ARG002
-        debug.print_debug_info()
+        debug._print_debug_info()
         sys.exit(0)
 
 
@@ -112,7 +110,7 @@ def get_parser() -> argparse.ArgumentParser:
         "(git and mercurial supported). "
         "They will be populated from each input file.",
     )
-    parser.add_argument("-V", "--version", action="version", version=f"%(prog)s {debug.get_version()}")
+    parser.add_argument("-V", "--version", action="version", version=f"%(prog)s {debug._get_version()}")
     parser.add_argument("--debug-info", action=_DebugInfo, help="Print debug information.")
 
     parser.add_argument(
@@ -131,7 +129,7 @@ def _render(template: Template, doc: DocFile | DocStream | None = None, **contex
         shellman["filename"] = doc.filename
         shellman["filepath"] = doc.filepath
     shellman["today"] = datetime.now(tz=timezone.utc).date()
-    shellman["version"] = __version__
+    shellman["version"] = debug._get_version()
 
     if "shellman" in context:
         _update(shellman, context.pop("shellman"))

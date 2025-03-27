@@ -1,7 +1,7 @@
 """Tests for the `tags` module."""
 
-from shellman.reader import DocLine
-from shellman.tags import (
+from shellman._internal.reader import DocLine
+from shellman._internal.tags import (
     AuthorTag,
     BriefTag,
     BugTag,
