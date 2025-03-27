@@ -1,4 +1,4 @@
-"""Tests for the `cli` module."""
+"""Tests for the CLI."""
 
 from __future__ import annotations
 
@@ -8,6 +8,8 @@ from shellman import cli, debug
 from shellman.cli import main as cli_main
 from shellman.templates import filters
 from tests.conftest import get_fake_script
+from shellman import main
+from shellman._internal import debug
 
 
 def test_main() -> None:
@@ -24,7 +26,7 @@ def test_show_help(capsys: pytest.CaptureFixture) -> None:
         capsys: Pytest fixture to capture output.
     """
     with pytest.raises(SystemExit):
-        cli.main(["-h"])
+        main(["-h"])
     captured = capsys.readouterr()
     assert "shellman" in captured.out
 
@@ -83,9 +85,9 @@ def test_show_version(capsys: pytest.CaptureFixture) -> None:
         capsys: Pytest fixture to capture output.
     """
     with pytest.raises(SystemExit):
-        cli.main(["-V"])
+        main(["-V"])
     captured = capsys.readouterr()
-    assert debug.get_version() in captured.out
+    assert debug._get_version() in captured.out
 
 
 def test_show_debug_info(capsys: pytest.CaptureFixture) -> None:
@@ -95,7 +97,7 @@ def test_show_debug_info(capsys: pytest.CaptureFixture) -> None:
         capsys: Pytest fixture to capture output.
     """
     with pytest.raises(SystemExit):
-        cli.main(["--debug-info"])
+        main(["--debug-info"])
     captured = capsys.readouterr().out.lower()
     assert "python" in captured
     assert "system" in captured

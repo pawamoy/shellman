@@ -12,8 +12,6 @@ See https://jinja.palletsprojects.com/en/3.1.x/.
 
 from __future__ import annotations
 
-from shellman.reader import DocFile, DocStream
-from shellman.templates import Template
+from shellman._internal.cli import get_parser, main
 
-__all__: list[str] = ["DocFile", "DocStream", "Template"]
-__version__ = "0.4.1"
+__all__: list[str] = ["get_parser", "main"]
