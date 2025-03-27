@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [1.0.2](https://github.com/pawamoy/shellman/releases/tag/1.0.2) - 2025-03-27
+
+<small>[Compare with 1.0.1](https://github.com/pawamoy/shellman/compare/1.0.1...1.0.2)</small>
+
+### Deprecations
+
+Submodules are deprecated, import from the top-level `shellman` module instead.
+
+### Bug Fixes
+
+- Return correct tag instances from `from_lines`, fixing parsing of `file` tags (value and description) ([e597d9d](https://github.com/pawamoy/shellman/commit/e597d9d33bc6767fb653db37b910607f1d3f476d) by Timothée Mazzucotelli). [Issue-mkdocstrings-shell-3](https://github.com/mkdocstrings/shell/issues/3)
+
+### Code Refactoring
+
+- Re-expose submodules as deprecated ([c8f6676](https://github.com/pawamoy/shellman/commit/c8f66760ceb1428a94543ddbdab2e2c8111c3784) by Timothée Mazzucotelli).
+- Move submodules under internal folder, sync API and docs ([60de99f](https://github.com/pawamoy/shellman/commit/60de99f3df4e13e2321a84797a4e3aaa103efdd0) by Timothée Mazzucotelli).
+
 ## [1.0.1](https://github.com/pawamoy/shellman/releases/tag/1.0.1) - 2024-11-25
 
 <small>[Compare with 1.0.0](https://github.com/pawamoy/shellman/compare/1.0.0...1.0.1)</small>
