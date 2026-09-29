@@ -34,6 +34,7 @@ import os
 import re
 import sys
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from shellman._internal import debug, templates
@@ -60,9 +61,10 @@ def _valid_file(value: str) -> str:
         return value
     if not value:
         raise argparse.ArgumentTypeError("'' is not a valid file path")
-    if not os.path.exists(value):
+    path = Path(value)
+    if not path.exists():
         raise argparse.ArgumentTypeError(f"{value} is not a valid file path")
-    if os.path.isdir(value):
+    if path.is_dir():
         raise argparse.ArgumentTypeError(f"{value} is a directory, not a regular file")
     return value
 
@@ -156,7 +158,7 @@ def _render(template: Template, doc: DocFile | DocStream | None = None, **contex
 
 
 def _write(contents: str, filepath: str) -> None:
-    with open(filepath, "w", encoding="utf-8") as write_stream:
+    with Path(filepath).open("w", encoding="utf-8") as write_stream:
         print(contents, file=write_stream)
 
 
@@ -183,7 +185,7 @@ def _is_format_string(string: str) -> bool:
 
 def _guess_filename(output: str, docs: Sequence[DocFile | DocStream] | None = None) -> str:
     if output and not _is_format_string(output):
-        return os.path.basename(output)
+        return Path(output).name
     if docs:
         return _common_ancestor(docs)
     return ""
@@ -191,18 +193,17 @@ def _guess_filename(output: str, docs: Sequence[DocFile | DocStream] | None = No
 
 def _output_name_variables(doc: DocFile | DocStream | None = None) -> dict:
     if doc:
-        basename, ext = os.path.splitext(doc.filename)
-        abspath = os.path.abspath(doc.filepath or doc.filename)
-        dirpath = os.path.split(abspath)[0] or "."
-        dirname = os.path.basename(dirpath)
+        filename = Path(doc.filename)
+        abspath = Path(doc.filepath or doc.filename).resolve()
+        dirpath = abspath.parent
         return {
             "filename": doc.filename,
-            "filepath": abspath,
-            "basename": basename,
-            "ext": ext,
-            "dirpath": dirpath,
-            "dirname": dirname,
-            "vcsroot": _get_vcs_root(dirpath),
+            "filepath": str(abspath),
+            "basename": filename.stem,
+            "ext": filename.suffix,
+            "dirpath": str(dirpath),
+            "dirname": dirpath.name,
+            "vcsroot": _get_vcs_root(str(dirpath)),
         }
     return {}
 
@@ -213,14 +214,15 @@ _vcs_root_cache: dict[str, str] = {}
 def _get_vcs_root(path: str) -> str:
     if path in _vcs_root_cache:
         return _vcs_root_cache[path]
-    original_path = path
-    while not any(os.path.exists(os.path.join(path, vcs)) for vcs in (".git", ".hg", ".svn")):
-        path = os.path.dirname(path)
-        if path == "/":
-            path = ""
+    directory = Path(path)
+    for parent in (directory, *directory.parents):
+        if any((parent / vcs).exists() for vcs in (".git", ".hg", ".svn")):
+            root = str(parent)
             break
-    _vcs_root_cache[original_path] = path
-    return path
+    else:
+        root = ""
+    _vcs_root_cache[path] = root
+    return root
 
 
 def main(args: list[str] | None = None) -> int:

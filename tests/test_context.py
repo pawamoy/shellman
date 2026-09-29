@@ -1,3 +1,21 @@
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 """Tests for the `context` module."""
 
 from __future__ import annotations
@@ -38,8 +56,8 @@ def test_get_env_context() -> None:
 
 def test_get_context() -> None:
     """Test getting context from default JSON file."""
-    args = namedtuple("args", "context_file context")(None, None)  # type: ignore[arg-type,call-arg]  # noqa: PYI024
-    assert _get_context(args) == {}  # type: ignore[arg-type]
+    args = namedtuple("args", "context_file context")(None, None)  # noqa: PYI024
+    assert _get_context(args) == {}  # ty:ignore[invalid-argument-type]
 
 
 def test_update() -> None:

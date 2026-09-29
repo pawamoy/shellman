@@ -18,7 +18,7 @@
 
 """Configuration for the pytest test suite."""
 
-import os
+from pathlib import Path
 
 
 def get_fake_script(name: str) -> str:
@@ -30,4 +30,4 @@ def get_fake_script(name: str) -> str:
     Returns:
         The fake script path.
     """
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "fakescripts", name)
+    return str(Path(__file__).resolve().parent / "fakescripts" / name)

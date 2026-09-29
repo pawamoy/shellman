@@ -1,11 +1,28 @@
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 # This module contains our definitions of templates.
 
 from __future__ import annotations
 
-import os
-import sys
 from copy import deepcopy
 from importlib.metadata import entry_points
+from pathlib import Path
 from typing import Any
 
 from jinja2 import Environment, FileSystemLoader
@@ -13,14 +30,9 @@ from jinja2.exceptions import TemplateNotFound
 
 from shellman._internal.templates.filters import FILTERS
 
-if sys.version_info < (3, 10):
-    from importlib_metadata import entry_points  # type: ignore[assignment]
-else:
-    from importlib.metadata import entry_points
-
 
 def _get_builtin_path() -> str:
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    return str(Path(__file__).resolve().parent / "data")
 
 
 def _get_env(path: str) -> Environment:
@@ -75,7 +87,7 @@ class Template:
         """The base template file."""
         self.context = context or {}
         """The base context."""
-        self.__template: Template = None  # type: ignore[assignment]
+        self.__template: Template = None  # ty:ignore[invalid-assignment]
 
     @property
     def template(self) -> Template:
@@ -100,9 +112,9 @@ class Template:
 
 
 def _get_custom_template(base_template_path: str) -> Template:
-    directory, base_template = os.path.split(base_template_path)
+    path = Path(base_template_path)
     try:
-        return Template(directory or ".", base_template)
+        return Template(str(path.parent), path.name)
     except TemplateNotFound as error:
         raise FileNotFoundError(base_template_path) from error
 
@@ -115,7 +127,7 @@ def _load_plugin_templates() -> None:
         elif isinstance(obj, dict):
             for name, template in obj.items():
                 if isinstance(template, Template):
-                    templates[name] = template
+                    templates[name] = template  # noqa: PERF403
 
 
 def _names() -> list[str]:
@@ -123,8 +135,8 @@ def _names() -> list[str]:
 
 
 def _parser_choices() -> tuple[str]:
-    class TemplateChoice(tuple):
-        def __contains__(self, item: str) -> bool:  # type: ignore[override]
+    class TemplateChoice(tuple):  # noqa: SLOT001
+        def __contains__(self, item: str) -> bool:  # ty:ignore[invalid-method-override]
             return super().__contains__(item) or item.startswith("path:")
 
     return TemplateChoice(_names())  # type: ignore[return-value]

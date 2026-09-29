@@ -1,3 +1,21 @@
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 # Module to read a file/stream and pre-process the documentation lines.
 #
 # Algorithm is as follows:
@@ -10,9 +28,9 @@
 from __future__ import annotations
 
 import logging
-import os
 import re
 from collections import defaultdict
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from shellman._internal.tags import TAGS, Tag
@@ -188,12 +206,12 @@ class DocFile:
         """
         self.filepath = path
         """The file path."""
-        self.filename = os.path.basename(path)
+        self.filename = Path(path).name
         """The file name."""
         self.sections: dict[str, list[Tag]] = {}
         """The documentation sections."""
 
-        with open(path, encoding="utf-8") as stream:
+        with Path(path).open(encoding="utf-8") as stream:
             try:
                 self.sections = _process_blocks(_preprocess_lines(_preprocess_stream(stream)))
             except UnicodeDecodeError:

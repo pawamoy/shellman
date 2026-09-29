@@ -1,3 +1,21 @@
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 # All tags are defined here.
 
 from __future__ import annotations
@@ -54,6 +72,14 @@ class TextTag(Tag):
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> TextTag:
+        """Join documentation line values into a text tag.
+
+        Parameters:
+            lines: The documentation lines to parse.
+
+        Returns:
+            A tag instance with line values joined by newline characters.
+        """
         return cls(text="\n".join(line.value for line in lines))
 
 
@@ -72,6 +98,14 @@ class ValueDescTag(Tag):
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> Self:
+        """Parse a value and its description from documentation lines.
+
+        Parameters:
+            lines: The documentation lines containing the value and description.
+
+        Returns:
+            A tag instance with the value and description stored in the configured fields.
+        """
         value, description = "", []
         for line in lines:
             if line.tag == cls.tag:
@@ -126,6 +160,7 @@ class EnvTag(ValueDescTag):
     """A tag representing an environment variable used by the script."""
 
     tag: ClassVar[str] = "env"
+    """The tag name used to identify environment variables."""
 
     name: str
     """The environment variable name."""
@@ -153,6 +188,14 @@ class ExampleTag(Tag):
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> ExampleTag:
+        """Parse an example's summary, code, language, and description.
+
+        Parameters:
+            lines: The documentation lines containing the example and its sections.
+
+        Returns:
+            An example tag with the parsed sections.
+        """
         brief, code, description = [], [], []
         code_lang = ""
         current = None
@@ -189,7 +232,9 @@ class ExitTag(ValueDescTag):
     """A tag representing an exit code."""
 
     tag: ClassVar[str] = "exit"
+    """The tag name used to identify exit codes."""
     value_field_name: ClassVar[str] = "code"
+    """The name of the field containing the exit code."""
 
     code: str
     """The exit code value."""
@@ -202,6 +247,7 @@ class FileTag(ValueDescTag):
     """A tag representing a file used by a script."""
 
     tag: ClassVar[str] = "file"
+    """The tag name used to identify files."""
 
     name: str
     """The file name/path."""
@@ -236,6 +282,14 @@ class FunctionTag(Tag):
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> FunctionTag:
+        """Parse a shell function's prototype and documentation sections.
+
+        Parameters:
+            lines: The documentation lines containing the function and its sections.
+
+        Returns:
+            A function tag with the parsed prototype and documentation.
+        """
         brief = ""
         prototype = ""
         description = []
@@ -336,6 +390,14 @@ class OptionTag(Tag):
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> OptionTag:
+        """Parse an option's flags, arguments, default value, group, and description.
+
+        Parameters:
+            lines: The documentation lines containing the option and its sections.
+
+        Returns:
+            An option tag with the parsed signature and supporting information.
+        """
         short, long, positional, default, group = "", "", "", "", ""
         description = []
         for line in lines:
@@ -395,6 +457,14 @@ class UsageTag(Tag):
 
     @classmethod
     def from_lines(cls, lines: Sequence[DocLine]) -> UsageTag:
+        """Parse a program name and its command-line usage.
+
+        Parameters:
+            lines: A non-empty sequence of documentation lines starting with the program name.
+
+        Returns:
+            A usage tag with the program name and the remaining text as its command.
+        """
         program, command = "", ""
         split = lines[0].value.split(" ", 1)
         if len(split) > 1:

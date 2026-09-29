@@ -1,3 +1,21 @@
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 # This module contains Jinja filters.
 
 from __future__ import annotations
@@ -102,11 +120,9 @@ def do_firstword(string: str, delimiters: str = " ") -> str:
         string: The string.
         delimiters: The delimiter characters.
 
-
     Returns:
         The string's first word.
     """
-    # FIXME: maybe use a regex instead: ^[\w_]+
     for i, char in enumerate(string):
         if char in delimiters:
             return string[:i]
@@ -118,7 +134,6 @@ def do_body(string_or_list: str | Sequence[str], delimiter: str = " ") -> str | 
 
     Parameters:
         string_or_list: Given text.
-
 
     Returns:
         The text's body.
@@ -135,7 +150,6 @@ def do_firstline(string_or_list: str | Sequence[str]) -> str | None:
 
     Parameters:
         string_or_list: Given text.
-
 
     Returns:
         The text's first line.
@@ -233,7 +247,6 @@ def do_format(string: str, *args: Any, **kwargs: Any) -> str:
         string: The string to format.
         *args: Arguments passed to `str.format`.
         **kwargs: Keyword arguments passed to `str.format`.
-
 
     Returns:
         The formatted string.

@@ -1,6 +1,26 @@
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 """Tests for the `reader` module."""
 
 from __future__ import annotations
+
+from pathlib import Path
 
 from shellman._internal.reader import _preprocess_lines, _preprocess_stream
 from tests.conftest import get_fake_script
@@ -9,7 +29,8 @@ from tests.conftest import get_fake_script
 def test_preprocess_stream() -> None:
     """Test pre-processing of a stream."""
     script = get_fake_script("simple.sh")
-    with open(script) as stream:
+
+    with Path(script).open() as stream:
         assert list(_preprocess_stream(stream)) == [
             (script, 3, "## \\brief Just a demo"),
             (script, 4, "## \\desc This script actually does nothing."),
@@ -22,6 +43,8 @@ def test_preprocess_stream() -> None:
 def test_preprocess_lines() -> None:
     """Test pre-processing of lines."""
     script = get_fake_script("simple.sh")
-    with open(script) as stream:
+
+    with Path(script).open() as stream:
         blocks = list(_preprocess_lines(_preprocess_stream(stream)))
+
     assert blocks
