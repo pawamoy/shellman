@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier.
-_commit: 1.8.2
+_commit: 1.15.3
 _src_path: gh:pawamoy/copier-uv
 author_email: dev@pawamoy.fr
 author_fullname: Timothée Mazzucotelli
@@ -8,7 +8,6 @@ copyright_date: '2020'
 copyright_holder: Timothée Mazzucotelli
 copyright_holder_email: dev@pawamoy.fr
 copyright_license: ISC
-insiders: false
 project_description: Write documentation in comments and render it with templates.
 project_name: shellman
 python_package_command_line_name: shellman
