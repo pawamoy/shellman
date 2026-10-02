@@ -33,7 +33,7 @@ import argparse
 import os
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -148,7 +148,7 @@ def _render(template: Template, doc: DocFile | DocStream | None = None, **contex
         shellman["doc"] = doc.sections
         shellman["filename"] = doc.filename
         shellman["filepath"] = doc.filepath
-    shellman["today"] = datetime.now(tz=timezone.utc).date()
+    shellman["today"] = datetime.now(tz=UTC).date()
     shellman["version"] = debug._get_version()
 
     if "shellman" in context:

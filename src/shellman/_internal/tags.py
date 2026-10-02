@@ -21,17 +21,10 @@
 from __future__ import annotations
 
 import re
-import sys
 import warnings
 from dataclasses import dataclass
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, ClassVar
-
-# YORE: EOL 3.10: Replace block with line 4.
-if sys.version_info < (3, 11):
-    from typing_extensions import Self
-else:
-    from typing import Self
+from typing import TYPE_CHECKING, Any, ClassVar, Self
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
