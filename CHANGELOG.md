@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [1.0.3](https://github.com/pawamoy/shellman/releases/tag/1.0.3) - 2026-10-06
+
+<small>[Compare with 1.0.2](https://github.com/pawamoy/shellman/compare/1.0.2...1.0.3)</small>
+
+### Build
+
+- Drop support for Python 3.10 ([3a653d9](https://github.com/pawamoy/shellman/commit/3a653d9675b7b4744c31166fba0a8eda1bdf0ebf) by Timothée Mazzucotelli).
+
 ## [1.0.2](https://github.com/pawamoy/shellman/releases/tag/1.0.2) - 2025-03-27
 
 <small>[Compare with 1.0.1](https://github.com/pawamoy/shellman/compare/1.0.1...1.0.2)</small>
